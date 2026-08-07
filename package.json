@@ -2,9 +2,11 @@
 	"type": "module",
 	"scripts": {
 		"build": "esbuild src/main.tsx --bundle --outfile=dist/gen/main.js --minify --format=esm",
-		"dev": "pnpm build --watch --servedir=dist --sourcemap"
+		"dev": "pnpm build --watch --servedir=dist --sourcemap",
+		"dist": "node dist.ts"
 	},
 	"devDependencies": {
+		"@types/node": "^26.1.2",
 		"esbuild": "^0.28.1",
 		"typescript": "^7.0.2"
 	},
