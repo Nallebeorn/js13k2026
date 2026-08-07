@@ -1,5 +1,11 @@
 {
+	"type": "module",
+	"scripts": {
+		"build": "esbuild src/main.tsx --bundle --outfile=dist/gen/main.js --minify --format=esm",
+		"dev": "pnpm build --watch --servedir=dist --sourcemap"
+	},
 	"devDependencies": {
+		"esbuild": "^0.28.1",
 		"typescript": "^7.0.2"
 	},
 	"devEngines": {
@@ -9,7 +15,8 @@
 			"onFail": "download"
 		}
 	},
+	"packageManager": "pnpm@11.20.0",
 	"dependencies": {
-		"esbuild": "^0.28.1"
+		"preact": "^10.29.8"
 	}
 }
