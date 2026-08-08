@@ -17,7 +17,5 @@ export function dot<T extends AnyVec>(lhs: T, rhs: NoInfer<T>): number {
 }
 
 export function length<T extends AnyVec>(vec: T): number {
-	return Math.sqrt(
-		vec.reduce((sum, current) => sum + current * current, 0)
-	);
+	return Math.sqrt(dot(vec, vec));
 }

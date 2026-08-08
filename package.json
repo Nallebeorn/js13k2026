@@ -1,9 +1,10 @@
 {
 	"type": "module",
 	"scripts": {
-		"build": "esbuild src/main.tsx --bundle --outfile=dist/gen/main.js --minify --format=esm",
-		"dev": "pnpm build --watch --servedir=dist --sourcemap",
-		"dist": "node dist.ts"
+		"build": "esbuild src/main.tsx --bundle --outfile=dist/gen/main.js --minify --format=esm --loader:.glsl=text",
+		"prod": "pnpm build --define:DEBUG=false",
+		"dev": "pnpm build --watch --servedir=dist --sourcemap --define:DEBUG=true",
+		"dist": "tsc && node dist.ts"
 	},
 	"devDependencies": {
 		"@types/node": "^26.1.2",

@@ -10,7 +10,7 @@ async function runProcess(...args: Parameters<typeof execFileAsync>) {
 	console.error(stderr);
 }
 
-await runProcess("pnpm", ["build"], {});
+await runProcess("pnpm", ["prod"], {});
 
 await rm("dist.zip", {force: true});
 
