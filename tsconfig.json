@@ -34,8 +34,8 @@
 
     // Recommended Options
     "strict": true,
-    "jsx": "react-jsx",
-    "jsxImportSource": "preact",
+    // "jsx": "react-jsx",
+    // "jsxImportSource": "preact",
     "verbatimModuleSyntax": true,
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,

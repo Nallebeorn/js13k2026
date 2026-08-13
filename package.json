@@ -1,7 +1,7 @@
 {
 	"type": "module",
 	"scripts": {
-		"build": "esbuild src/main.tsx --bundle --outfile=dist/gen/main.js --minify --format=esm --loader:.glsl=text",
+		"build": "esbuild src/main.ts --bundle --outfile=dist/gen/main.js --minify --format=esm --loader:.glsl=text",
 		"prod": "pnpm build --define:DEBUG=false",
 		"dev": "pnpm build --watch --servedir=dist --sourcemap --define:DEBUG=true",
 		"dist": "tsc && node dist.ts"
@@ -19,8 +19,5 @@
 			"onFail": "download"
 		}
 	},
-	"packageManager": "pnpm@11.20.0",
-	"dependencies": {
-		"preact": "^10.29.8"
-	}
+	"packageManager": "pnpm@11.21.0"
 }

@@ -1,10 +1,5 @@
-import { render } from "preact";
-import { App } from "./App.js";
-import { add, dot } from "./math.ts";
 import vertexShaderSource from "./vertex.glsl";
 import fragmentShaderSource from "./fragment.glsl";
-
-render(<App/>, document.getElementById("main")!);
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const gl = canvas.getContext("webgl")!;
