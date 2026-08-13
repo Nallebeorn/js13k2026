@@ -1,6 +1,6 @@
 /**
  * Taken from https://www.npmjs.com/package/webgl-constants
- * Modified by @Nallebeorn to remove `number` typing for better type aliases
+ * Modified to remove `number` typing for better type aliases
  *
  * The following defined constants and descriptions are directly ported from https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Constants
  *
