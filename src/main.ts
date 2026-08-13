@@ -1,69 +1,55 @@
-import vertexShaderSource from "./vertex.glsl";
-import fragmentShaderSource from "./fragment.glsl";
+import vertexShaderSource from "./object.vert.glsl";
+import fragmentShaderSource from "./object.frag.glsl";
+import { GL_ARRAY_BUFFER, GL_COLOR_BUFFER_BIT, GL_FLOAT, GL_STATIC_DRAW, GL_TRIANGLE_STRIP } from "./webgl/glConstants.ts";
+import { createShaderProgram } from "./webgl/shader.ts";
+import { gl } from "./webgl/webglContext.ts";
+import { mat4 } from "gl-matrix";
 
-const canvas = document.getElementById("canvas") as HTMLCanvasElement;
-const gl = canvas.getContext("webgl")!;
+if (DEBUG) {
+	console.log("ℹ️ DEBUG BUILD");
+}
 
 const shader = createShaderProgram(vertexShaderSource, fragmentShaderSource);
 const programInfo = {
-	aPos: gl.getAttribLocation(shader, "aPos"),
-	uObjectToView: gl.getUniformLocation(shader, "uObjectToView"),
-	uViewToClip: gl.getUniformLocation(shader, "uViewToClip"),
+	p: 0,
+	o2v: gl.getUniformLocation(shader, "o2v"),
+	v2c: gl.getUniformLocation(shader, "v2c"),
 };
+type ProgramInfo = typeof programInfo;
+
 gl.useProgram(shader)
 
 const planePosBuffer = gl.createBuffer();
-gl.bindBuffer(gl.ARRAY_BUFFER, planePosBuffer);
+gl.bindBuffer(GL_ARRAY_BUFFER, planePosBuffer);
 gl.bufferData(
-	gl.ARRAY_BUFFER,
+GL_ARRAY_BUFFER,
 	new Float32Array([1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, -1.0]),
-	gl.STATIC_DRAW
+	GL_STATIC_DRAW
 );
-gl.vertexAttribPointer(programInfo.aPos, 2, gl.FLOAT, false, 0, 0);
-gl.enableVertexAttribArray(programInfo.aPos);
+gl.vertexAttribPointer(programInfo.p, 2, GL_FLOAT, false, 0, 0);
+gl.enableVertexAttribArray(programInfo.p);
 
-gl.clearColor(0.3, 0.6, 0.9, 1.0);
-gl.clear(gl.COLOR_BUFFER_BIT);
-gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+gl.clearColor(1, 1, 1, 1);
+gl.clear(GL_COLOR_BUFFER_BIT);
 
-function createShaderProgram(vertexSource: string, fragmentSource: string) {
-	const vertexShader = compileShader(gl.VERTEX_SHADER, vertexSource);
-	const fragmentShader = compileShader(gl.FRAGMENT_SHADER, fragmentSource);
-	const shaderProgram = gl.createProgram();
-	gl.attachShader(shaderProgram, vertexShader);
-	gl.attachShader(shaderProgram, fragmentShader);
-	gl.linkProgram(shaderProgram);
+const fov = Math.PI / 4;
+const aspect = canvas.clientWidth / canvas.clientHeight;
+const projectionMatrix = mat4.create();
+mat4.perspective(projectionMatrix, fov, aspect, 0.1, 100);
 
-	if (DEBUG) {
-	 if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-	    console.error(
-	      `Unable to initialize the shader program: ${gl.getProgramInfoLog(
-	        shaderProgram,
-	      )}`,
-	    );
-	  }
-	}
+const objectToViewMatrix = mat4.create();
+mat4.translate(objectToViewMatrix, objectToViewMatrix, [0, 0, -6]);
 
-  return shaderProgram;
-}
+// Set the shader uniforms
+gl.uniformMatrix4fv(
+  programInfo.v2c,
+  false,
+  projectionMatrix,
+);
+gl.uniformMatrix4fv(
+  programInfo.o2v,
+  false,
+  objectToViewMatrix,
+);
 
-type ShaderType = WebGLRenderingContext["VERTEX_SHADER"] | WebGLRenderingContext["FRAGMENT_SHADER"]
-function compileShader(type: ShaderType, source: string) {
-	const shader = gl.createShader(type)!;
-	gl.shaderSource(shader, source);
-	gl.compileShader(shader)
-
-	if (DEBUG) {
-		console.log("debug build");
-		if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-	    console.error(
-	      `An error occurred compiling the shaders: ${gl.getShaderInfoLog(shader)}`,
-			);
-			console.info("Failing shader source:");
-			console.info(source);
-	    gl.deleteShader(shader);
-	  }
-	}
-
-	return shader;
-}
+gl.drawArrays(GL_TRIANGLE_STRIP, 0, 4);
