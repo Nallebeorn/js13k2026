@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, test } from "vitest";
-import { add, sub, length, type AnyVec, projectPerspective, type Vec3, normalize, transform } from "./math.js";
+import { add, sub, length, type AnyVec, projectPerspective, type Vec3, normalize, transform } from "./math.ts";
 import { glMatrix, mat4 } from "gl-matrix";
 
 describe("math", () => {

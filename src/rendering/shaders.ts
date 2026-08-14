@@ -1,5 +1,5 @@
 import { GL_COMPILE_STATUS, GL_FRAGMENT_SHADER, GL_LINK_STATUS, GL_VERTEX_SHADER } from "./glConstants.ts";
-import { gl } from "./webglContext.ts";
+import { gl } from "./renderingGlobals.ts";
 
 type ShaderType = typeof GL_VERTEX_SHADER | typeof GL_FRAGMENT_SHADER
 

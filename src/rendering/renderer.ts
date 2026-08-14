@@ -1,0 +1,72 @@
+import { gl } from "./renderingGlobals.ts";
+import { GL_ARRAY_BUFFER, GL_COLOR_BUFFER_BIT, GL_FLOAT, GL_STATIC_DRAW, GL_TRIANGLE_STRIP } from "./glConstants.ts";
+import { projectPerspective, TAU, transform } from "../core/math.ts";
+import { delta } from "../core/time.ts";
+import { objectShader, objectShaderInfo } from "./objectShader/objectShader.ts";
+import { createCube, createPlane } from "./shapes.ts";
+
+if (DEBUG && !gl) {
+	console.error("No WebGL context!");
+}
+
+const arrayBuffer = gl.createBuffer();
+gl.bindBuffer(GL_ARRAY_BUFFER, arrayBuffer);
+gl.useProgram(objectShader)
+
+const vertexData: number[] = [];
+
+const addVertexData = (vertices: number[]): ObjectInfo => ({
+		size: vertices.length,
+		offset: vertexData.push(...vertices) - vertices.length,
+});
+
+interface ObjectInfo {
+	offset: number,
+	size: number,
+}
+
+
+function drawObject(object: ObjectInfo) {
+	gl.drawArrays(GL_TRIANGLE_STRIP, object.offset / 3, object.size / 3);
+}
+
+
+const planeObject = addVertexData(createPlane());
+const cubeObject = addVertexData(createCube());
+
+gl.bufferData(
+		GL_ARRAY_BUFFER,
+		new Float32Array(vertexData),
+		GL_STATIC_DRAW
+	);
+	gl.vertexAttribPointer(objectShaderInfo.p, 3, GL_FLOAT, false, 0, 0);
+	gl.enableVertexAttribArray(objectShaderInfo.p);
+
+gl.clearColor(1, 1, 1, 1);
+
+const fov = TAU / 8;
+const aspect = canvas.clientWidth / canvas.clientHeight;
+const projectionMatrix = projectPerspective(fov, aspect, 0.1);
+
+let rotation = 0;
+
+export function render() {
+	const objectToViewMatrix = transform([0, 0, -6], [0, 1, 0], rotation);
+
+	rotation += 0.5 * TAU * delta;
+
+	gl.uniformMatrix4fv(
+  objectShaderInfo.v2c,
+  false,
+  projectionMatrix,
+	);
+	gl.uniformMatrix4fv(
+  objectShaderInfo.o2v,
+  false,
+  objectToViewMatrix,
+	);
+
+	gl.clear(GL_COLOR_BUFFER_BIT);
+	drawObject(planeObject);
+	drawObject(cubeObject);
+}
