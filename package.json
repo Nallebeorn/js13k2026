@@ -1,16 +1,20 @@
 {
 	"type": "module",
 	"scripts": {
-		"build": "esbuild src/main.ts --bundle --outfile=dist/gen/main.js --minify --format=esm --loader:.glsl=text",
-		"prod": "pnpm build --define:DEBUG=false",
-		"dev": "pnpm build --watch --servedir=dist --sourcemap --define:DEBUG=true",
+		"build": "vite build --watch",
+		"preview": "vite preview",
+		"dev": "vite",
 		"dist": "tsc && node dist.ts",
-		"test": "vitest"
+		"test": "vitest",
+		"tsc": "tsc --watch"
 	},
 	"devDependencies": {
-		"@types/node": "^26.1.2",
-		"esbuild": "^0.28.1",
+		"@types/node": "^26.2.0",
+		"terser": "^5.50.0",
 		"typescript": "^7.0.2",
+		"vite": "^8.2.1",
+		"vite-plugin-glsl": "^1.6.1",
+		"vite-plugin-html-minifier": "^1.0.5",
 		"vitest": "^4.1.10"
 	},
 	"devEngines": {

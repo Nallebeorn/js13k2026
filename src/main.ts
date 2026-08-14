@@ -1,3 +1,4 @@
+import { DEBUG } from "./debug.ts";
 import { render as renderScene } from "./rendering/renderer.ts";
 
 if (DEBUG) {

@@ -1,3 +1,4 @@
+import { DEBUG } from "../debug.ts";
 import { GL_COMPILE_STATUS, GL_FRAGMENT_SHADER, GL_LINK_STATUS, GL_VERTEX_SHADER } from "./glConstants.ts";
 import { gl } from "./renderingGlobals.ts";
 

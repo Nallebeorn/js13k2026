@@ -4,6 +4,7 @@ import { projectPerspective, TAU, transform } from "../core/math.ts";
 import { delta } from "../core/time.ts";
 import { objectShader, objectShaderInfo } from "./objectShader/objectShader.ts";
 import { createCube, createPlane } from "./shapes.ts";
+import { DEBUG } from "../debug.ts";
 
 if (DEBUG && !gl) {
 	console.error("No WebGL context!");
