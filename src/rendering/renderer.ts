@@ -25,10 +25,9 @@ interface ObjectInfo {
 	size: number,
 }
 
-
-function drawObject(object: ObjectInfo) {
+const drawObject = (object: ObjectInfo) => {
 	gl.drawArrays(GL_TRIANGLE_STRIP, object.offset / 3, object.size / 3);
-}
+};
 
 
 const planeObject = addVertexData(createPlane());
