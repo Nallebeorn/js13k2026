@@ -3,7 +3,7 @@ import fragmentShaderSource from "./object.frag.glsl";
 import { GL_ARRAY_BUFFER, GL_COLOR_BUFFER_BIT, GL_FLOAT, GL_STATIC_DRAW, GL_TRIANGLE_STRIP } from "./webgl/glConstants.ts";
 import { createShaderProgram } from "./webgl/shader.ts";
 import { gl } from "./webgl/webglContext.ts";
-import { projectPerspective, transform, translate } from "./math.ts";
+import { projectPerspective, transform} from "./math.ts";
 
 if (DEBUG) {
 	console.log("ℹ️ DEBUG BUILD");

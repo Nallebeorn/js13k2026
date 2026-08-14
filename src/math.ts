@@ -41,30 +41,6 @@ export function projectPerspective(fovy: number, aspect: number, near: number): 
 	];
 }
 
-export function translate(x: number, y: number, z: number): Mat4 {
-	return [
-		1, 0, 0, 0,
-		0, 1, 0, 0,
-		0, 0, 1, 0,
-		x, y, z, 1,
-	];
-}
-
-
-export function rotate(axis: Vec3, angle: number): Mat4 {
-	const [x, y, z] = axis;
-	const s = Math.sin(angle);
-	const c = Math.cos(angle);
-	const t = 1 - c;
-
-	return [
-		(x * x * t + c),			(y * x * t + z * s),	(z * x * t - y * s),	(0),
-		(x * y * t - z * s),	(y * y * t + c),			(z * y * t + x * s),	(0),
-		(x * z * t + y * s),	(y * z * t - x * s),	(z * z * t + c),			(0),
-		(0),									(0),									(0),									(1)
-	]
-}
-
 export function transform(pos?: Vec3, axis?: Vec3, angle?: number): Mat4 {
 	const [px, py, pz] = pos ?? [0, 0, 0];
 

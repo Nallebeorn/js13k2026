@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, test } from "vitest";
-import { add, sub, length, type AnyVec, type Mat4, projectPerspective, translate, type Vec3, rotate, normalize, transform } from "./math.js";
+import { add, sub, length, type AnyVec, projectPerspective, type Vec3, normalize, transform } from "./math.js";
 import { glMatrix, mat4 } from "gl-matrix";
 
 describe("math", () => {
@@ -116,48 +116,6 @@ describe("math", () => {
 				});
 			})
 		})
-
-		describe("translate", () => {
-			const testCases: [number, number, number][] = [
-				[0, 0, -6],
-				[37, 2, -12],
-				[0.3, Math.PI, -100000],
-			]
-
-			testCases.forEach((args) => {
-				test(`${args}`, () => {
-					const [x, y, z] = args;
-					const mine = translate(x, y, z);
-					const expected = mat4.fromTranslation(mat4.create(), [x, y, z]);
-					expect(mine).toStrictEqual(expected);
-				});
-			});
-		})
-
-		describe("rotate", () => {
-			const testCases: [Vec3, number][] = [
-				[[0, 0, 1], 0],
-				[[0, 0, 1], Math.PI],
-				[[0, 0, 1], Math.PI * 2],
-				[[0, 0, 1], Math.PI * 3],
-				[[0, 0, 1], -Math.PI * 4],
-				[[0, 1, 0], 42],
-				[[1, 0, 0], 42],
-				[[0, -1, 1], 47],
-				[[1, -0.4, -3], 47],
-			]
-
-			testCases.forEach(args => {
-				test(`${args}`, () => {
-					const [axis, angle] = args;
-					const mine = rotate(normalize(axis), angle);
-					const expected = mat4.fromRotation(mat4.create(), angle, axis);
-					mine.forEach((m, idx) => {
-						expect(m, `${idx}`).toBeCloseTo(expected[idx]!);
-					});
-				});
-			});
-		});
 
 		describe("transform", () => {
 			const testCases: { pos?: Vec3, rot?: [axis: Vec3, angle: number] }[] = [
