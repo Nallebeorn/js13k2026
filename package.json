@@ -4,7 +4,8 @@
 		"build": "esbuild src/main.ts --bundle --outfile=dist/gen/main.js --minify --format=esm --loader:.glsl=text",
 		"prod": "pnpm build --define:DEBUG=false",
 		"dev": "pnpm build --watch --servedir=dist --sourcemap --define:DEBUG=true",
-		"dist": "tsc && node dist.ts"
+		"dist": "tsc && node dist.ts",
+		"test": "vitest"
 	},
 	"devDependencies": {
 		"@types/node": "^26.1.2",

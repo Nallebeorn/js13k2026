@@ -3,7 +3,7 @@ import fragmentShaderSource from "./object.frag.glsl";
 import { GL_ARRAY_BUFFER, GL_COLOR_BUFFER_BIT, GL_FLOAT, GL_STATIC_DRAW, GL_TRIANGLE_STRIP } from "./webgl/glConstants.ts";
 import { createShaderProgram } from "./webgl/shader.ts";
 import { gl } from "./webgl/webglContext.ts";
-import { mat4 } from "gl-matrix";
+import { projectPerspective, transform, translate } from "./math.ts";
 
 if (DEBUG) {
 	console.log("ℹ️ DEBUG BUILD");
@@ -15,7 +15,6 @@ const programInfo = {
 	o2v: gl.getUniformLocation(shader, "o2v"),
 	v2c: gl.getUniformLocation(shader, "v2c"),
 };
-type ProgramInfo = typeof programInfo;
 
 gl.useProgram(shader)
 
@@ -34,11 +33,9 @@ gl.clear(GL_COLOR_BUFFER_BIT);
 
 const fov = Math.PI / 4;
 const aspect = canvas.clientWidth / canvas.clientHeight;
-const projectionMatrix = mat4.create();
-mat4.perspective(projectionMatrix, fov, aspect, 0.1, 100);
+const projectionMatrix = projectPerspective(fov, aspect, 0.1);
 
-const objectToViewMatrix = mat4.create();
-mat4.translate(objectToViewMatrix, objectToViewMatrix, [0, 0, -6]);
+const objectToViewMatrix = transform([0, 0, -6], [0, 0, 1], Math.PI/3);
 
 // Set the shader uniforms
 gl.uniformMatrix4fv(
