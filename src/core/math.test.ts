@@ -1,6 +1,7 @@
 import { beforeAll, describe, expect, test } from "vitest";
-import { add, sub, length, type AnyVec, projectPerspective, type Vec3, normalize, transform } from "./math.ts";
+import { add, sub, length, type AnyVec, projectPerspective, type Vec3, normalize, transform, degtorad } from "./math.ts";
 import { glMatrix, mat4 } from "gl-matrix";
+import "geometry-interfaces"; // polyfill DOMMatrix
 
 describe("math", () => {
 	describe("vectors", () => {
@@ -121,12 +122,12 @@ describe("math", () => {
 		describe("transform", () => {
 			const testCases: { pos?: Vec3, rot: [axis: Vec3, angle: number] }[] = [
 				{ rot: [[0, 0, 1], 0], pos: [0, 0, -6] },
-				{ rot: [[0, 0, 1], Math.PI], pos: [37, 2, -12] },
-				{ rot: [[0, 0, 1], Math.PI * 2], pos: [0.3, Math.PI, -100000] },
-				{ rot: [[0, 0, 1], Math.PI * 3] },
-				{ rot: [[0, 0, 1], -Math.PI * 4] },
+				{ rot: [[0, 0, 1], 180], pos: [37, 2, -12] },
+				{ rot: [[0, 0, 1], 360], pos: [0.3, Math.PI, -100000] },
+				{ rot: [[0, 0, 1], 540] },
+				{ rot: [[0, 0, 1], -720] },
 				{ rot: [[0, 1, 0], 42] },
-				{ rot: [[1, 0, 0], 42] },
+				{ rot: [[1, 0, 0], -390.3] },
 				{ rot: [[0, -1, 1], 47] },
 				{ rot: [[1, -0.4, -3], 47] },
 			];
@@ -134,13 +135,15 @@ describe("math", () => {
 			testCases.forEach((args) => {
 				test(`${JSON.stringify(args)}`, () => {
 					const [axis, angle] = args.rot;
-					const mine = transform(args.pos ?? [0, 0, 0], axis && normalize(axis), angle);
+					const [px, py, pz] = args.pos ?? [0, 0, 0];
+					const [rx, ry, rz] = axis;
+					const mine = transform(px, py, pz, rx, ry, rz, angle);
 
 					const expected = mat4.create();
 					args.pos && mat4.fromTranslation(expected, args.pos);
-					axis && angle && mat4.rotate(expected, expected, angle, axis);
+					axis && angle && mat4.rotate(expected, expected, degtorad(angle), axis);
 
-					mine.forEach((m, idx) => {
+					mine.toFloat32Array().forEach((m, idx) => {
 						expect(m, `${idx}`).toBeCloseTo(expected[idx]!);
 					});
 				});

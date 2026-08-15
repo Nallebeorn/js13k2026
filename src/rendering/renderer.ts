@@ -51,9 +51,9 @@ const projectionMatrix = projectPerspective(fov, aspect, 0.1);
 let rotation = 0;
 
 export function render() {
-	const objectToViewMatrix = transform([0, 0, -6], [0, 1, 0], rotation);
+	const objectToViewMatrix = transform(0, 0, -6, 0, 1, 0, rotation);
 
-	rotation += 0.5 * TAU * delta;
+	rotation += 180 * delta;
 
 	gl.uniformMatrix4fv(
   objectShaderInfo.v2c,
@@ -63,7 +63,7 @@ export function render() {
 	gl.uniformMatrix4fv(
   objectShaderInfo.o2v,
   false,
-  objectToViewMatrix,
+  objectToViewMatrix.toFloat32Array(),
 	);
 
 	gl.clear(GL_COLOR_BUFFER_BIT);

@@ -1,5 +1,9 @@
 export const TAU = Math.PI * 2;
 
+export function degtorad(degrees: number) {
+	return degrees * Math.PI / 180;
+}
+
 export type Vec2 = [number, number];
 export type Vec3 = [number, number, number];
 export type Vec4 = [number, number, number, number];
@@ -18,7 +22,7 @@ export function add<T extends AnyVec>(lhs: T, rhs: NoInfer<T>): T {
 }
 
 export function sub<T extends AnyVec>(lhs: T, rhs: NoInfer<T>): T {
-	return lhs.map((a, i) => a - rhs[i]!) as T;
+return lhs.map((a, i) => a - rhs[i]!) as T;
 }
 
 export function dot<T extends AnyVec>(lhs: T, rhs: NoInfer<T>): number {
@@ -43,20 +47,8 @@ export function projectPerspective(fovyFactor: number, aspect: number, near: num
 	];
 }
 
-export function transform(pos: Vec3, axis: Vec3, angle: number): Mat4 {
-	const [px, py, pz] = pos;
-
-	const [rx, ry, rz] = axis;
-	const s = Math.sin(angle);
-	const c = Math.cos(angle);
-	const t = 1 - c;
-
-	return [
-		(rx * rx * t + c),			(ry * rx * t + rz * s),	(rz * rx * t - ry * s),	(0),
-		(rx * ry * t - rz * s),	(ry * ry * t + c),			(rz * ry * t + rx * s),	(0),
-		(rx * rz * t + ry * s),	(ry * rz * t - rx * s),	(rz * rz * t + c),			(0),
-		(px),										(py),										(pz),										(1)
-	]
+export function transform(px: number, py: number, pz: number, rx: number, ry: number, rz: number, degrees: number): DOMMatrix {
+	return new DOMMatrix().translate(px, py, pz).rotateAxisAngle(rx, ry, rz, degrees);
 }
 
 export function identityMat4(): Mat4 {
