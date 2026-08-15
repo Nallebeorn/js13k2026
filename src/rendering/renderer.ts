@@ -1,6 +1,6 @@
 import { gl } from "./renderingGlobals.ts";
-import { GL_ARRAY_BUFFER, GL_BACK, GL_COLOR_BUFFER_BIT, GL_CULL_FACE, GL_DEPTH_TEST, GL_FLOAT, GL_FRONT, GL_FRONT_AND_BACK, GL_STATIC_DRAW, GL_TRIANGLE_STRIP, GL_TRIANGLES } from "./glConstants.ts";
-import { projectPerspective, TAU, transform } from "../core/math.ts";
+import { GL_ARRAY_BUFFER, GL_COLOR_BUFFER_BIT, GL_DEPTH_TEST, GL_FLOAT, GL_STATIC_DRAW, GL_TRIANGLES } from "./glConstants.ts";
+import { projectPerspective } from "../core/math.ts";
 import { delta } from "../core/time.ts";
 import { objectShader, objectShaderInfo } from "./objectShader/objectShader.ts";
 import { createCube } from "./shapes.ts";
@@ -51,7 +51,9 @@ const projectionMatrix = projectPerspective(fov, aspect, 0.1);
 let rotation = 0;
 
 export function render() {
-	const objectToViewMatrix = transform(0, 0, -6, 0, 1, 0, rotation);
+	const objectToViewMatrix = new DOMMatrix()
+		.translate(0, 0, -6)
+		.rotate(rotation / 3, rotation, 0);
 
 	rotation += 180 * delta;
 

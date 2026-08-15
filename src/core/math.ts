@@ -47,10 +47,6 @@ export function projectPerspective(fovyFactor: number, aspect: number, near: num
 	];
 }
 
-export function transform(px: number, py: number, pz: number, rx: number, ry: number, rz: number, degrees: number): DOMMatrix {
-	return new DOMMatrix().translate(px, py, pz).rotateAxisAngle(rx, ry, rz, degrees);
-}
-
 export function identityMat4(): Mat4 {
 	return [
 		1, 0, 0, 0,

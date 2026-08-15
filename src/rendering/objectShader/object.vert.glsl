@@ -1,10 +1,9 @@
 #version 300 es
-in vec4 p;
-uniform mat4 o2v;
-uniform mat4 v2c;
-out float s;
+in vec4 p; // .xyz = local vertex pos, .w = surface ID
+uniform mat4 o2v, v2c; // objectToView, viewToClip
+out vec4 v; // .xyz = local vertex pos, .w = surface ID
 
 void main() {
 	gl_Position = v2c * o2v * vec4(p.xyz, 1);
-	s = p.w;
+	v = p;
 }
