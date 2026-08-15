@@ -20,5 +20,5 @@ export function createCube() {
 		4, 6, 5, 5, 6, 7, // +X
 	];
 
-	return vertices.flatMap((v, i) => [...corners[v]!, (i / 6) | 0]);
+	return vertices.flatMap((v, i) => [...corners[v]!, i / 6 | 0]);
 }
