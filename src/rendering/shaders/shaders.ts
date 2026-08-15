@@ -1,6 +1,26 @@
-import { DEBUG } from "../debug.ts";
-import { GL_COMPILE_STATUS, GL_FRAGMENT_SHADER, GL_LINK_STATUS, GL_VERTEX_SHADER } from "./glConstants.ts";
-import { gl } from "./renderingGlobals.ts";
+import { DEBUG } from "../../debug.ts";
+import { GL_COMPILE_STATUS, GL_FRAGMENT_SHADER, GL_LINK_STATUS, GL_VERTEX_SHADER } from "../glConstants.ts";
+import { gl } from "../renderingGlobals.ts";
+import objectVertSource from "./object.vert.glsl";
+import objectFragSource from "./object.frag.glsl";
+import postProcessVertSource from "./postProcess.vert.glsl"
+import postProcessFragSource from "./postProcess.frag.glsl"
+
+export const objectShader = createShaderProgram(objectVertSource, objectFragSource);
+
+export const objectShaderInfo = {
+	p: 0,
+	o2v: gl.getUniformLocation(objectShader, "o2v"),
+	v2c: gl.getUniformLocation(objectShader, "v2c"),
+}
+
+export const postProcessShader = createShaderProgram(postProcessVertSource, postProcessFragSource);
+
+export const postProcessShaderInfo = {
+	colorTextureUniform: gl.getUniformLocation(postProcessShader, "i"),
+	surfaceIndexTextureUniform: gl.getUniformLocation(postProcessShader, "s"),
+}
+
 
 type ShaderType = typeof GL_VERTEX_SHADER | typeof GL_FRAGMENT_SHADER
 
