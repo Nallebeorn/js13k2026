@@ -1,7 +1,8 @@
-import { beforeAll, describe, expect, test } from "vitest";
-import { add, sub, length, type AnyVec, projectPerspective, type Vec3, normalize, transform, degtorad } from "./math.ts";
-import { glMatrix, mat4 } from "gl-matrix";
 import "geometry-interfaces"; // polyfill DOMMatrix
+
+import { beforeAll, describe, expect, test } from "vitest";
+import { add, sub, length, type AnyVec, projectPerspective } from "./math.ts";
+import { glMatrix, mat4 } from "gl-matrix";
 
 describe("math", () => {
 	describe("vectors", () => {

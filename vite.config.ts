@@ -25,8 +25,12 @@ export default defineConfig({
 			module: true,
 			toplevel: true,
 			compress: {
+				passes: 3,
 				unsafe: true,
 				unsafe_math: true,
+				unsafe_arrows: true,
+				unsafe_methods: true,
+				toplevel: true
 			}
 		},
 	},

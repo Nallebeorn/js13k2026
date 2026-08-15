@@ -11,6 +11,7 @@ export function createCube() {
 		[s, s, s],
 	];
 
+	// With correct winding order (if backface culling is on)
 	const vertices = [
 		0, 1, 2, 2, 1, 3, // -X
 		0, 4, 1, 1, 4, 5, // -Y

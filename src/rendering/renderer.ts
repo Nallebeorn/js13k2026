@@ -1,6 +1,6 @@
 import { gl } from "./renderingGlobals.ts";
-import { GL_ARRAY_BUFFER, GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_BUFFER_BIT, GL_DEPTH_ATTACHMENT, GL_DEPTH_BUFFER_BIT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT24, GL_DEPTH_TEST, GL_DRAW_FRAMEBUFFER, GL_FLOAT, GL_FRAMEBUFFER, GL_INT, GL_NEAREST, GL_R32F, GL_R32I, GL_R32UI, GL_R8, GL_READ_FRAMEBUFFER, GL_RED, GL_RED_INTEGER, GL_RGB, GL_RGBA, GL_STATIC_DRAW, GL_TEXTURE0, GL_TEXTURE1, GL_TEXTURE_2D, GL_TRIANGLES, GL_UNSIGNED_BYTE, GL_UNSIGNED_INT } from "./glConstants.ts";
-import { projectPerspective } from "../core/math.ts";
+import { GL_ARRAY_BUFFER, GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_BUFFER_BIT, GL_CULL_FACE, GL_DEPTH_ATTACHMENT, GL_DEPTH_BUFFER_BIT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT24, GL_DEPTH_TEST, GL_DRAW_FRAMEBUFFER, GL_FLOAT, GL_FRAMEBUFFER, GL_INT, GL_NEAREST, GL_R32F, GL_R32I, GL_R32UI, GL_R8, GL_READ_FRAMEBUFFER, GL_RED, GL_RED_INTEGER, GL_RGB, GL_RGBA, GL_STATIC_DRAW, GL_TEXTURE0, GL_TEXTURE1, GL_TEXTURE_2D, GL_TRIANGLES, GL_UNSIGNED_BYTE, GL_UNSIGNED_INT } from "./glConstants.ts";
+import { IDENTITY, projectPerspective } from "../core/math.ts";
 import { delta } from "../core/time.ts";
 import { createCube } from "./shapes.ts";
 import { DEBUG } from "../debug.ts";
@@ -9,7 +9,6 @@ import { objectShader, objectShaderInfo, postProcessShader, postProcessShaderInf
 if (DEBUG && !gl) {
 	console.error("No WebGL context!");
 }
-
 
 // * Set up render targets
 const CANVAS_WIDTH = 640;
@@ -28,7 +27,7 @@ const createRenderTexture = (attachment: GLenum, internalFormat: GLenum, format:
 }
 
 const colorTexture = createRenderTexture(GL_COLOR_ATTACHMENT0, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
-const surfaceIndexTexture = createRenderTexture(GL_COLOR_ATTACHMENT1, GL_R8, GL_RED, GL_UNSIGNED_BYTE);
+const surfaceIndexTexture = createRenderTexture(GL_COLOR_ATTACHMENT1, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
 const depthTexture = createRenderTexture(GL_DEPTH_ATTACHMENT, GL_DEPTH_COMPONENT24, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT);
 gl.drawBuffers([GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1]);
 
@@ -51,23 +50,21 @@ gl.activeTexture(GL_TEXTURE1)
 gl.bindTexture(GL_TEXTURE_2D, surfaceIndexTexture);
 
 // * Prepare array buffers
-const arrayBuffer = gl.createBuffer();
-gl.bindBuffer(GL_ARRAY_BUFFER, arrayBuffer);
-const vertexData: number[] = [];
-
-const addVertexData = (vertices: number[]): ObjectInfo => ({
-		size: vertices.length,
-		offset: vertexData.push(...vertices) - vertices.length,
-});
-
 interface ObjectInfo {
 	offset: number,
 	size: number,
 }
 
-const drawObject = (object: ObjectInfo) => {
-	gl.drawArrays(GL_TRIANGLES, object.offset / 4, object.size / 4);
+function addVertexData(vertices: number[]): ObjectInfo {
+	return {
+		size: vertices.length,
+		offset: vertexData.push(...vertices) - vertices.length,
+	}
 };
+
+const arrayBuffer = gl.createBuffer();
+gl.bindBuffer(GL_ARRAY_BUFFER, arrayBuffer);
+const vertexData: number[] = [];
 
 const cubeObject = addVertexData(createCube());
 
@@ -78,7 +75,6 @@ gl.bufferData(
 	);
 	gl.vertexAttribPointer(objectShaderInfo.p, 4, GL_FLOAT, false, 0, 0);
 	gl.enableVertexAttribArray(objectShaderInfo.p);
-
 
 // * Set up configuration
 gl.clearColor(1, 1, 1, 1);
@@ -92,36 +88,44 @@ const projectionMatrix = projectPerspective(fov, aspect, 0.1);
 let rotation = 0;
 
 export function render() {
-	gl.useProgram(objectShader)
-	gl.bindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer);
+	// * Draw objects
+	let objectIndex = 0;
+	function drawObject(object: ObjectInfo, transform: DOMMatrix) {
+		gl.uniformMatrix4fv(
+  		objectShaderInfo.objectToViewUniform,
+  		false,
+  		transform.toFloat32Array(),
+		);
+		gl.uniform1f(objectShaderInfo.objectIndexUniform, objectIndex++)
 
-	const objectToViewMatrix = new DOMMatrix()
-		.translate(0, 0, -6)
-		.rotate(rotation / 3, rotation, rotation / 2);
+		gl.drawArrays(GL_TRIANGLES, object.offset / 4, object.size / 4);
+	};
+
+	gl.useProgram(objectShader)
+	gl.bindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+	gl.uniformMatrix4fv(
+  	objectShaderInfo.viewToClipUniform,
+  	false,
+  	projectionMatrix,
+	);
+	gl.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	rotation += 180 * delta;
-
-	gl.uniformMatrix4fv(
-  objectShaderInfo.v2c,
-  false,
-  projectionMatrix,
+	drawObject(cubeObject, IDENTITY
+		.translate(0, 0, -6)
+		.rotate(rotation / 3, rotation, rotation / 2)
 	);
-	gl.uniformMatrix4fv(
-  objectShaderInfo.o2v,
-  false,
-  objectToViewMatrix.toFloat32Array(),
+	drawObject(cubeObject, IDENTITY
+		.translate(-0.7, -.3, -5)
+		.rotate(-rotation / 2, rotation * .5, -rotation / 3)
 	);
-
-	gl.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	drawObject(cubeObject);
-
-	gl.bindFramebuffer(GL_DRAW_FRAMEBUFFER, null);
-	gl.blitFramebuffer(
-		0, 0, CANVAS_WIDTH, CANVAS_HEIGHT,
-		0, 0, CANVAS_WIDTH, CANVAS_HEIGHT,
-		GL_COLOR_BUFFER_BIT, GL_NEAREST
+	drawObject(cubeObject, IDENTITY
+		.translate(0.8, 0.4, -4.5)
+		.rotate(rotation, rotation / 3, -rotation / 3)
 	);
 
+	// * Draw post processing (and blit to canvas)
+	gl.bindFramebuffer(GL_FRAMEBUFFER, null);
 	gl.useProgram(postProcessShader);
 	gl.drawArrays(GL_TRIANGLES, 0, 3);
 }
