@@ -1,9 +1,9 @@
 import { gl } from "./renderingGlobals.ts";
-import { GL_ARRAY_BUFFER, GL_COLOR_BUFFER_BIT, GL_FLOAT, GL_STATIC_DRAW, GL_TRIANGLE_STRIP } from "./glConstants.ts";
+import { GL_ARRAY_BUFFER, GL_BACK, GL_COLOR_BUFFER_BIT, GL_CULL_FACE, GL_DEPTH_TEST, GL_FLOAT, GL_FRONT, GL_FRONT_AND_BACK, GL_STATIC_DRAW, GL_TRIANGLE_STRIP, GL_TRIANGLES } from "./glConstants.ts";
 import { projectPerspective, TAU, transform } from "../core/math.ts";
 import { delta } from "../core/time.ts";
 import { objectShader, objectShaderInfo } from "./objectShader/objectShader.ts";
-import { createCube, createPlane } from "./shapes.ts";
+import { createCube } from "./shapes.ts";
 import { DEBUG } from "../debug.ts";
 
 if (DEBUG && !gl) {
@@ -13,6 +13,7 @@ if (DEBUG && !gl) {
 const arrayBuffer = gl.createBuffer();
 gl.bindBuffer(GL_ARRAY_BUFFER, arrayBuffer);
 gl.useProgram(objectShader)
+gl.enable(GL_DEPTH_TEST);
 
 const vertexData: number[] = [];
 
@@ -27,11 +28,10 @@ interface ObjectInfo {
 }
 
 const drawObject = (object: ObjectInfo) => {
-	gl.drawArrays(GL_TRIANGLE_STRIP, object.offset / 3, object.size / 3);
+	gl.drawArrays(GL_TRIANGLES, object.offset / 4, object.size / 4);
 };
 
 
-const planeObject = addVertexData(createPlane());
 const cubeObject = addVertexData(createCube());
 
 gl.bufferData(
@@ -39,13 +39,13 @@ gl.bufferData(
 		new Float32Array(vertexData),
 		GL_STATIC_DRAW
 	);
-	gl.vertexAttribPointer(objectShaderInfo.p, 3, GL_FLOAT, false, 0, 0);
+	gl.vertexAttribPointer(objectShaderInfo.p, 4, GL_FLOAT, false, 0, 0);
 	gl.enableVertexAttribArray(objectShaderInfo.p);
 
 gl.clearColor(1, 1, 1, 1);
 
-const fov = TAU / 8;
-const aspect = canvas.clientWidth / canvas.clientHeight;
+const fov = 2.4; // ≈ TAU/8 radians = 45°
+const aspect = 4/3;
 const projectionMatrix = projectPerspective(fov, aspect, 0.1);
 
 let rotation = 0;
@@ -67,6 +67,5 @@ export function render() {
 	);
 
 	gl.clear(GL_COLOR_BUFFER_BIT);
-	drawObject(planeObject);
 	drawObject(cubeObject);
 }

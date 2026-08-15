@@ -110,7 +110,8 @@ describe("math", () => {
 			testCases.forEach((args) => {
 				test(`${args}`, () => {
 					const [fovy, aspect, near] = args;
-					const mine = projectPerspective(fovy, aspect, near)
+					const preProcessedFov = 1.0 / Math.tan(fovy / 2);
+					const mine = projectPerspective(preProcessedFov, aspect, near)
 					const expected = mat4.perspective(mat4.create(), fovy, aspect, near, Infinity);
 					expect(mine).toStrictEqual(expected);
 				});
@@ -118,7 +119,7 @@ describe("math", () => {
 		})
 
 		describe("transform", () => {
-			const testCases: { pos?: Vec3, rot?: [axis: Vec3, angle: number] }[] = [
+			const testCases: { pos?: Vec3, rot: [axis: Vec3, angle: number] }[] = [
 				{ rot: [[0, 0, 1], 0], pos: [0, 0, -6] },
 				{ rot: [[0, 0, 1], Math.PI], pos: [37, 2, -12] },
 				{ rot: [[0, 0, 1], Math.PI * 2], pos: [0.3, Math.PI, -100000] },
@@ -132,8 +133,8 @@ describe("math", () => {
 
 			testCases.forEach((args) => {
 				test(`${JSON.stringify(args)}`, () => {
-					const [axis, angle] = args.rot ?? [undefined, undefined];
-					const mine = transform(args.pos, axis && normalize(axis), angle);
+					const [axis, angle] = args.rot;
+					const mine = transform(args.pos ?? [0, 0, 0], axis && normalize(axis), angle);
 
 					const expected = mat4.create();
 					args.pos && mat4.fromTranslation(expected, args.pos);

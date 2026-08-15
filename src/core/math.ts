@@ -33,8 +33,8 @@ export function normalize<T extends AnyVec>(vec: T): T {
 	return vec.map(a => a / length(vec)) as T;
 }
 
-export function projectPerspective(fovy: number, aspect: number, near: number): Mat4 {
-	const f = 1.0 / Math.tan(fovy / 2);
+export function projectPerspective(fovyFactor: number, aspect: number, near: number): Mat4 {
+	const f = fovyFactor;
 	return [
 		f / aspect, 0,  0,				 0,
 		0, 					f,  0, 				 0,
@@ -43,12 +43,12 @@ export function projectPerspective(fovy: number, aspect: number, near: number): 
 	];
 }
 
-export function transform(pos?: Vec3, axis?: Vec3, angle?: number): Mat4 {
-	const [px, py, pz] = pos ?? [0, 0, 0];
+export function transform(pos: Vec3, axis: Vec3, angle: number): Mat4 {
+	const [px, py, pz] = pos;
 
-	const [rx, ry, rz] = axis ?? [0, 0, 0];
-	const s = Math.sin(angle ?? 0);
-	const c = Math.cos(angle ?? 0);
+	const [rx, ry, rz] = axis;
+	const s = Math.sin(angle);
+	const c = Math.cos(angle);
 	const t = 1 - c;
 
 	return [
