@@ -1,5 +1,5 @@
 export const TAU = Math.PI * 2;
-export const IDENTITY = new DOMMatrix();
+export const IDENTITY = new DOMMatrixReadOnly();
 
 export function degtorad(degrees: number) {
 	return degrees * Math.PI / 180;
@@ -32,6 +32,14 @@ export function dot<T extends AnyVec>(lhs: T, rhs: NoInfer<T>): number {
 
 export function length<T extends AnyVec>(vec: T): number {
 	return Math.sqrt(dot(vec, vec));
+}
+
+export function getForward(transform: DOMMatrix): Vec3 {
+	return [
+		-transform.m31,
+		-transform.m32,
+		-transform.m33,
+	]
 }
 
 export function normalize<T extends AnyVec>(vec: T): T {

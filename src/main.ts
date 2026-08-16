@@ -1,4 +1,5 @@
 import { DEBUG } from "./debug.ts";
+import { consumeInput, initInput, isKeyHeld, wasKeyJustPressed, wasKeyJustReleased } from "./input/input.ts";
 import { render as renderScene } from "./rendering/renderer.ts";
 
 if (DEBUG) {
@@ -9,6 +10,8 @@ if (DEBUG) {
 
 let previouseFrameTimestamp = 0;
 let timerAccumulator = 0;
+
+initInput();
 
 function onAnimationFrame(timestamp: number) {
 	requestAnimationFrame(onAnimationFrame);
@@ -22,10 +25,18 @@ function onAnimationFrame(timestamp: number) {
 
 		renderScene();
 		if (DEBUG) {
+			if (wasKeyJustPressed("Space")) {
+				console.log("Pressed space!");
+			}
+			if (wasKeyJustReleased("Space")) {
+				console.log("Released space!");
+			}
 			const fps = 1000 / elapsed;
-			debugDiv.textContent = Math.round(fps).toString();
+			debugDiv.textContent = `${Math.round(fps)} | Space held: ${isKeyHeld("Space")}`;
 		}
+		consumeInput();
 	}
+
 }
 
 requestAnimationFrame(onAnimationFrame);

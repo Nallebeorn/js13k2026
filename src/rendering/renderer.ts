@@ -5,6 +5,7 @@ import { delta } from "../core/time.ts";
 import { createCapsule, createCube } from "./shapes.ts";
 import { DEBUG } from "../debug.ts";
 import { objectShader, objectShaderInfo, postProcessShader, postProcessShaderInfo } from "./shaders/shaders.ts";
+import { getMouseDeltaX, getMouseDeltaY, isKeyHeld } from "../input/input.ts";
 
 if (DEBUG && !gl) {
 	console.error("No WebGL context!");
@@ -83,17 +84,18 @@ gl.enable(GL_DEPTH_TEST);
 
 const fov = 2.4; // ≈ TAU/8 radians = 45°
 const aspect = CANVAS_WIDTH / CANVAS_HEIGHT;
-const projectionMatrix = projectPerspective(fov, aspect, 0.1);
+const projectionMatrix = new DOMMatrix(projectPerspective(fov, aspect, 0.1));
+let cameraTransform = IDENTITY;
 
 // * Draw scene
 let rotation = 0;
 
 export function render() {
-	// * Draw objects
+	// * Setup
 	let objectIndex = 0;
 	function drawObject(object: ObjectInfo, color: Vec4, transform: DOMMatrix) {
 		gl.uniformMatrix4fv(
-  		objectShaderInfo.objectToViewUniform,
+  		objectShaderInfo.objectToWorldUniform,
   		false,
   		transform.toFloat32Array(),
 		);
@@ -106,13 +108,22 @@ export function render() {
 	gl.useProgram(objectShader)
 	gl.bindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 	gl.uniformMatrix4fv(
-  	objectShaderInfo.viewToClipUniform,
+  	objectShaderInfo.worldToClipUniform,
   	false,
-  	projectionMatrix,
+		projectionMatrix.multiply(cameraTransform.inverse()).toFloat32Array(),
 	);
 	gl.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	// * Process
 	rotation += 180 * delta;
+	const speed = 10 * delta;
+	const rotationSpeed = 180 * delta;
+	const [movex, movey] = [isKeyHeld("KeyD") - isKeyHeld("KeyA"), isKeyHeld("KeyW") - isKeyHeld("KeyS")]
+	// const moveYaw = isKeyHeld("ArrowRight") - isKeyHeld("ArrowLeft");
+	const moveYaw = getMouseDeltaX() * .1;
+	cameraTransform = cameraTransform.rotate(0, -moveYaw * rotationSpeed).translate(movex * speed, 0, -movey * speed);
+
+	// * Draw objects
 	drawObject(cubeObject, [1, 0.8, 0.9, 1], IDENTITY
 		.translate(0, 0, -6)
 		.rotate(rotation / 3, rotation, rotation / 2)
