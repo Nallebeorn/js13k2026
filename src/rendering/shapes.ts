@@ -1,14 +1,13 @@
-export function createCube() {
-	const s = .5;
+export function createBox(a1: number, b1: number, h: number, a2: number, b2: number) {
 	const corners = [
-		[-s, -s, -s],
-		[-s, -s, s],
-		[-s, s, -s],
-		[-s, s, s],
-		[s, -s, -s],
-		[s, -s, s],
-		[s, s, -s],
-		[s, s, s],
+		[-a1, 0, -b1],
+		[-a1, 0, b1],
+		[-a2, h, -b2],
+		[-a2, h, b2],
+		[a1, 0, -b1],
+		[a1, 0, b1],
+		[a2, h, -b2],
+		[a2, h, b2],
 	];
 
 	// With correct winding order (if backface culling is on)
@@ -24,7 +23,7 @@ export function createCube() {
 	return vertices.flatMap((v, i) => [...corners[v]!, i / 6 | 0]);
 }
 
-export function createCapsule(
+export function createPill(
 	bottomRadius: number,
 	topRadius: number,
 	height: number
@@ -51,7 +50,7 @@ export function createCapsule(
 
 			return [
 				bottomRadius * Math.sin(angle),
-				-height / 2 - bottomRadius * Math.cos(angle)
+				-bottomRadius * Math.cos(angle)
 			];
 		}
 
@@ -61,7 +60,7 @@ export function createCapsule(
 
 		return [
 			topRadius * Math.sin(angle),
-			height / 2 - topRadius * Math.cos(angle)
+			height - topRadius * Math.cos(angle)
 		];
 	}
 

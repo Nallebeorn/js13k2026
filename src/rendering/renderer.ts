@@ -2,7 +2,7 @@ import { gl } from "./renderingGlobals.ts";
 import { GL_ARRAY_BUFFER, GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_BUFFER_BIT, GL_CULL_FACE, GL_DEPTH_ATTACHMENT, GL_DEPTH_BUFFER_BIT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT24, GL_DEPTH_TEST, GL_DRAW_FRAMEBUFFER, GL_FLOAT, GL_FRAMEBUFFER, GL_INT, GL_NEAREST, GL_R32F, GL_R32I, GL_R32UI, GL_R8, GL_READ_FRAMEBUFFER, GL_RED, GL_RED_INTEGER, GL_RGB, GL_RGBA, GL_STATIC_DRAW, GL_TEXTURE0, GL_TEXTURE1, GL_TEXTURE_2D, GL_TRIANGLES, GL_UNSIGNED_BYTE, GL_UNSIGNED_INT } from "./glConstants.ts";
 import { IDENTITY, projectPerspective, type Vec4 } from "../core/math.ts";
 import { delta } from "../core/time.ts";
-import { createCapsule, createCube } from "./shapes.ts";
+import { createPill, createBox } from "./shapes.ts";
 import { DEBUG } from "../debug.ts";
 import { objectShader, objectShaderInfo, postProcessShader, postProcessShaderInfo } from "./shaders/shaders.ts";
 import { getMouseDeltaX, getMouseDeltaY, isKeyHeld } from "../input/input.ts";
@@ -67,8 +67,8 @@ const arrayBuffer = gl.createBuffer();
 gl.bindBuffer(GL_ARRAY_BUFFER, arrayBuffer);
 const vertexData: number[] = [];
 
-const cubeObject = addVertexData(createCube());
-const capsuleObject = addVertexData(createCapsule(0.5, 0.2, 1));
+const cubeObject = addVertexData(createBox(0.2, 0.2, 1.0, 0.5, 0.5));
+const capsuleObject = addVertexData(createPill(0.5, 0.2, 1));
 
 gl.bufferData(
 		GL_ARRAY_BUFFER,
