@@ -55,18 +55,14 @@ export function createCapsule(
 			];
 		}
 
-		if (index <= capSegments * 2 + 1) {
-			const angle = tangentAngle +
-				(Math.PI - tangentAngle) *
-				(index - capSegments - 1) / capSegments;
+		const angle = tangentAngle +
+			(Math.PI - tangentAngle) *
+			(index - capSegments - 1) / capSegments;
 
-			return [
-				topRadius * Math.sin(angle),
-				height / 2 - topRadius * Math.cos(angle)
-			];
-		}
-
-		return [0, height / 2 + topRadius];
+		return [
+			topRadius * Math.sin(angle),
+			height / 2 - topRadius * Math.cos(angle)
+		];
 	}
 
 	for (let ring = 0; ring < capSegments * 2 + 1; ring++) {
