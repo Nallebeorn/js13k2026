@@ -67,7 +67,7 @@ gl.bindBuffer(GL_ARRAY_BUFFER, arrayBuffer);
 const vertexData: number[] = [];
 
 const cubeObject = addVertexData(createCube());
-const capsuleObject = addVertexData(createCapsule(0.5, 1.0));
+const capsuleObject = addVertexData(createCapsule(0.5, 0.2, 1));
 
 gl.bufferData(
 		GL_ARRAY_BUFFER,
@@ -127,7 +127,7 @@ export function render() {
 	// );
 	//
 	drawObject(capsuleObject, [1, 1, 1, 1], IDENTITY
-		.translate(0, 0, -6)
+		.translate(0, 0, -4)
 		// .rotate(rotation / 3, rotation / 2, rotation)
 	);
 

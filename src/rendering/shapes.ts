@@ -24,11 +24,17 @@ export function createCube() {
 	return vertices.flatMap((v, i) => [...corners[v]!, i / 6 | 0]);
 }
 
-export function createCapsule(radius: number, height: number) {
+export function createCapsule(
+	bottomRadius: number,
+	topRadius: number,
+	height: number
+) {
 	const segments = 16;
 	const capSegments = 4;
 
 	const vertices: number[] = [];
+	const slope = (topRadius - bottomRadius) / height;
+	const tangentAngle = Math.acos(slope || 0);
 
 	function addVertex(r: number, y: number, segment: number) {
 		const angle = segment * Math.PI * 2 / segments;
@@ -43,12 +49,26 @@ export function createCapsule(radius: number, height: number) {
 
 	function getRing(index: number): [number, number] {
 		if (index <= capSegments) {
-			const angle = index * Math.PI / (2 * capSegments);
-			return [radius * Math.sin(angle), -height / 2 - radius * Math.cos(angle)];
-		} else {
-			const angle = (2 * capSegments - index + 1) * Math.PI / (2 * capSegments);
-			return [radius * Math.sin(angle), height / 2 + radius * Math.cos(angle)];
+			const angle = tangentAngle * index / capSegments;
+
+			return [
+				bottomRadius * Math.sin(angle),
+				-height / 2 - bottomRadius * Math.cos(angle)
+			];
 		}
+
+		if (index <= capSegments * 2 + 1) {
+			const angle = tangentAngle +
+				(Math.PI - tangentAngle) *
+				(index - capSegments - 1) / capSegments;
+
+			return [
+				topRadius * Math.sin(angle),
+				height / 2 - topRadius * Math.cos(angle)
+			];
+		}
+
+		return [0, height / 2 + topRadius];
 	}
 
 	for (let ring = 0; ring < capSegments * 2 + 1; ring++) {
