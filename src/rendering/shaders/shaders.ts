@@ -13,6 +13,7 @@ export const objectShaderInfo = {
 	objectToViewUniform: gl.getUniformLocation(objectShader, "o2v"),
 	viewToClipUniform: gl.getUniformLocation(objectShader, "v2c"),
 	objectIndexUniform: gl.getUniformLocation(objectShader, "i"),
+	objectColor: gl.getUniformLocation(objectShader, "c"),
 }
 
 export const postProcessShader = createShaderProgram(postProcessVertSource, postProcessFragSource);

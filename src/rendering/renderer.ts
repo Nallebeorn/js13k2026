@@ -1,6 +1,6 @@
 import { gl } from "./renderingGlobals.ts";
 import { GL_ARRAY_BUFFER, GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_BUFFER_BIT, GL_CULL_FACE, GL_DEPTH_ATTACHMENT, GL_DEPTH_BUFFER_BIT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT24, GL_DEPTH_TEST, GL_DRAW_FRAMEBUFFER, GL_FLOAT, GL_FRAMEBUFFER, GL_INT, GL_NEAREST, GL_R32F, GL_R32I, GL_R32UI, GL_R8, GL_READ_FRAMEBUFFER, GL_RED, GL_RED_INTEGER, GL_RGB, GL_RGBA, GL_STATIC_DRAW, GL_TEXTURE0, GL_TEXTURE1, GL_TEXTURE_2D, GL_TRIANGLES, GL_UNSIGNED_BYTE, GL_UNSIGNED_INT } from "./glConstants.ts";
-import { IDENTITY, projectPerspective } from "../core/math.ts";
+import { IDENTITY, projectPerspective, type Vec4 } from "../core/math.ts";
 import { delta } from "../core/time.ts";
 import { createCube } from "./shapes.ts";
 import { DEBUG } from "../debug.ts";
@@ -90,12 +90,13 @@ let rotation = 0;
 export function render() {
 	// * Draw objects
 	let objectIndex = 0;
-	function drawObject(object: ObjectInfo, transform: DOMMatrix) {
+	function drawObject(object: ObjectInfo, color: Vec4, transform: DOMMatrix) {
 		gl.uniformMatrix4fv(
   		objectShaderInfo.objectToViewUniform,
   		false,
   		transform.toFloat32Array(),
 		);
+		gl.uniform4fv(objectShaderInfo.objectColor, color);
 		gl.uniform1f(objectShaderInfo.objectIndexUniform, objectIndex++)
 
 		gl.drawArrays(GL_TRIANGLES, object.offset / 4, object.size / 4);
@@ -111,15 +112,15 @@ export function render() {
 	gl.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	rotation += 180 * delta;
-	drawObject(cubeObject, IDENTITY
+	drawObject(cubeObject, [1, 0.8, 0.9, 1], IDENTITY
 		.translate(0, 0, -6)
 		.rotate(rotation / 3, rotation, rotation / 2)
 	);
-	drawObject(cubeObject, IDENTITY
+	drawObject(cubeObject, [0.5, 0.8, 0.3, 1], IDENTITY
 		.translate(-0.7, -.3, -5)
 		.rotate(-rotation / 2, rotation * .5, -rotation / 3)
 	);
-	drawObject(cubeObject, IDENTITY
+	drawObject(cubeObject, [0.6, 0.2, 0.9, 1], IDENTITY
 		.translate(0.8, 0.4, -4.5)
 		.rotate(rotation, rotation / 3, -rotation / 3)
 	);
