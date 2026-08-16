@@ -128,7 +128,7 @@ export function render() {
 	//
 	drawObject(capsuleObject, [1, 1, 1, 1], IDENTITY
 		.translate(0, 0, -6)
-		.rotate(rotation / 3, rotation / 2, rotation)
+		// .rotate(rotation / 3, rotation / 2, rotation)
 	);
 
 	// * Draw post processing (and blit to canvas)

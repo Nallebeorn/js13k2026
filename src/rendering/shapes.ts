@@ -25,35 +25,37 @@ export function createCube() {
 }
 
 export function createCapsule(radius: number, height: number) {
-	const profile = [0, 1, 2, 3, 4, 4, 3, 2, 1, 0];
+	const segments = 16;
+	const capSegments = 4;
+
 	const vertices: number[] = [];
 
-	function addVertex(radius: number, y: number, segment: number) {
-		const angle = segment * Math.PI / 8;
+	function addVertex(r: number, y: number, segment: number) {
+		const angle = segment * Math.PI * 2 / segments;
 
 		vertices.push(
-			radius * Math.cos(angle),
+			r * Math.cos(angle),
 			y,
-			radius * Math.sin(angle),
+			r * Math.sin(angle),
 			0
 		);
 	}
 
 	function getRing(index: number): [number, number] {
-		const angle = profile[index]! * Math.PI / 8;
-		const ringRadius = radius * Math.sin(angle);
-		const y = index < 5
-			? -height / 2 - radius * Math.cos(angle)
-			: height / 2 + radius * Math.cos(angle);
-
-		return [ringRadius, y];
+		if (index <= capSegments) {
+			const angle = index * Math.PI / (2 * capSegments);
+			return [radius * Math.sin(angle), -height / 2 - radius * Math.cos(angle)];
+		} else {
+			const angle = (2 * capSegments - index + 1) * Math.PI / (2 * capSegments);
+			return [radius * Math.sin(angle), height / 2 + radius * Math.cos(angle)];
+		}
 	}
 
-	for (let ring = 0; ring < 9; ring++) {
+	for (let ring = 0; ring < capSegments * 2 + 1; ring++) {
 		const bottom = getRing(ring);
 		const top = getRing(ring + 1);
 
-		for (let segment = 0; segment < 16; segment++) {
+		for (let segment = 0; segment < segments; segment++) {
 			addVertex(...bottom, segment);
 			addVertex(...top, segment);
 			addVertex(...top, segment + 1);
