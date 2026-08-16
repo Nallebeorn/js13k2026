@@ -113,22 +113,22 @@ export function render() {
 	gl.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	rotation += 180 * delta;
-	// drawObject(cubeObject, [1, 0.8, 0.9, 1], IDENTITY
-		// .translate(0, 0, -6)
-		// .rotate(rotation / 3, rotation, rotation / 2)
-	// );
-	// drawObject(cubeObject, [0.5, 0.8, 0.3, 1], IDENTITY
-		// .translate(-0.7, -.3, -5)
-		// .rotate(-rotation / 2, rotation * .5, -rotation / 3)
-	// );
-	// drawObject(cubeObject, [0.6, 0.2, 0.9, 1], IDENTITY
-		// .translate(0.8, 0.4, -4.5)
-		// .rotate(rotation, rotation / 3, -rotation / 3)
-	// );
-	//
+	drawObject(cubeObject, [1, 0.8, 0.9, 1], IDENTITY
+		.translate(0, 0, -6)
+		.rotate(rotation / 3, rotation, rotation / 2)
+	);
+	drawObject(cubeObject, [0.5, 0.8, 0.3, 1], IDENTITY
+		.translate(-0.7, -.3, -5)
+		.rotate(-rotation / 2, rotation * .5, -rotation / 3)
+	);
+	drawObject(cubeObject, [0.6, 0.2, 0.9, 1], IDENTITY
+		.translate(0.8, 0.4, -4.5)
+		.rotate(rotation, rotation / 3, -rotation / 3)
+	);
+
 	drawObject(capsuleObject, [1, 1, 1, 1], IDENTITY
 		.translate(0, 0, -4)
-		// .rotate(rotation / 3, rotation / 2, rotation)
+		.rotate(rotation / 3, rotation / 2, rotation)
 	);
 
 	// * Draw post processing (and blit to canvas)

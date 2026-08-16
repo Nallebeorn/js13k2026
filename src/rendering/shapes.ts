@@ -30,19 +30,17 @@ export function createCapsule(
 	height: number
 ) {
 	const segments = 16;
-	const capSegments = 4;
+	const capSegments = 16;
 
 	const vertices: number[] = [];
 	const slope = (topRadius - bottomRadius) / height;
 	const tangentAngle = Math.acos(slope || 0);
 
 	function addVertex(r: number, y: number, segment: number) {
-		const angle = segment * Math.PI * 2 / segments;
-
 		vertices.push(
-			r * Math.cos(angle),
+			r * Math.cos(segment * Math.PI * 2 / segments),
 			y,
-			r * Math.sin(angle),
+			r * Math.sin(segment * Math.PI * 2 / segments),
 			0
 		);
 	}
