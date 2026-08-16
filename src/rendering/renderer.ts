@@ -2,7 +2,7 @@ import { gl } from "./renderingGlobals.ts";
 import { GL_ARRAY_BUFFER, GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_BUFFER_BIT, GL_CULL_FACE, GL_DEPTH_ATTACHMENT, GL_DEPTH_BUFFER_BIT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT24, GL_DEPTH_TEST, GL_DRAW_FRAMEBUFFER, GL_FLOAT, GL_FRAMEBUFFER, GL_INT, GL_NEAREST, GL_R32F, GL_R32I, GL_R32UI, GL_R8, GL_READ_FRAMEBUFFER, GL_RED, GL_RED_INTEGER, GL_RGB, GL_RGBA, GL_STATIC_DRAW, GL_TEXTURE0, GL_TEXTURE1, GL_TEXTURE_2D, GL_TRIANGLES, GL_UNSIGNED_BYTE, GL_UNSIGNED_INT } from "./glConstants.ts";
 import { IDENTITY, projectPerspective, type Vec4 } from "../core/math.ts";
 import { delta } from "../core/time.ts";
-import { createCube } from "./shapes.ts";
+import { createCapsule, createCube } from "./shapes.ts";
 import { DEBUG } from "../debug.ts";
 import { objectShader, objectShaderInfo, postProcessShader, postProcessShaderInfo } from "./shaders/shaders.ts";
 
@@ -67,6 +67,7 @@ gl.bindBuffer(GL_ARRAY_BUFFER, arrayBuffer);
 const vertexData: number[] = [];
 
 const cubeObject = addVertexData(createCube());
+const capsuleObject = addVertexData(createCapsule(0.5, 1.0));
 
 gl.bufferData(
 		GL_ARRAY_BUFFER,
@@ -112,17 +113,22 @@ export function render() {
 	gl.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	rotation += 180 * delta;
-	drawObject(cubeObject, [1, 0.8, 0.9, 1], IDENTITY
+	// drawObject(cubeObject, [1, 0.8, 0.9, 1], IDENTITY
+		// .translate(0, 0, -6)
+		// .rotate(rotation / 3, rotation, rotation / 2)
+	// );
+	// drawObject(cubeObject, [0.5, 0.8, 0.3, 1], IDENTITY
+		// .translate(-0.7, -.3, -5)
+		// .rotate(-rotation / 2, rotation * .5, -rotation / 3)
+	// );
+	// drawObject(cubeObject, [0.6, 0.2, 0.9, 1], IDENTITY
+		// .translate(0.8, 0.4, -4.5)
+		// .rotate(rotation, rotation / 3, -rotation / 3)
+	// );
+	//
+	drawObject(capsuleObject, [1, 1, 1, 1], IDENTITY
 		.translate(0, 0, -6)
-		.rotate(rotation / 3, rotation, rotation / 2)
-	);
-	drawObject(cubeObject, [0.5, 0.8, 0.3, 1], IDENTITY
-		.translate(-0.7, -.3, -5)
-		.rotate(-rotation / 2, rotation * .5, -rotation / 3)
-	);
-	drawObject(cubeObject, [0.6, 0.2, 0.9, 1], IDENTITY
-		.translate(0.8, 0.4, -4.5)
-		.rotate(rotation, rotation / 3, -rotation / 3)
+		.rotate(rotation / 3, rotation / 2, rotation)
 	);
 
 	// * Draw post processing (and blit to canvas)
