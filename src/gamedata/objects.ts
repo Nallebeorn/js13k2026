@@ -16,7 +16,7 @@ export default [
 					{
 						type: "shape",
 						shape: "pill",
-						"bottomRadius": 0.75
+						bottomRadius: 0.75
 					}
 				]
 			}

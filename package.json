@@ -6,7 +6,8 @@
 		"dev": "vite",
 		"dist": "tsc && node dist.ts",
 		"test": "vitest",
-		"tsc": "tsc --watch"
+		"tsc": "tsc --watch",
+		"bindata": "node --watch export-bin-data.ts"
 	},
 	"devDependencies": {
 		"@types/node": "^26.2.0",

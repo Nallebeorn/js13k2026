@@ -1,7 +1,9 @@
 import { defineConfig } from "vite";
-import htmlMinifier from 'vite-plugin-html-minifier';
-import glsl from 'vite-plugin-glsl';
+import htmlMinifier from "vite-plugin-html-minifier";
+import glsl from "vite-plugin-glsl";
 import { zipDist } from "./dist.ts";
+import { serializeObjects } from "./src/gamedata/binwriter.ts";
+import { resolve } from "path";
 
 export default defineConfig({
 	build: {
@@ -12,7 +14,7 @@ export default defineConfig({
 		rolldownOptions: {
 			output: {
 				entryFileNames: "g.js",
-			}
+			},
 		},
 		minify: "terser",
 		terserOptions: {
@@ -20,7 +22,7 @@ export default defineConfig({
 			mangle: {
 				properties: true,
 				module: true,
-				toplevel: true
+				toplevel: true,
 			},
 			module: true,
 			toplevel: true,
@@ -30,8 +32,8 @@ export default defineConfig({
 				unsafe_math: true,
 				unsafe_arrows: true,
 				unsafe_methods: true,
-				toplevel: true
-			}
+				toplevel: true,
+			},
 		},
 	},
 	plugins: [
@@ -42,5 +44,21 @@ export default defineConfig({
 			minify: true,
 		}),
 		zipDist(),
-	]
+		{
+			name: "generate-binary",
+
+			buildStart() {
+				this.addWatchFile(resolve("src/gamedata/binwriter.ts"));
+				this.addWatchFile(resolve("src/gamedata/objects.ts"));
+			},
+
+			async generateBundle() {
+				this.emitFile({
+					type: "asset",
+					fileName: "g.bin",
+					source: Buffer.from(serializeObjects()),
+				});
+			},
+		},
+	],
 });

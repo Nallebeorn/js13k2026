@@ -5,7 +5,7 @@ export interface ObjectDescriptor {
 	nodes: ObjectNode[],
 }
 
-type ObjectNode = ShapeDescriptor | Transform;
+export type ObjectNode = ShapeDescriptor | Transform;
 
 interface Transform {
 	type: "transform";
