@@ -48,17 +48,16 @@ export default defineConfig({
 			name: "generate-binary",
 
 			buildStart() {
-				this.addWatchFile(resolve("src/gamedata/binwriter.ts"));
-				this.addWatchFile(resolve("src/gamedata/objects.ts"));
+				this.addWatchFile(resolve("public/g.bin"));
 			},
 
-			async generateBundle() {
-				this.emitFile({
-					type: "asset",
-					fileName: "g.bin",
-					source: Buffer.from(serializeObjects()),
-				});
-			},
+			// async generateBundle() {
+			// 	this.emitFile({
+			// 		type: "asset",
+			// 		fileName: "g.bin",
+			// 		source: Buffer.from(serializeObjects()),
+			// 	});
+			// },
 		},
 	],
 });

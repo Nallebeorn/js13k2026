@@ -1,13 +1,14 @@
 {
 	"type": "module",
 	"scripts": {
+		"build-once": "node generate-bin-data.ts && vite build",
 		"build": "vite build --watch",
 		"preview": "vite preview",
 		"dev": "vite",
 		"dist": "tsc && node dist.ts",
 		"test": "vitest",
 		"tsc": "tsc --watch",
-		"bindata": "node --watch export-bin-data.ts"
+		"bindata": "node --watch generate-bin-data.ts"
 	},
 	"devDependencies": {
 		"@types/node": "^26.2.0",
