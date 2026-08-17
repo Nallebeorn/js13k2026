@@ -9,12 +9,13 @@ import postProcessFragSource from "./postProcess.frag.glsl"
 export const objectShader = createShaderProgram(objectVertSource, objectFragSource);
 
 export const objectShaderInfo = {
-	p: 0,
 	objectToWorldUniform: gl.getUniformLocation(objectShader, "o2w"),
 	worldToClipUniform: gl.getUniformLocation(objectShader, "w2c"),
 	objectIndexUniform: gl.getUniformLocation(objectShader, "i"),
 	objectColor: gl.getUniformLocation(objectShader, "c"),
 }
+
+console.log(objectShaderInfo);
 
 export const postProcessShader = createShaderProgram(postProcessVertSource, postProcessFragSource);
 

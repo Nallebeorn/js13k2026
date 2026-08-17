@@ -1,3 +1,4 @@
+import { average, ringPush } from "./core/util.ts";
 import { DEBUG } from "./debug.ts";
 import { consumeInput, initInput, isKeyHeld, wasKeyJustPressed, wasKeyJustReleased } from "./input/input.ts";
 import { render as renderScene } from "./rendering/renderer.ts";
@@ -13,6 +14,10 @@ let timerAccumulator = 0;
 
 initInput();
 
+const fpsValues: number[] = [];
+const frameTimeValues: number[] = [];
+let framesRendered = 0;
+
 function onAnimationFrame(timestamp: number) {
 	requestAnimationFrame(onAnimationFrame);
 
@@ -21,15 +26,18 @@ function onAnimationFrame(timestamp: number) {
 	timerAccumulator += elapsed;
 
 	while (timerAccumulator >= 1000 / 60) {
-		const start = (DEBUG && performance.now()) as number;
+		const t0 = (DEBUG && performance.now()) as number;
 		timerAccumulator -= 1000 / 60;
 
 		renderScene();
 		consumeInput();
 		if (DEBUG) {
 			const fps = 1000 / elapsed;
-			const frameDuration = performance.now() - start;
-			debugDiv.textContent = `${Math.round(fps)} | ${frameDuration.toFixed(2)}ms | Space held: ${isKeyHeld("Space")}`;
+			const t1 = performance.now();
+			ringPush(frameTimeValues, t1 - t0, 20);
+			if (framesRendered++ % 10 == 0) {
+				debugDiv.textContent = `${Math.round(fps)} | ${average(frameTimeValues).toFixed(3)}ms | Space held: ${isKeyHeld("Space")}`;
+			}
 		}
 	}
 }

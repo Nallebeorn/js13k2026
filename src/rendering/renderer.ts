@@ -75,8 +75,8 @@ gl.bufferData(
 		new Float32Array(vertexData),
 		GL_STATIC_DRAW
 	);
-	gl.vertexAttribPointer(objectShaderInfo.p, 4, GL_FLOAT, false, 0, 0);
-	gl.enableVertexAttribArray(objectShaderInfo.p);
+	gl.vertexAttribPointer(0, 4, GL_FLOAT, false, 0, 0);
+	gl.enableVertexAttribArray(0);
 
 // * Set up configuration
 gl.clearColor(1, 1, 1, 1);
