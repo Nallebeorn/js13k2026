@@ -5,7 +5,7 @@ import { delta } from "../core/time.ts";
 import { createPill, createBox } from "./shapes.ts";
 import { DEBUG } from "../debug.ts";
 import { objectShader, objectShaderInfo, postProcessShader, postProcessShaderInfo } from "./shaders/shaders.ts";
-import { getMouseDeltaX, getMouseDeltaY, isKeyHeld } from "../input/input.ts";
+import { getMouseDeltaX, isKeyHeld } from "../input/input.ts";
 
 if (DEBUG && !gl) {
 	console.error("No WebGL context!");
@@ -69,6 +69,7 @@ const vertexData: number[] = [];
 
 const cubeObject = addVertexData(createBox(0.2, 0.2, 1.0, 0.5, 0.5));
 const capsuleObject = addVertexData(createPill(0.5, 0.2, 1));
+const sphereObject = addVertexData(createPill(0.4, 0.4, 0));
 
 gl.bufferData(
 		GL_ARRAY_BUFFER,
@@ -89,6 +90,14 @@ let cameraTransform = IDENTITY;
 
 // * Draw scene
 let rotation = 0;
+
+interface DrawCommand {
+	pushTransform?: DOMMatrix,
+	popTransform?: 1,
+
+	drawShape?: ObjectInfo,
+	color?: Vec4,
+}
 
 export function render() {
 	// * Setup
@@ -114,6 +123,56 @@ export function render() {
 	);
 	gl.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	const drawCommands: DrawCommand[] = [
+		{
+			pushTransform: IDENTITY
+				.translate(0, 0, -6)
+				.rotate(rotation / 3, rotation, rotation / 2),
+			popTransform: 1,
+			color: [1, 0.8, 0.9, 1],
+			drawShape: cubeObject,
+		},
+		{
+			pushTransform: IDENTITY
+				.translate(-0.7, -.3, -5)
+				.rotate(-rotation / 2, rotation * .5, -rotation / 3),
+			popTransform: 1,
+			color: [0.5, 0.8, 0.3, 1],
+			drawShape: cubeObject,
+		},
+		{
+			pushTransform: IDENTITY
+				.translate(0.8, 0.4, -4.5)
+				.rotate(rotation, rotation / 3, -rotation / 3),
+			popTransform: 1,
+			color: [0.6, 0.2, 0.9, 1],
+			drawShape: cubeObject,
+		},
+		{
+			pushTransform: IDENTITY
+				.translate(0, 0, -4)
+				.rotate(rotation / 3, rotation / 2, rotation),
+			color: [1, 1, 1, 1],
+			drawShape: capsuleObject,
+		},
+		{
+			pushTransform: IDENTITY.translate(0, 1, 0),
+			popTransform: 1,
+			color: [0, 0, 0, 1],
+			drawShape: sphereObject,
+		}
+	];
+
+	const transformStack = [IDENTITY];
+	let color: Vec4 = [0, 0, 0, 0];
+
+	for (const command of drawCommands) {
+		color = command.color ?? color;
+		command.pushTransform && transformStack.unshift(transformStack[0]!.multiply(command.pushTransform));
+		command.drawShape && drawObject(command.drawShape, color, transformStack[0]!)
+		command.popTransform && transformStack.shift();
+	}
+
 	// * Process
 	rotation += 180 * delta;
 	const speed = 10 * delta;
@@ -122,25 +181,6 @@ export function render() {
 	// const moveYaw = isKeyHeld("ArrowRight") - isKeyHeld("ArrowLeft");
 	const moveYaw = getMouseDeltaX() * .1;
 	cameraTransform = cameraTransform.rotate(0, -moveYaw * rotationSpeed).translate(movex * speed, 0, -movey * speed);
-
-	// * Draw objects
-	drawObject(cubeObject, [1, 0.8, 0.9, 1], IDENTITY
-		.translate(0, 0, -6)
-		.rotate(rotation / 3, rotation, rotation / 2)
-	);
-	drawObject(cubeObject, [0.5, 0.8, 0.3, 1], IDENTITY
-		.translate(-0.7, -.3, -5)
-		.rotate(-rotation / 2, rotation * .5, -rotation / 3)
-	);
-	drawObject(cubeObject, [0.6, 0.2, 0.9, 1], IDENTITY
-		.translate(0.8, 0.4, -4.5)
-		.rotate(rotation, rotation / 3, -rotation / 3)
-	);
-
-	drawObject(capsuleObject, [1, 1, 1, 1], IDENTITY
-		.translate(0, 0, -4)
-		.rotate(rotation / 3, rotation / 2, rotation)
-	);
 
 	// * Draw post processing (and blit to canvas)
 	gl.bindFramebuffer(GL_FRAMEBUFFER, null);

@@ -1,5 +1,5 @@
 export const TAU = Math.PI * 2;
-export const IDENTITY = new DOMMatrixReadOnly();
+export const IDENTITY = new DOMMatrix();
 
 export function degtorad(degrees: number) {
 	return degrees * Math.PI / 180;
