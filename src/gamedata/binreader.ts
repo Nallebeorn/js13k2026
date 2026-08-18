@@ -24,45 +24,44 @@ export function deserializeObjects(buffer: ArrayBuffer): DrawCommand[][] {
 			let matrix = IDENTITY;
 			if ((header & TRANSFORM_FLAGS_MASK) == 0) {
 				obj.push({ popTransform: 1 });
-				break;
+				continue
 			}
 			if (header & TRANSFORM_FLAGS_TRANSLATE) {
-				const x = dv.getInt8(pos++);
-				const y = dv.getInt8(pos++);
-				const z = dv.getInt8(pos++);
 				matrix = matrix.translate(
-					dequantizePosition(x),
-					dequantizePosition(y),
-					dequantizePosition(z)
+					dequantizePosition(dv.getInt8(pos++)),
+					dequantizePosition(dv.getInt8(pos++)),
+					dequantizePosition(dv.getInt8(pos++))
 				);
 			}
 			if (header & TRANSFORM_FLAGS_ROTATE) {
-				const x = dequantizeNormal(dv.getInt8(pos++));
-				const y = dequantizeNormal(dv.getInt8(pos++));
-				const z = dequantizeNormal(dv.getInt8(pos++));
-				const angle = dequantizeAngle(dv.getUint8(pos++));
-				matrix = matrix.rotateAxisAngle(x, y, z, angle);
+				matrix = matrix.rotate(
+					dequantizeAngle(dv.getUint8(pos++)),
+					dequantizeAngle(dv.getUint8(pos++)),
+					dequantizeAngle(dv.getUint8(pos++)),
+				);
 			}
 			obj.push({ pushTransform: matrix });
 		}
 		if (type == NODE_TYPE_SHAPE) {
 			if ((header & SHAPE_TYPE_MASK) == SHAPE_TYPE_BOX) {
-				const a1 = dequantizeSize(dv.getUint8(pos++));
-				const a2 = dequantizeSize(dv.getUint8(pos++));
-				const h = dequantizeSize(dv.getUint8(pos++));
-				const b1 = dequantizeSize(dv.getUint8(pos++));
-				const b2 = dequantizeSize(dv.getUint8(pos++));
 				obj.push({
-					drawShape: addVertexData(createBox(a1, a2, h, b1, b2)),
+					drawShape: addVertexData(createBox(
+						dequantizeSize(dv.getUint8(pos++)),
+						dequantizeSize(dv.getUint8(pos++)),
+						dequantizeSize(dv.getUint8(pos++)),
+						dequantizeSize(dv.getUint8(pos++)),
+						dequantizeSize(dv.getUint8(pos++)),
+					)),
 					incrementSurfaceIndex: header & SHAPE_FLAGS_NEW_INDEX
 				});
 			}
 			if ((header & SHAPE_TYPE_MASK) == SHAPE_TYPE_PILL) {
-				const r1 = dequantizeSize(dv.getUint8(pos++));
-				const r2 = dequantizeSize(dv.getUint8(pos++));
-				const h = dequantizeSize(dv.getUint8(pos++));
 				obj.push({
-					drawShape: addVertexData(createPill(r1, r2, h)),
+					drawShape: addVertexData(createPill(
+						dequantizeSize(dv.getUint8(pos++)),
+						dequantizeSize(dv.getUint8(pos++)),
+						dequantizeSize(dv.getUint8(pos++)),
+					)),
 					incrementSurfaceIndex: header & SHAPE_FLAGS_NEW_INDEX
 				});
 			}

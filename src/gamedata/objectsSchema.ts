@@ -10,8 +10,7 @@ export type ObjectNode = ShapeDescriptor | Transform;
 interface Transform {
 	type: "transform";
 	translate?: Vec3;
-	axis?: Vec3;
-	angle?: number;
+	euler?: Vec3,
 	children: ObjectNode[];
 }
 

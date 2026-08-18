@@ -15,7 +15,7 @@ export function serializeObjects() {
 			case "transform": {
 				let byte = NODE_TYPE_TRANSFORM;
 				node.translate && (byte |= TRANSFORM_FLAGS_TRANSLATE);
-				node.axis && node.angle && (byte |= TRANSFORM_FLAGS_ROTATE);
+				node.euler && (byte |= TRANSFORM_FLAGS_ROTATE);
 				dv.setUint8(pos++, byte);
 
 				if (node.translate) {
@@ -25,13 +25,11 @@ export function serializeObjects() {
 					dv.setInt8(pos++, quantizePosition(z));
 				}
 
-				if (node.angle && node.axis) {
-					const normalVector = normalize(node.axis);
-					const [x, y, z] = normalVector;
-					dv.setInt8(pos++, quantizeNormal(x));
-					dv.setInt8(pos++, quantizeNormal(y));
-					dv.setInt8(pos++, quantizeNormal(z));
-					dv.setUint8(pos++, quantizeAngle(node.angle));
+				if (node.euler) {
+					const [x, y, z] = node.euler;
+					dv.setUint8(pos++, quantizeAngle(x));
+					dv.setUint8(pos++, quantizeAngle(y));
+					dv.setUint8(pos++, quantizeAngle(z));
 				}
 
 				node.children.forEach(serializeNode);
@@ -53,11 +51,11 @@ export function serializeObjects() {
 					const b1 = node.b1 ?? node.a1;
 					const b2 = node.b2 ?? node.a2 ?? node.a1;
 
-					dv.setUint8(pos++, quantizeSize(a1));
-					dv.setUint8(pos++, quantizeSize(a2));
+					dv.setUint8(pos++, quantizeSize(a1/2));
+					dv.setUint8(pos++, quantizeSize(a2/2));
 					dv.setUint8(pos++, quantizeSize(h));
-					dv.setUint8(pos++, quantizeSize(b1));
-					dv.setUint8(pos++, quantizeSize(b2));
+					dv.setUint8(pos++, quantizeSize(b1/2));
+					dv.setUint8(pos++, quantizeSize(b2/2));
 				}
 
 				if (node.shape == "pill") {
