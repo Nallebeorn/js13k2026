@@ -1,11 +1,13 @@
 import { gl } from "./renderingGlobals.ts";
-import { GL_ARRAY_BUFFER, GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_BUFFER_BIT, GL_CULL_FACE, GL_DEPTH_ATTACHMENT, GL_DEPTH_BUFFER_BIT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT24, GL_DEPTH_TEST, GL_DRAW_FRAMEBUFFER, GL_FLOAT, GL_FRAMEBUFFER, GL_INT, GL_NEAREST, GL_R32F, GL_R32I, GL_R32UI, GL_R8, GL_READ_FRAMEBUFFER, GL_RED, GL_RED_INTEGER, GL_RGB, GL_RGBA, GL_STATIC_DRAW, GL_TEXTURE0, GL_TEXTURE1, GL_TEXTURE_2D, GL_TRIANGLES, GL_UNSIGNED_BYTE, GL_UNSIGNED_INT } from "./glConstants.ts";
+import { GL_ARRAY_BUFFER, GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_BUFFER_BIT, GL_DEPTH_ATTACHMENT, GL_DEPTH_BUFFER_BIT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT24, GL_DEPTH_TEST, GL_FLOAT, GL_FRAMEBUFFER, GL_RGBA, GL_STATIC_DRAW, GL_TEXTURE0, GL_TEXTURE1, GL_TEXTURE_2D, GL_TRIANGLES, GL_UNSIGNED_BYTE, GL_UNSIGNED_INT } from "./glConstants.ts";
 import { IDENTITY, projectPerspective, type Vec4 } from "../core/math.ts";
 import { delta } from "../core/time.ts";
 import { createPill, createBox } from "./shapes.ts";
 import { DEBUG } from "../debug.ts";
 import { objectShader, objectShaderInfo, postProcessShader, postProcessShaderInfo } from "./shaders/shaders.ts";
 import { getMouseDeltaX, isKeyHeld } from "../input/input.ts";
+import type { DrawCommand } from "./drawCommand.ts";
+import { deserializeObjects } from "../gamedata/binreader.ts";
 
 if (DEBUG && !gl) {
 	console.error("No WebGL context!");
@@ -40,23 +42,13 @@ if (DEBUG) {
 	}
 }
 
-// * Set up postprocess shader
-gl.useProgram(postProcessShader);
-gl.uniform1i(postProcessShaderInfo.colorTextureUniform, 0);
-gl.uniform1i(postProcessShaderInfo.surfaceIndexTextureUniform, 1);
-
-gl.activeTexture(GL_TEXTURE0);
-gl.bindTexture(GL_TEXTURE_2D, colorTexture);
-gl.activeTexture(GL_TEXTURE1)
-gl.bindTexture(GL_TEXTURE_2D, surfaceIndexTexture);
-
-// * Prepare array buffers
-interface ObjectInfo {
+// * Set up vertex array buffer
+export interface ObjectInfo {
 	offset: number,
 	size: number,
 }
 
-function addVertexData(vertices: number[]): ObjectInfo {
+export function addVertexData(vertices: number[]): ObjectInfo {
 	return {
 		size: vertices.length,
 		offset: vertexData.push(...vertices) - vertices.length,
@@ -67,6 +59,8 @@ const arrayBuffer = gl.createBuffer();
 gl.bindBuffer(GL_ARRAY_BUFFER, arrayBuffer);
 const vertexData: number[] = [];
 
+
+const objectsBank = deserializeObjects(await (await fetch("./g.bin")).arrayBuffer());
 const cubeObject = addVertexData(createBox(0.2, 0.2, 1.0, 0.5, 0.5));
 const capsuleObject = addVertexData(createPill(0.5, 0.2, 1));
 const sphereObject = addVertexData(createPill(0.4, 0.4, 0));
@@ -76,8 +70,20 @@ gl.bufferData(
 		new Float32Array(vertexData),
 		GL_STATIC_DRAW
 	);
-	gl.vertexAttribPointer(0, 4, GL_FLOAT, false, 0, 0);
-	gl.enableVertexAttribArray(0);
+gl.vertexAttribPointer(0, 4, GL_FLOAT, false, 0, 0);
+gl.enableVertexAttribArray(0);
+
+console.log(objectsBank);
+
+// * Set up postprocess shader
+gl.useProgram(postProcessShader);
+gl.uniform1i(postProcessShaderInfo.colorTextureUniform, 0);
+gl.uniform1i(postProcessShaderInfo.surfaceIndexTextureUniform, 1);
+
+gl.activeTexture(GL_TEXTURE0);
+gl.bindTexture(GL_TEXTURE_2D, colorTexture);
+gl.activeTexture(GL_TEXTURE1)
+gl.bindTexture(GL_TEXTURE_2D, surfaceIndexTexture);
 
 // * Set up configuration
 gl.clearColor(1, 1, 1, 1);
@@ -90,14 +96,6 @@ let cameraTransform = IDENTITY;
 
 // * Draw scene
 let rotation = 0;
-
-interface DrawCommand {
-	pushTransform?: DOMMatrix,
-	popTransform?: 1,
-
-	drawShape?: ObjectInfo,
-	color?: Vec4,
-}
 
 export function render() {
 	// * Setup
@@ -160,8 +158,11 @@ export function render() {
 			popTransform: 1,
 			color: [0, 0, 0, 1],
 			drawShape: sphereObject,
-		}
+		},
+		{ popTransform: 1 },
+		{pushTransform: IDENTITY.translate(0, 0, -6)}
 	];
+	drawCommands.push(...objectsBank[0]!);
 
 	const transformStack = [IDENTITY];
 	let color: Vec4 = [0, 0, 0, 0];

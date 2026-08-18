@@ -4,37 +4,30 @@ const pressed: KeyCode[] = [];
 const released: KeyCode[] = [];
 const held = new Set<KeyCode>();
 
-let lastMouseX: number, lastMouseY: number;
-let currentMouseX: number, currentMouseY: number;
-
 let mouseDeltaX = 0, mouseDeltaY = 0;
 
 export function initInput() {
-	addEventListener("keydown", (event: KeyboardEvent) => {
+	onkeydown = (event: KeyboardEvent) => {
 		if (!event.repeat) {
 			pressed.push(event.code as KeyCode);
 			held.add(event.code as KeyCode);
 		}
-	});
+	};
 
-	addEventListener("keyup", (event: KeyboardEvent) => {
+	onkeyup = (event: KeyboardEvent) => {
 		released.push(event.code as KeyCode);
 		held.delete(event.code as KeyCode);
-	});
+	};
 
-	canvas.addEventListener("click", async () => {
-		try {
-			await canvas.requestPointerLock({ unadjustedMovement: true });
-		} catch (e) {
-			await canvas.requestPointerLock();
-		}
-	});
+	canvas.onclick = () => {
+		canvas.requestPointerLock({ unadjustedMovement: true }).catch(() => canvas.requestPointerLock());
+	};
 
-	canvas.addEventListener("mousemove", (event: MouseEvent) => {
+	canvas.onmousemove = (event: MouseEvent) => {
 		if (document.pointerLockElement != canvas) return;
 		mouseDeltaX += event.movementX;
 		mouseDeltaY += event.movementY;
-	});
+	};
 }
 
 

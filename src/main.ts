@@ -1,6 +1,5 @@
 import { average, ringPush } from "./core/util.ts";
 import { DEBUG } from "./debug.ts";
-import { deserializeObjects } from "./gamedata/binreader.ts";
 import { consumeInput, initInput, isKeyHeld } from "./input/input.ts";
 import { render as renderScene } from "./rendering/renderer.ts";
 
@@ -9,8 +8,6 @@ if (DEBUG) {
 	var debugDiv = document.body.appendChild(document.createElement("div"));
 	debugDiv.style = "color: yellow; font-family: monospace";
 }
-
-deserializeObjects(await (await fetch("./g.bin")).arrayBuffer());
 
 let previouseFrameTimestamp = 0;
 let timerAccumulator = 0;

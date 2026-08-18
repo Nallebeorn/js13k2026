@@ -7,7 +7,7 @@ export default [
 			{
 				type: "shape",
 				shape: "box",
-				a1: 1.0
+				a1: 0.5
 			},
 			{
 				type: "transform",
