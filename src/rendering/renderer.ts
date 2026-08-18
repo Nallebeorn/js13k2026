@@ -5,7 +5,7 @@ import { delta } from "../core/time.ts";
 import { createPill, createBox } from "./shapes.ts";
 import { DEBUG } from "../debug.ts";
 import { objectShader, objectShaderInfo, postProcessShader, postProcessShaderInfo } from "./shaders/shaders.ts";
-import { getMouseDeltaX, isKeyHeld } from "../input/input.ts";
+import { isKeyHeld, mouseDeltaX } from "../input/input.ts";
 import type { DrawCommand } from "./drawCommand.ts";
 import { deserializeObjects } from "../gamedata/binreader.ts";
 
@@ -77,6 +77,7 @@ console.log(objectsBank);
 
 // * Set up postprocess shader
 gl.useProgram(postProcessShader);
+
 gl.uniform1i(postProcessShaderInfo.colorTextureUniform, 0);
 gl.uniform1i(postProcessShaderInfo.surfaceIndexTextureUniform, 1);
 
@@ -179,8 +180,7 @@ export function render() {
 	const speed = 10 * delta;
 	const rotationSpeed = 180 * delta;
 	const [movex, movey] = [isKeyHeld("KeyD") - isKeyHeld("KeyA"), isKeyHeld("KeyW") - isKeyHeld("KeyS")]
-	// const moveYaw = isKeyHeld("ArrowRight") - isKeyHeld("ArrowLeft");
-	const moveYaw = getMouseDeltaX() * .1;
+	const moveYaw = mouseDeltaX * .1;
 	cameraTransform = cameraTransform.rotate(0, -moveYaw * rotationSpeed).translate(movex * speed, 0, -movey * speed);
 
 	// * Draw post processing (and blit to canvas)

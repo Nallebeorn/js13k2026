@@ -45,22 +45,21 @@ export function createPill(
 	}
 
 	function getRing(index: number): [number, number] {
-		if (index <= capSegments) {
-			const angle = tangentAngle * index / capSegments;
+		let angle = tangentAngle * index / capSegments;
+		let radius = bottomRadius;
+		let h = 0;
 
-			return [
-				bottomRadius * Math.sin(angle),
-				-bottomRadius * Math.cos(angle)
-			];
+		if (index > capSegments) {
+			angle = tangentAngle +
+				(Math.PI - tangentAngle) *
+				(index - capSegments - 1) / capSegments;
+			radius = topRadius;
+			h = height;
 		}
 
-		const angle = tangentAngle +
-			(Math.PI - tangentAngle) *
-			(index - capSegments - 1) / capSegments;
-
 		return [
-			topRadius * Math.sin(angle),
-			height - topRadius * Math.cos(angle)
+			radius * Math.sin(angle),
+			h - radius * Math.cos(angle)
 		];
 	}
 

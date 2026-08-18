@@ -3,13 +3,13 @@ import type { DrawCommand } from "../rendering/drawCommand.ts";
 import { addVertexData } from "../rendering/renderer.ts";
 import { createBox, createPill } from "../rendering/shapes.ts";
 import { NODE_TYPE_MASK, NODE_TYPE_NEW_OBJECT, NODE_TYPE_COLOR, NODE_TYPE_TRANSFORM, TRANSFORM_FLAGS_MASK, TRANSFORM_FLAGS_TRANSLATE, TRANSFORM_FLAGS_ROTATE, NODE_TYPE_SHAPE, SHAPE_TYPE_MASK, SHAPE_TYPE_BOX, SHAPE_FLAGS_NEW_INDEX, SHAPE_TYPE_PILL } from "./binformatHelpers.ts";
-import { dequantizePosition, dequantizeNormal, dequantizeAngle, dequantizeSize } from "./binformatHelpers.ts";
+import { dequantizePosition, dequantizeAngle, dequantizeSize } from "./binformatHelpers.ts";
 
 
 export function deserializeObjects(buffer: ArrayBuffer): DrawCommand[][] {
+	const objects: DrawCommand[][] = [];
 	const dv = new DataView(buffer);
 	let obj!: DrawCommand[];
-	const objects: DrawCommand[][] = [];
 	let pos = 0;
 	while (pos < dv.byteLength) {
 		const header = dv.getUint8(pos++);
@@ -43,8 +43,8 @@ export function deserializeObjects(buffer: ArrayBuffer): DrawCommand[][] {
 			}
 		}
 		if (type == NODE_TYPE_SHAPE) {
-			if ((header & SHAPE_TYPE_MASK) == SHAPE_TYPE_BOX) {
-				obj.push({
+			obj.push((header & SHAPE_TYPE_MASK) == SHAPE_TYPE_BOX
+				? {
 					drawShape: addVertexData(createBox(
 						dequantizeSize(dv.getUint8(pos++)),
 						dequantizeSize(dv.getUint8(pos++)),
@@ -53,18 +53,16 @@ export function deserializeObjects(buffer: ArrayBuffer): DrawCommand[][] {
 						dequantizeSize(dv.getUint8(pos++)),
 					)),
 					incrementSurfaceIndex: header & SHAPE_FLAGS_NEW_INDEX
-				});
-			}
-			if ((header & SHAPE_TYPE_MASK) == SHAPE_TYPE_PILL) {
-				obj.push({
+				}
+				: { // ? SHAPE_TYPE_PILL
 					drawShape: addVertexData(createPill(
 						dequantizeSize(dv.getUint8(pos++)),
 						dequantizeSize(dv.getUint8(pos++)),
 						dequantizeSize(dv.getUint8(pos++)),
 					)),
 					incrementSurfaceIndex: header & SHAPE_FLAGS_NEW_INDEX
-				});
-			}
+				}
+			);
 		}
 	}
 

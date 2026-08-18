@@ -4,7 +4,7 @@ const pressed: KeyCode[] = [];
 const released: KeyCode[] = [];
 const held = new Set<KeyCode>();
 
-let mouseDeltaX = 0, mouseDeltaY = 0;
+export let mouseDeltaX = 0, mouseDeltaY = 0;
 
 export function initInput() {
 	onkeydown = (event: KeyboardEvent) => {
@@ -20,7 +20,7 @@ export function initInput() {
 	};
 
 	canvas.onclick = () => {
-		canvas.requestPointerLock({ unadjustedMovement: true }).catch(() => canvas.requestPointerLock());
+		canvas.requestPointerLock();
 	};
 
 	canvas.onmousemove = (event: MouseEvent) => {
@@ -48,12 +48,4 @@ export function wasKeyJustPressed(code: KeyCode) {
 
 export function wasKeyJustReleased(code: KeyCode) {
 	return released.includes(code);
-}
-
-export function getMouseDeltaX() {
-	return mouseDeltaX;
-}
-
-export function getMouseDeltaY() {
-	return mouseDeltaY;
 }
