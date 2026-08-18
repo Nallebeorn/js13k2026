@@ -5,21 +5,16 @@ export interface ObjectDescriptor {
 	nodes: ObjectNode[],
 }
 
-export type ObjectNode = ShapeDescriptor | Transform;
+export type ObjectNode = (BaseObjectNode & {shape: undefined}) | BoxDescriptor | PillDescriptor;
 
-interface Transform {
-	type: "transform";
+export interface BaseObjectNode {
+	newObjectIndex?: boolean;
 	translate?: Vec3;
 	euler?: Vec3,
-	children: ObjectNode[];
-}
+	children?: ObjectNode[];
+};
 
-type ShapeDescriptor = {
-	type: "shape";
-	newObjectIndex?: boolean;
-} & (BoxDescriptor | PillDescriptor);
-
-interface BoxDescriptor {
+interface BoxDescriptor extends BaseObjectNode {
 	shape: "box";
 	a1: number;
 	b1?: number;
@@ -28,7 +23,7 @@ interface BoxDescriptor {
 	b2?: number;
 }
 
-interface PillDescriptor {
+interface PillDescriptor extends BaseObjectNode {
 	shape: "pill";
 	bottomRadius: number;
 	topRadius?: number;

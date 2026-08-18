@@ -5,27 +5,17 @@ export default [
 		name: "cubeStack",
 		nodes: [
 			{
-				type: "transform",
-				translate: [2, 0, 0],
+				translate: [2, -1, 0],
 				euler: [0, 0, 45],
+				shape: "box",
+				a1: 0.5,
 				children: [
 					{
-						type: "shape",
-						shape: "box",
-						a1: 0.5,
-					},
-					{
-						type: "transform",
 						translate: [0, 1, 0],
-						children: [
-							{
-								type: "shape",
-								shape: "pill",
-								bottomRadius: 0.5,
-							},
-						],
+						shape: "pill",
+						bottomRadius: 0.5,
 					},
-				],
+				]
 			},
 		],
 	},
