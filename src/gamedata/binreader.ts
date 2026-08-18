@@ -24,23 +24,23 @@ export function deserializeObjects(buffer: ArrayBuffer): DrawCommand[][] {
 			let matrix = IDENTITY;
 			if ((header & TRANSFORM_FLAGS_MASK) == 0) {
 				obj.push({ popTransform: 1 });
-				continue
+			} else {
+				if (header & TRANSFORM_FLAGS_TRANSLATE) {
+					matrix = matrix.translate(
+						dequantizePosition(dv.getInt8(pos++)),
+						dequantizePosition(dv.getInt8(pos++)),
+						dequantizePosition(dv.getInt8(pos++))
+					);
+				}
+				if (header & TRANSFORM_FLAGS_ROTATE) {
+					matrix = matrix.rotate(
+						dequantizeAngle(dv.getUint8(pos++)),
+						dequantizeAngle(dv.getUint8(pos++)),
+						dequantizeAngle(dv.getUint8(pos++)),
+					);
+				}
+				obj.push({ pushTransform: matrix });
 			}
-			if (header & TRANSFORM_FLAGS_TRANSLATE) {
-				matrix = matrix.translate(
-					dequantizePosition(dv.getInt8(pos++)),
-					dequantizePosition(dv.getInt8(pos++)),
-					dequantizePosition(dv.getInt8(pos++))
-				);
-			}
-			if (header & TRANSFORM_FLAGS_ROTATE) {
-				matrix = matrix.rotate(
-					dequantizeAngle(dv.getUint8(pos++)),
-					dequantizeAngle(dv.getUint8(pos++)),
-					dequantizeAngle(dv.getUint8(pos++)),
-				);
-			}
-			obj.push({ pushTransform: matrix });
 		}
 		if (type == NODE_TYPE_SHAPE) {
 			if ((header & SHAPE_TYPE_MASK) == SHAPE_TYPE_BOX) {
