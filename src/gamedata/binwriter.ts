@@ -59,7 +59,6 @@ export function serializeObjects(): {
 
 			if (node.shape) {
 				if (node.slotName) {
-					console.log(node.slotName, nodeIndex);
 					(slotNames[obj.name] ??= {})[node.slotName] = nodeIndex;
 				}
 
