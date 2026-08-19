@@ -8,7 +8,8 @@ import { objectShader, objectShaderInfo, postProcessShader, postProcessShaderInf
 import { isKeyHeld, mouseDeltaX } from "../input/input.ts";
 import type { DrawCommand } from "./drawCommand.ts";
 import { deserializeObjects } from "../gamedata/binreader.ts";
-import { COLOR_BLACK, COLOR_LIGHTGREY, COLOR_VIOLET, COLOR_WHITE, COLOR_YELLOW, colors } from "../gamedata/colors.ts";
+import { COLOR_BLACK, COLOR_LIGHTGREY, COLOR_VIOLET, COLOR_WHITE, COLOR_YELLOW, colors, type Color } from "../gamedata/colors.ts";
+import { obj_cubeStack, obj_cubeStack_boxSlot, obj_oldScene_box1Slot, obj_oldScene_box2Slot, obj_oldScene_box3Slot, obj_oldScene_clubSlot } from "../gamedata/objects.gen.ts";
 
 if (DEBUG && !gl) {
 	console.error("No WebGL context!");
@@ -62,9 +63,6 @@ const vertexData: number[] = [];
 
 
 const objectsBank = deserializeObjects(await (await fetch("./g.bin")).arrayBuffer());
-const cubeObject = addVertexData(createBox(0.2, 0.2, 1.0, 0.5, 0.5));
-const capsuleObject = addVertexData(createPill(0.5, 0.2, 1));
-const sphereObject = addVertexData(createPill(0.4, 0.4, 0));
 
 gl.bufferData(
 		GL_ARRAY_BUFFER,
@@ -104,7 +102,7 @@ let rotation = 0;
 export function render() {
 	// * Setup
 	let objectIndex = 0;
-	function drawObject(object: ObjectInfo, color: number, transform: DOMMatrix) {
+	function drawObject(object: ObjectInfo, color: Color, transform: DOMMatrix) {
 		gl.uniformMatrix4fv(
   		objectShaderInfo.objectToWorldUniform,
   		false,
@@ -125,57 +123,45 @@ export function render() {
 	);
 	gl.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	const drawCommands: DrawCommand[] = [
-		{
-			pushTransform: IDENTITY
-				.translate(0, 0, -6)
-				.rotate(rotation / 3, rotation, rotation / 2),
-			popTransform: 1,
-			color: COLOR_LIGHTGREY,
-			drawShape: cubeObject,
-		},
-		{
-			pushTransform: IDENTITY
-				.translate(-0.7, -.3, -5)
-				.rotate(-rotation / 2, rotation * .5, -rotation / 3),
-			popTransform: 1,
-			color: COLOR_YELLOW,
-			drawShape: cubeObject,
-		},
-		{
-			pushTransform: IDENTITY
-				.translate(0.8, 0.4, -4.5)
-				.rotate(rotation, rotation / 3, -rotation / 3),
-			popTransform: 1,
-			color: COLOR_VIOLET,
-			drawShape: cubeObject,
-		},
-		{
-			pushTransform: IDENTITY
-				.translate(0, 0, -4)
-				.rotate(rotation / 3, rotation / 2, rotation),
-			color: COLOR_WHITE,
-			drawShape: capsuleObject,
-		},
-		{
-			pushTransform: IDENTITY.translate(0, 1, 0),
-			popTransform: 1,
-			color: COLOR_BLACK,
-			drawShape: sphereObject,
-		},
-		{ popTransform: 1 },
-		{pushTransform: IDENTITY.translate(0, 0, -6)}
-	];
-	drawCommands.push(...objectsBank[0]!);
+	// 103 bytes for scene defnition (in typescript)
+
+	const slotTransforms: Record<number, DOMMatrix> = {
+		[obj_oldScene_box1Slot]: IDENTITY.rotate(rotation / 3, rotation, rotation / 2),
+		[obj_oldScene_box2Slot]: IDENTITY.rotate(rotation / 2, rotation * .5, rotation / 3),
+		[obj_oldScene_box3Slot]: IDENTITY.rotate(rotation, rotation / 3, rotation / 3),
+		[obj_oldScene_clubSlot]: IDENTITY.rotate(rotation / 3, rotation / 2, rotation),
+	};
 
 	const transformStack = [IDENTITY];
-	let color: Vec4 = [0, 0, 0, 0];
+	let color: Color = COLOR_BLACK;
 
-	for (const command of drawCommands) {
-		color = command.color ?? color;
-		command.pushTransform && transformStack.unshift(transformStack[0]!.multiply(command.pushTransform));
-		command.drawShape && drawObject(command.drawShape, color, transformStack[0]!)
-		command.popTransform && transformStack.shift();
+	for (const drawCommands of objectsBank) {
+		let shapeIndex = 0;
+		for (const command of drawCommands) {
+			color = command.color ?? color;
+
+			if (command.pushTransform) {
+				transformStack.unshift(transformStack[0]!.multiply(command.pushTransform));
+			}
+			if (slotTransforms[shapeIndex]) {
+				transformStack.unshift(transformStack[0]!.multiply(slotTransforms[shapeIndex]));
+			}
+
+			if (command.drawShape) {
+				drawObject(
+					command.drawShape,
+					color,
+					transformStack[0]!
+				)
+			}
+
+			if (slotTransforms[shapeIndex++]) {
+				transformStack.shift();
+			}
+			if (command.popTransform) {
+			 transformStack.shift();
+			}
+		};
 	}
 
 	// * Process

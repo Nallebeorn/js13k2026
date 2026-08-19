@@ -1,3 +1,4 @@
+import type { Color } from "../gamedata/colors.ts";
 import type { ObjectInfo } from "./renderer.ts";
 
 export interface DrawCommand {
@@ -5,6 +6,6 @@ export interface DrawCommand {
 	popTransform?: 1;
 
 	drawShape?: ObjectInfo;
-	color?: number;
+	color?: Color;
 	incrementSurfaceIndex?: 0 | number;
 }

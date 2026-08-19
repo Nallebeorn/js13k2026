@@ -1,21 +1,26 @@
 import type { Vec3 } from "../core/math.ts";
+import type { Color } from "./colors.ts";
 
 export interface ObjectDescriptor {
 	name: string,
 	nodes: ObjectNode[],
 }
 
-export type ObjectNode = BaseObjectNode | BoxDescriptor | PillDescriptor;
+export type ObjectNode = (BaseObjectNode & {shape?: undefined}) | BoxDescriptor | PillDescriptor;
 
 export interface BaseObjectNode {
-	shape?: unknown
+	color?: Color,
 	newObjectIndex?: boolean;
 	translate?: Vec3;
 	euler?: Vec3,
 	children?: ObjectNode[];
 };
 
-interface BoxDescriptor extends BaseObjectNode {
+interface ShapeObjectNode extends BaseObjectNode {
+	slotName?: string,
+}
+
+interface BoxDescriptor extends ShapeObjectNode {
 	shape: "box";
 	a1: number;
 	b1?: number;
@@ -24,7 +29,7 @@ interface BoxDescriptor extends BaseObjectNode {
 	b2?: number;
 }
 
-interface PillDescriptor extends BaseObjectNode {
+interface PillDescriptor extends ShapeObjectNode {
 	shape: "pill";
 	bottomRadius: number;
 	topRadius?: number;

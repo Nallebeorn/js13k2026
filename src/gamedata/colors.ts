@@ -29,3 +29,18 @@ export const COLOR_BLUE = 9;
 export const COLOR_VIOLET = 10;
 export const COLOR_PINK = 11;
 export const COLOR_PEACH = 12;
+
+export type Color =
+  | typeof COLOR_BLACK
+  | typeof COLOR_DARKGREY
+  | typeof COLOR_LIGHTGREY
+  | typeof COLOR_WHITE
+  | typeof COLOR_RED
+  | typeof COLOR_ORANGE
+  | typeof COLOR_YELLOW
+  | typeof COLOR_GREEN
+  | typeof COLOR_CYAN
+  | typeof COLOR_BLUE
+  | typeof COLOR_VIOLET
+  | typeof COLOR_PINK
+  | typeof COLOR_PEACH;
