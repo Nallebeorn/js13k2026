@@ -8,6 +8,7 @@ import { objectShader, objectShaderInfo, postProcessShader, postProcessShaderInf
 import { isKeyHeld, mouseDeltaX } from "../input/input.ts";
 import type { DrawCommand } from "./drawCommand.ts";
 import { deserializeObjects } from "../gamedata/binreader.ts";
+import { COLOR_BLACK, COLOR_LIGHTGREY, COLOR_VIOLET, COLOR_WHITE, COLOR_YELLOW, colors } from "../gamedata/colors.ts";
 
 if (DEBUG && !gl) {
 	console.error("No WebGL context!");
@@ -95,19 +96,21 @@ const aspect = CANVAS_WIDTH / CANVAS_HEIGHT;
 const projectionMatrix = new DOMMatrix(projectPerspective(fov, aspect, 0.1));
 let cameraTransform = IDENTITY;
 
+console.log(colors);
+
 // * Draw scene
 let rotation = 0;
 
 export function render() {
 	// * Setup
 	let objectIndex = 0;
-	function drawObject(object: ObjectInfo, color: Vec4, transform: DOMMatrix) {
+	function drawObject(object: ObjectInfo, color: number, transform: DOMMatrix) {
 		gl.uniformMatrix4fv(
   		objectShaderInfo.objectToWorldUniform,
   		false,
   		transform.toFloat32Array(),
 		);
-		gl.uniform4fv(objectShaderInfo.objectColor, color);
+		gl.uniform4fv(objectShaderInfo.objectColor, colors[color]!);
 		gl.uniform1f(objectShaderInfo.objectIndexUniform, objectIndex++)
 
 		gl.drawArrays(GL_TRIANGLES, object.offset / 4, object.size / 4);
@@ -128,7 +131,7 @@ export function render() {
 				.translate(0, 0, -6)
 				.rotate(rotation / 3, rotation, rotation / 2),
 			popTransform: 1,
-			color: [1, 0.8, 0.9, 1],
+			color: COLOR_LIGHTGREY,
 			drawShape: cubeObject,
 		},
 		{
@@ -136,7 +139,7 @@ export function render() {
 				.translate(-0.7, -.3, -5)
 				.rotate(-rotation / 2, rotation * .5, -rotation / 3),
 			popTransform: 1,
-			color: [0.5, 0.8, 0.3, 1],
+			color: COLOR_YELLOW,
 			drawShape: cubeObject,
 		},
 		{
@@ -144,20 +147,20 @@ export function render() {
 				.translate(0.8, 0.4, -4.5)
 				.rotate(rotation, rotation / 3, -rotation / 3),
 			popTransform: 1,
-			color: [0.6, 0.2, 0.9, 1],
+			color: COLOR_VIOLET,
 			drawShape: cubeObject,
 		},
 		{
 			pushTransform: IDENTITY
 				.translate(0, 0, -4)
 				.rotate(rotation / 3, rotation / 2, rotation),
-			color: [1, 1, 1, 1],
+			color: COLOR_WHITE,
 			drawShape: capsuleObject,
 		},
 		{
 			pushTransform: IDENTITY.translate(0, 1, 0),
 			popTransform: 1,
-			color: [0, 0, 0, 1],
+			color: COLOR_BLACK,
 			drawShape: sphereObject,
 		},
 		{ popTransform: 1 },

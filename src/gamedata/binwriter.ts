@@ -12,6 +12,7 @@ import {
 	SHAPE_TYPE_PILL,
 	SHAPE_FLAGS_NEW_INDEX,
 	NODE_TYPE_NEW_OBJECT,
+	NODE_TYPE_COLOR,
 } from "./binformatHelpers.ts";
 
 export function serializeObjects() {
@@ -23,8 +24,12 @@ export function serializeObjects() {
 
 	const serializeNode = (node: ObjectNode) => {
 		const hasTransform = node.translate || node.euler;
+		if (node.color) {
+			dv.setUint8(pos++, NODE_TYPE_COLOR | node.color);
+		}
+
 		if (hasTransform) {
-		let byte = NODE_TYPE_TRANSFORM;
+			let byte = NODE_TYPE_TRANSFORM;
 			node.translate && (byte |= TRANSFORM_FLAGS_TRANSLATE);
 			node.euler && (byte |= TRANSFORM_FLAGS_ROTATE);
 			dv.setUint8(pos++, byte);

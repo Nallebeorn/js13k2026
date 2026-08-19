@@ -1,3 +1,4 @@
+import { COLOR_ORANGE } from "./colors.ts";
 import type { ObjectDescriptor } from "./objectsSchema.ts";
 
 export default [
@@ -6,6 +7,7 @@ export default [
 		nodes: [
 			{
 				translate: [2, -1, 0],
+				color: COLOR_ORANGE,
 				euler: [0, 0, 45],
 				shape: "box",
 				a1: 0.5,

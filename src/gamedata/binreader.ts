@@ -2,7 +2,7 @@ import { IDENTITY } from "../core/math.ts";
 import type { DrawCommand } from "../rendering/drawCommand.ts";
 import { addVertexData } from "../rendering/renderer.ts";
 import { createBox, createPill } from "../rendering/shapes.ts";
-import { NODE_TYPE_MASK, NODE_TYPE_NEW_OBJECT, NODE_TYPE_COLOR, NODE_TYPE_TRANSFORM, TRANSFORM_FLAGS_MASK, TRANSFORM_FLAGS_TRANSLATE, TRANSFORM_FLAGS_ROTATE, NODE_TYPE_SHAPE, SHAPE_TYPE_MASK, SHAPE_TYPE_BOX, SHAPE_FLAGS_NEW_INDEX, SHAPE_TYPE_PILL } from "./binformatHelpers.ts";
+import { NODE_TYPE_MASK, NODE_TYPE_NEW_OBJECT, NODE_TYPE_COLOR, NODE_TYPE_TRANSFORM, TRANSFORM_FLAGS_MASK, TRANSFORM_FLAGS_TRANSLATE, TRANSFORM_FLAGS_ROTATE, NODE_TYPE_SHAPE, SHAPE_TYPE_MASK, SHAPE_TYPE_BOX, SHAPE_FLAGS_NEW_INDEX, SHAPE_TYPE_PILL, COLOR_MASK } from "./binformatHelpers.ts";
 import { dequantizePosition, dequantizeAngle, dequantizeSize } from "./binformatHelpers.ts";
 
 
@@ -18,7 +18,7 @@ export function deserializeObjects(buffer: ArrayBuffer): DrawCommand[][] {
 			objects.push(obj = []);
 		}
 		if (type == NODE_TYPE_COLOR) {
-			obj.push({ color: [1, 1, 1, 1] }); // TODO
+			obj.push({ color: header & COLOR_MASK});
 		}
 		if (type == NODE_TYPE_TRANSFORM) {
 			let matrix = IDENTITY;
