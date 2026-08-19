@@ -51,13 +51,11 @@ export default defineConfig({
 				this.addWatchFile(resolve("public/g.bin"));
 			},
 
-			// async generateBundle() {
-			// 	this.emitFile({
-			// 		type: "asset",
-			// 		fileName: "g.bin",
-			// 		source: Buffer.from(serializeObjects()),
-			// 	});
-			// },
+			handleHotUpdate({ file, server }) {
+				if (file === resolve("public/g.bin")) {
+					server.ws.send({type: "full-reload"})
+				}
+			}
 		},
 	],
 });

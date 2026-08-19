@@ -5,9 +5,10 @@ export interface ObjectDescriptor {
 	nodes: ObjectNode[],
 }
 
-export type ObjectNode = (BaseObjectNode & {shape: undefined}) | BoxDescriptor | PillDescriptor;
+export type ObjectNode = BaseObjectNode | BoxDescriptor | PillDescriptor;
 
 export interface BaseObjectNode {
+	shape?: unknown
 	newObjectIndex?: boolean;
 	translate?: Vec3;
 	euler?: Vec3,
