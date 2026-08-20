@@ -8,6 +8,7 @@ const { buffer, names, slotNames } = serializeObjects();
 const nameConstants = names
 	.map((name, idx) => `export const obj_${name} = ${idx};`)
 	.join("\n");
+const nameConstantsUnion = names.map(name => `typeof obj_${name}`).join(" | ");
 
 const slotNameConstants = Object.entries(slotNames)
 	.flatMap(
@@ -15,8 +16,10 @@ const slotNameConstants = Object.entries(slotNames)
 			.map(([slot, idx]) => `export const obj_${object}_${slot}Slot = ${idx};`),
 ).join("\n");
 
+const typescriptOutput = `${nameConstants}\nexport type SceneHandle = ${nameConstantsUnion};\n\n${slotNameConstants}`;
+
 writeFile("public/g.bin", Buffer.from(buffer));
-writeFile("src/gamedata/objects.gen.ts", nameConstants + "\n\n" + slotNameConstants);
+writeFile("src/gamedata/objects.gen.ts", typescriptOutput);
 const t1 = performance.now();
 console.log(`[${getTimestamp()}] Regenerated g.bin: ${buffer.byteLength}B (${names.length} objects)`);
 console.log(`Time: ${(t1 - t0).toFixed(2)}ms`);
