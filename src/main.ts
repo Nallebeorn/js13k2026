@@ -1,7 +1,9 @@
+import { advanceTime } from "./core/time.ts";
 import { average, ringPush } from "./core/util.ts";
 import { DEBUG } from "./debug.ts";
+import { processFrame } from "./game/gameLoop.ts";
 import { consumeInput, initInput, isKeyHeld } from "./input/input.ts";
-import { finishFrame, renderLoop as renderScene, setupFrame } from "./rendering/renderer.ts";
+import { finishFrame, setupFrame } from "./rendering/renderer.ts";
 
 if (DEBUG) {
 	console.log("ℹ️ DEBUG BUILD");
@@ -30,9 +32,10 @@ function onAnimationFrame(timestamp: number) {
 		timerAccumulator -= 1000 / 60;
 
 		setupFrame();
-		renderScene();
+		processFrame();
 		finishFrame();
 		consumeInput();
+		advanceTime();
 		if (DEBUG) {
 			const fps = 1000 / elapsed;
 			const t1 = performance.now();
