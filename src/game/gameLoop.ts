@@ -21,7 +21,8 @@ export function processFrame() {
 
 	const speed = 10 * delta;
 	const rotationSpeed = 180 * delta;
-	const [movex, movey] = [isKeyHeld("KeyD") - isKeyHeld("KeyA"), isKeyHeld("KeyW") - isKeyHeld("KeyS")]
+	const movex = isKeyHeld("KeyD") - isKeyHeld("KeyA");
+	const movey = isKeyHeld("KeyW") - isKeyHeld("KeyS");
 	const moveYaw = mouseDeltaX * .1;
 	updateCameraTransform(
 		cameraTransform

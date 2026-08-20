@@ -79,7 +79,7 @@ gl.activeTexture(GL_TEXTURE1)
 gl.bindTexture(GL_TEXTURE_2D, surfaceIndexTexture);
 
 // * Set up configuration
-gl.clearColor(1, 1, 1, 1);
+gl.clearColor(0, 0, 0, 0);
 gl.enable(GL_DEPTH_TEST);
 
 const fov = 2.4; // ≈ TAU/8 radians = 45°
@@ -141,7 +141,7 @@ export function setupFrame() {
 	gl.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	transformStack = [IDENTITY];
-	objectIndex = 0;
+	objectIndex = 1;
 	color = 0;
 }
 
