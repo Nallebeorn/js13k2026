@@ -13,6 +13,7 @@ import {
 	SHAPE_FLAGS_NEW_INDEX,
 	NODE_TYPE_NEW_OBJECT,
 	NODE_TYPE_COLOR,
+    TRANSFORM_FLAGS_POP,
 } from "./binformatHelpers.ts";
 
 export function serializeObjects(): {
@@ -29,9 +30,9 @@ export function serializeObjects(): {
 	let pos = 0;
 
 	for (const obj of objects) {
-		let nodeIndex = 0;
+		let transformSlotIndex = 0;
 		const serializeNode = (node: ObjectNode) => {
-			const hasTransform = node.translate || node.euler;
+			const hasTransform = node.translate || node.euler || node.slotName;
 			if (node.color != undefined) {
 				dv.setUint8(pos++, NODE_TYPE_COLOR | node.color);
 			}
@@ -55,13 +56,13 @@ export function serializeObjects(): {
 					dv.setUint8(pos++, quantizeAngle(y));
 					dv.setUint8(pos++, quantizeAngle(z));
 				}
+
+				if (node.slotName) {
+					(slotNames[obj.name] ??= {})[node.slotName] = transformSlotIndex++;
+				}
 			}
 
 			if (node.shape) {
-				if (node.slotName) {
-					(slotNames[obj.name] ??= {})[node.slotName] = nodeIndex;
-				}
-
 				let byte = NODE_TYPE_SHAPE;
 				node.shape == "box" && (byte |= SHAPE_TYPE_BOX);
 				node.shape == "pill" && (byte |= SHAPE_TYPE_PILL);
@@ -93,10 +94,9 @@ export function serializeObjects(): {
 				}
 			}
 
-			nodeIndex++;
 			node.children?.forEach(serializeNode);
 			if (hasTransform) {
-				dv.setUint8(pos++, NODE_TYPE_TRANSFORM); // pop transform
+				dv.setUint8(pos++, NODE_TYPE_TRANSFORM | TRANSFORM_FLAGS_POP);
 			}
 		};
 

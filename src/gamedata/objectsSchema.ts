@@ -13,14 +13,11 @@ export interface BaseObjectNode {
 	newObjectIndex?: boolean;
 	translate?: Vec3;
 	euler?: Vec3,
+	slotName?: string,
 	children?: ObjectNode[];
 };
 
-interface ShapeObjectNode extends BaseObjectNode {
-	slotName?: string,
-}
-
-interface BoxDescriptor extends ShapeObjectNode {
+interface BoxDescriptor extends BaseObjectNode {
 	shape: "box";
 	a1: number;
 	b1?: number;
@@ -29,7 +26,7 @@ interface BoxDescriptor extends ShapeObjectNode {
 	b2?: number;
 }
 
-interface PillDescriptor extends ShapeObjectNode {
+interface PillDescriptor extends BaseObjectNode {
 	shape: "pill";
 	bottomRadius: number;
 	topRadius?: number;

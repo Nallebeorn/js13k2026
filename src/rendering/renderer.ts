@@ -123,8 +123,6 @@ export function render() {
 	);
 	gl.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// 103 bytes for scene defnition (in typescript)
-
 	const slotTransforms: Record<number, DOMMatrix> = {
 		[obj_oldScene_box1Slot]: IDENTITY.rotate(rotation / 3, rotation, rotation / 2),
 		[obj_oldScene_box2Slot]: IDENTITY.rotate(rotation / 2, rotation * .5, rotation / 3),
@@ -136,30 +134,28 @@ export function render() {
 	let color: Color = COLOR_BLACK;
 
 	for (const drawCommands of objectsBank) {
-		let shapeIndex = 0;
+		let transformSlotIndex = 0;
 		for (const command of drawCommands) {
 			color = command.color ?? color;
 
 			if (command.pushTransform) {
-				transformStack.unshift(transformStack[0]!.multiply(command.pushTransform));
-			}
-			if (slotTransforms[shapeIndex]) {
-				transformStack.unshift(transformStack[0]!.multiply(slotTransforms[shapeIndex]));
+				transformStack.push(
+					transformStack.at(-1)!
+						.multiply(command.pushTransform)
+						.multiply(slotTransforms[transformSlotIndex++] ?? IDENTITY)
+				);
 			}
 
 			if (command.drawShape) {
 				drawObject(
 					command.drawShape,
 					color,
-					transformStack[0]!
+					transformStack.at(-1)!
 				)
 			}
 
-			if (slotTransforms[shapeIndex++]) {
-				transformStack.shift();
-			}
 			if (command.popTransform) {
-			 transformStack.shift();
+			 transformStack.pop();
 			}
 		};
 	}

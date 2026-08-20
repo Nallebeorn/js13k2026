@@ -13,6 +13,18 @@ const slotNameConstants = Object.entries(slotNames)
 			.map(([slot, idx]) => `export const obj_${object}_${slot}Slot = ${idx};`),
 ).join("\n");
 
-console.log(`Generated g.bin: ${buffer.byteLength}B (${names.length} objects)`);
+console.log(`[${getTimestamp()}] Generated g.bin: ${buffer.byteLength}B (${names.length} objects)`);
 writeFile("public/g.bin", Buffer.from(buffer));
 writeFile("src/gamedata/objects.gen.ts", nameConstants + "\n\n" + slotNameConstants);
+
+function getTimestamp(): string {
+	return new Date().toLocaleTimeString(
+		[],
+		{
+			hour: "2-digit",
+			minute: "2-digit",
+			second: "2-digit",
+			fractionalSecondDigits: 2,
+		}
+	);
+}

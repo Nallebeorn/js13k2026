@@ -2,8 +2,9 @@ import { IDENTITY } from "../core/math.ts";
 import type { DrawCommand } from "../rendering/drawCommand.ts";
 import { addVertexData } from "../rendering/renderer.ts";
 import { createBox, createPill } from "../rendering/shapes.ts";
-import { NODE_TYPE_MASK, NODE_TYPE_NEW_OBJECT, NODE_TYPE_COLOR, NODE_TYPE_TRANSFORM, TRANSFORM_FLAGS_MASK, TRANSFORM_FLAGS_TRANSLATE, TRANSFORM_FLAGS_ROTATE, NODE_TYPE_SHAPE, SHAPE_TYPE_MASK, SHAPE_TYPE_BOX, SHAPE_FLAGS_NEW_INDEX, SHAPE_TYPE_PILL, COLOR_MASK } from "./binformatHelpers.ts";
+import { NODE_TYPE_MASK, NODE_TYPE_NEW_OBJECT, NODE_TYPE_COLOR, NODE_TYPE_TRANSFORM, TRANSFORM_FLAGS_MASK, TRANSFORM_FLAGS_TRANSLATE, TRANSFORM_FLAGS_ROTATE, NODE_TYPE_SHAPE, SHAPE_TYPE_MASK, SHAPE_TYPE_BOX, SHAPE_FLAGS_NEW_INDEX, SHAPE_TYPE_PILL, COLOR_MASK, TRANSFORM_FLAGS_POP } from "./binformatHelpers.ts";
 import { dequantizePosition, dequantizeAngle, dequantizeSize } from "./binformatHelpers.ts";
+import type { Color } from "./colors.ts";
 
 
 export function deserializeObjects(buffer: ArrayBuffer): DrawCommand[][] {
@@ -18,27 +19,27 @@ export function deserializeObjects(buffer: ArrayBuffer): DrawCommand[][] {
 			objects.push(obj = []);
 		}
 		if (type == NODE_TYPE_COLOR) {
-			obj.push({ color: header & COLOR_MASK});
+			obj.push({ color: (header & COLOR_MASK) as Color});
 		}
 		if (type == NODE_TYPE_TRANSFORM) {
 			let matrix = IDENTITY;
-			if ((header & TRANSFORM_FLAGS_MASK) == 0) {
+			if (header & TRANSFORM_FLAGS_TRANSLATE) {
+				matrix = matrix.translate(
+					dequantizePosition(dv.getInt8(pos++)),
+					dequantizePosition(dv.getInt8(pos++)),
+					dequantizePosition(dv.getInt8(pos++))
+				);
+			}
+			if (header & TRANSFORM_FLAGS_ROTATE) {
+				matrix = matrix.rotate(
+					dequantizeAngle(dv.getUint8(pos++)),
+					dequantizeAngle(dv.getUint8(pos++)),
+					dequantizeAngle(dv.getUint8(pos++)),
+				);
+			}
+			if (header & TRANSFORM_FLAGS_POP) {
 				obj.push({ popTransform: 1 });
 			} else {
-				if (header & TRANSFORM_FLAGS_TRANSLATE) {
-					matrix = matrix.translate(
-						dequantizePosition(dv.getInt8(pos++)),
-						dequantizePosition(dv.getInt8(pos++)),
-						dequantizePosition(dv.getInt8(pos++))
-					);
-				}
-				if (header & TRANSFORM_FLAGS_ROTATE) {
-					matrix = matrix.rotate(
-						dequantizeAngle(dv.getUint8(pos++)),
-						dequantizeAngle(dv.getUint8(pos++)),
-						dequantizeAngle(dv.getUint8(pos++)),
-					);
-				}
 				obj.push({ pushTransform: matrix });
 			}
 		}
