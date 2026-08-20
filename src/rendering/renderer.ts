@@ -99,7 +99,7 @@ function drawObject(object: ObjectInfo, color: Color, transform: DOMMatrix) {
 	gl.drawArrays(GL_TRIANGLES, object.offset / 4, object.size / 4);
 }
 
-export function drawScene(scene: SceneHandle, slotTransforms: Record<number, DOMMatrix>) {
+export function drawScene(scene: SceneHandle, slotTransforms?: Record<number, DOMMatrix>) {
 	let transformSlotIndex = 0;
 	for (const command of objectsBank[scene]!) {
 		color = command.color ?? color;
@@ -111,7 +111,7 @@ export function drawScene(scene: SceneHandle, slotTransforms: Record<number, DOM
 			transformStack.push(
 				transformStack.at(-1)!
 					.multiply(command.pushTransform)
-					.multiply(slotTransforms[transformSlotIndex++] ?? IDENTITY)
+					.multiply(slotTransforms?.[transformSlotIndex++] ?? IDENTITY)
 			);
 		}
 
