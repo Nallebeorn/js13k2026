@@ -107,7 +107,7 @@ export function render() {
   		transform.toFloat32Array(),
 		);
 		gl.uniform4fv(objectShaderInfo.objectColor, colors[color]!);
-		gl.uniform1f(objectShaderInfo.objectIndexUniform, objectIndex++)
+		gl.uniform1f(objectShaderInfo.objectIndexUniform, objectIndex)
 
 		gl.drawArrays(GL_TRIANGLES, object.offset / 4, object.size / 4);
 	};
@@ -135,6 +135,9 @@ export function render() {
 		let transformSlotIndex = 0;
 		for (const command of drawCommands) {
 			color = command.color ?? color;
+			if (command.incrementSurfaceIndex) {
+				objectIndex++;
+			}
 
 			if (command.pushTransform) {
 				transformStack.push(
@@ -156,6 +159,7 @@ export function render() {
 			 transformStack.pop();
 			}
 		};
+		objectIndex++;
 	}
 
 	// * Process

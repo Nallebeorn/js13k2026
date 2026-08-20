@@ -11,6 +11,5 @@ layout(location=1) out vec4 s; // surface index
 
 void main() {
 	s = vec4(v.w, i, 0, 0) / 255.;
-	o = vec4(v.xyz * .5 + .5, 1);
-	o = c + v * vec4(-1, .5, 1, 0) * .2;
+	o = c + v * vec4(-1, 1, 1, 0) * .2;
 }

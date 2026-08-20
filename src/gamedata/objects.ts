@@ -1,4 +1,4 @@
-import { COLOR_BLACK, COLOR_LIGHTGREY, COLOR_ORANGE, COLOR_VIOLET, COLOR_WHITE, COLOR_YELLOW } from "./colors.ts";
+import { COLOR_BLACK, COLOR_LIGHTGREY, COLOR_ORANGE, COLOR_RED, COLOR_VIOLET, COLOR_WHITE, COLOR_YELLOW } from "./colors.ts";
 import type { ObjectDescriptor } from "./objectsSchema.ts";
 
 export default [
@@ -14,6 +14,7 @@ export default [
 				slotName: "box",
 				children: [
 					{
+						newObjectIndex: true,
 						translate: [0, 1, 0],
 						shape: "pill",
 						bottomRadius: 0.5,
@@ -28,6 +29,7 @@ export default [
 		nodes: [
 			{
 				slotName: "box1",
+				newObjectIndex: true,
 				translate: [0, 0, -6],
 				color: COLOR_LIGHTGREY,
 				shape: "box",
@@ -38,6 +40,7 @@ export default [
 			},
 			{
 				slotName: "box2",
+				newObjectIndex: true,
 				translate: [-.7, -.3, -5],
 				color: COLOR_YELLOW,
 				shape: "box",
@@ -48,6 +51,7 @@ export default [
 			},
 			{
 				slotName: "box3",
+				newObjectIndex: true,
 				translate: [.8, .5, -4.5],
 				color: COLOR_VIOLET,
 				shape: "box",
@@ -58,6 +62,7 @@ export default [
 			},
 			{
 				slotName: "club",
+				newObjectIndex: true,
 				translate: [0, 0, -4],
 				color: COLOR_WHITE,
 				shape: "pill",
@@ -67,7 +72,6 @@ export default [
 				children: [
 					{
 						translate: [0, 1, 0],
-						color: COLOR_BLACK,
 						shape: "pill",
 						bottomRadius: 0.5,
 					},
