@@ -1,6 +1,8 @@
 import { mkdir, writeFile } from "fs/promises";
 import { serializeObjects } from "./src/gamedata/binwriter.ts";
 
+const t0 = performance.now();
+
 mkdir("public", { recursive: true });
 const { buffer, names, slotNames } = serializeObjects();
 const nameConstants = names
@@ -13,9 +15,11 @@ const slotNameConstants = Object.entries(slotNames)
 			.map(([slot, idx]) => `export const obj_${object}_${slot}Slot = ${idx};`),
 ).join("\n");
 
-console.log(`[${getTimestamp()}] Generated g.bin: ${buffer.byteLength}B (${names.length} objects)`);
 writeFile("public/g.bin", Buffer.from(buffer));
 writeFile("src/gamedata/objects.gen.ts", nameConstants + "\n\n" + slotNameConstants);
+const t1 = performance.now();
+console.log(`[${getTimestamp()}] Regenerated g.bin: ${buffer.byteLength}B (${names.length} objects)`);
+console.log(`Time: ${(t1 - t0).toFixed(2)}ms`);
 
 function getTimestamp(): string {
 	return new Date().toLocaleTimeString(

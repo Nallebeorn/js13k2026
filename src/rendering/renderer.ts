@@ -1,15 +1,13 @@
 import { gl } from "./renderingGlobals.ts";
 import { GL_ARRAY_BUFFER, GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_BUFFER_BIT, GL_DEPTH_ATTACHMENT, GL_DEPTH_BUFFER_BIT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT24, GL_DEPTH_TEST, GL_FLOAT, GL_FRAMEBUFFER, GL_RGBA, GL_STATIC_DRAW, GL_TEXTURE0, GL_TEXTURE1, GL_TEXTURE_2D, GL_TRIANGLES, GL_UNSIGNED_BYTE, GL_UNSIGNED_INT } from "./glConstants.ts";
-import { IDENTITY, projectPerspective, type Vec4 } from "../core/math.ts";
+import { IDENTITY, projectPerspective } from "../core/math.ts";
 import { delta } from "../core/time.ts";
-import { createPill, createBox } from "./shapes.ts";
 import { DEBUG } from "../debug.ts";
 import { objectShader, objectShaderInfo, postProcessShader, postProcessShaderInfo } from "./shaders/shaders.ts";
 import { isKeyHeld, mouseDeltaX } from "../input/input.ts";
-import type { DrawCommand } from "./drawCommand.ts";
 import { deserializeObjects } from "../gamedata/binreader.ts";
-import { COLOR_BLACK, COLOR_LIGHTGREY, COLOR_VIOLET, COLOR_WHITE, COLOR_YELLOW, colors, type Color } from "../gamedata/colors.ts";
-import { obj_cubeStack, obj_cubeStack_boxSlot, obj_oldScene_box1Slot, obj_oldScene_box2Slot, obj_oldScene_box3Slot, obj_oldScene_clubSlot } from "../gamedata/objects.gen.ts";
+import { COLOR_BLACK, colors, type Color } from "../gamedata/colors.ts";
+import { obj_oldScene_box1Slot, obj_oldScene_box2Slot, obj_oldScene_box3Slot, obj_oldScene_clubSlot } from "../gamedata/objects.gen.ts";
 
 if (DEBUG && !gl) {
 	console.error("No WebGL context!");
