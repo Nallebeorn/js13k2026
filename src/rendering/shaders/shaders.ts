@@ -15,8 +15,6 @@ export const objectShaderInfo = {
 	objectColor: gl.getUniformLocation(objectShader, "c"),
 }
 
-console.log(objectShaderInfo);
-
 export const postProcessShader = createShaderProgram(postProcessVertSource, postProcessFragSource);
 
 export const postProcessShaderInfo = {
