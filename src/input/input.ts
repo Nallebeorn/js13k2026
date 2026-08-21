@@ -1,7 +1,7 @@
 import type { KeyCode } from "./keycode.ts";
 
 const pressed: KeyCode[] = [];
-const released: KeyCode[] = [];
+// const released: KeyCode[] = [];
 const held = new Set<KeyCode>();
 
 export let mouseDeltaX = 0, mouseDeltaY = 0;
@@ -15,9 +15,14 @@ export function initInput() {
 	};
 
 	onkeyup = (event: KeyboardEvent) => {
-		released.push(event.code as KeyCode);
+		// released.push(event.code as KeyCode);
 		held.delete(event.code as KeyCode);
 	};
+
+	document.onpointerlockchange = () => {
+		// held.forEach(heldKey => released.push(heldKey));
+		held.clear();
+	}
 
 	canvas.onclick = () => {
 		canvas.requestPointerLock();
@@ -33,7 +38,7 @@ export function initInput() {
 
 export function consumeInput() {
 	pressed.splice(0);
-	released.splice(0);
+	// released.splice(0);
 	mouseDeltaX = 0;
 	mouseDeltaY = 0;
 }
@@ -46,6 +51,6 @@ export function wasKeyJustPressed(code: KeyCode) {
 	return pressed.includes(code);
 }
 
-export function wasKeyJustReleased(code: KeyCode) {
-	return released.includes(code);
-}
+// export function wasKeyJustReleased(code: KeyCode) {
+	// return released.includes(code);
+// }
