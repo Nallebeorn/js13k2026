@@ -2,7 +2,7 @@ import { advanceTime } from "./core/time.ts";
 import { average, ringPush } from "./core/util.ts";
 import { DEBUG } from "./debug.ts";
 import { processFrame } from "./game/gameLoop.ts";
-import { initInput, isKeyHeld } from "./input/input.ts";
+import { clearFrameInputs, isKeyHeld } from "./input/input.ts";
 import { finishFrame, setupFrame } from "./rendering/renderer.ts";
 
 if (DEBUG) {
@@ -13,8 +13,6 @@ if (DEBUG) {
 
 let previouseFrameTimestamp = 0;
 let timerAccumulator = 0;
-
-initInput();
 
 const fpsValues: number[] = [];
 const frameTimeValues: number[] = [];
@@ -35,6 +33,7 @@ function onAnimationFrame(timestamp: number) {
 		processFrame();
 		finishFrame();
 		advanceTime();
+		clearFrameInputs();
 		if (DEBUG) {
 			const fps = 1000 / elapsed;
 			const t1 = performance.now();
