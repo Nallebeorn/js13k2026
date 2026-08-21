@@ -18,11 +18,11 @@ export function processFrame() {
 	// [obj_cubeStack_pillySlot]: { translation: [0, 0.5 * (Math.sin(time * 20) * 0.5 + 0.5), 0] },
 	// });
 
-	drawScene(obj_unicorn, { [obj_unicorn_rootSlot]: { translation: [0, 0, -6], euler: [0, 90, 0] } });
+	drawScene(obj_unicorn, { [obj_unicorn_rootSlot]: { translation: [0, 0, -6], euler: [0, rotation, 0] } });
 
-	// if (wasKeyJustPressed("Space")) {
-		// console.log("space pressed!");
-	// }
+	if (wasKeyJustPressed("Space")) {
+		console.log("space pressed!");
+	}
 
 	const speed = 10 * delta;
 	const rotationSpeed = 180 * delta;

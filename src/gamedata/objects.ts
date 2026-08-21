@@ -21,6 +21,7 @@ export default [
 		nodes: [
 			{
 				slotName: "root",
+				translate: [0, 0, -0.5],
 				children: [
 					...[-1, 1].flatMap((s): ObjectNode[] => [
 						{
