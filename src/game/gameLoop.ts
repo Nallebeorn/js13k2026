@@ -24,13 +24,13 @@ export function processFrame() {
 			euler: [0, rotation, 0],
 		},
 		[obj_unicorn_neckSlot]: {
-			euler: [Math.sin(time * 10) * 10, 0, 0],
+			euler: [Math.sin(time * 10) * 15, Math.sin(time * 20) * 20, 0],
 		},
 		[obj_unicorn_headSlot]: {
 			euler: [Math.sin(0.2 + time * 10) * 10, 0, 0],
 		},
 		[obj_unicorn_tailSlot]: {
-			euler: [0, 0, Math.sin(time * 6) * 30]
+			euler: [0, 0, Math.sin(time * 8) * 30]
 		}
 	});
 
