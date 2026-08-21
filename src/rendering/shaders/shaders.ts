@@ -20,6 +20,7 @@ export const postProcessShader = createShaderProgram(postProcessVertSource, post
 export const postProcessShaderInfo = {
 	colorTextureUniform: gl.getUniformLocation(postProcessShader, "i"),
 	surfaceIndexTextureUniform: gl.getUniformLocation(postProcessShader, "s"),
+	depthTextureUniform: gl.getUniformLocation(postProcessShader, "d"),
 }
 
 
