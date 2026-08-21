@@ -1,27 +1,23 @@
+import { time } from "../core/time.ts";
 import type { KeyCode } from "./keycode.ts";
 
-const pressed: KeyCode[] = [];
-// const released: KeyCode[] = [];
-const held = new Set<KeyCode>();
+let pressedTimestamp: Record<string, number> = {};
 
 export let mouseDeltaX = 0, mouseDeltaY = 0;
 
 export function initInput() {
 	onkeydown = (event: KeyboardEvent) => {
 		if (!event.repeat) {
-			pressed.push(event.code as KeyCode);
-			held.add(event.code as KeyCode);
+			pressedTimestamp[event.code] = time;
 		}
 	};
 
 	onkeyup = (event: KeyboardEvent) => {
-		// released.push(event.code as KeyCode);
-		held.delete(event.code as KeyCode);
+		pressedTimestamp[event.code] = 0;
 	};
 
 	document.onpointerlockchange = () => {
-		// held.forEach(heldKey => released.push(heldKey));
-		held.clear();
+		pressedTimestamp = {};
 	}
 
 	canvas.onclick = () => {
@@ -35,22 +31,10 @@ export function initInput() {
 	};
 }
 
-
-export function consumeInput() {
-	pressed.splice(0);
-	// released.splice(0);
-	mouseDeltaX = 0;
-	mouseDeltaY = 0;
-}
-
 export function isKeyHeld(code: KeyCode): (0 | 1) {
-	return +held.has(code) as (0 | 1);
+	return pressedTimestamp[code] ? 1 : 0;
 }
 
 export function wasKeyJustPressed(code: KeyCode) {
-	return pressed.includes(code);
+	return pressedTimestamp[code] == time;
 }
-
-// export function wasKeyJustReleased(code: KeyCode) {
-	// return released.includes(code);
-// }

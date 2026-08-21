@@ -2,7 +2,7 @@ import { advanceTime } from "./core/time.ts";
 import { average, ringPush } from "./core/util.ts";
 import { DEBUG } from "./debug.ts";
 import { processFrame } from "./game/gameLoop.ts";
-import { consumeInput, initInput, isKeyHeld } from "./input/input.ts";
+import { initInput, isKeyHeld } from "./input/input.ts";
 import { finishFrame, setupFrame } from "./rendering/renderer.ts";
 
 if (DEBUG) {
@@ -34,7 +34,6 @@ function onAnimationFrame(timestamp: number) {
 		setupFrame();
 		processFrame();
 		finishFrame();
-		consumeInput();
 		advanceTime();
 		if (DEBUG) {
 			const fps = 1000 / elapsed;

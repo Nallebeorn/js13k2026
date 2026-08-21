@@ -1,6 +1,6 @@
 import { delta, time } from "../core/time.ts";
 import { obj_cubeStack, obj_cubeStack_boxSlot, obj_cubeStack_pillySlot, obj_oldScene, obj_oldScene_box1Slot, obj_oldScene_box2Slot, obj_oldScene_box3Slot, obj_oldScene_clubSlot, obj_unicorn, obj_unicorn_rootSlot, type SceneHandle } from "../gamedata/objects.gen.ts";
-import { isKeyHeld, mouseDeltaX } from "../input/input.ts";
+import { isKeyHeld, mouseDeltaX, wasKeyJustPressed } from "../input/input.ts";
 import { cameraTransform, drawScene, updateCameraTransform } from "../rendering/renderer.ts";
 
 export function processFrame() {
@@ -19,6 +19,10 @@ export function processFrame() {
 	// });
 
 	drawScene(obj_unicorn, { [obj_unicorn_rootSlot]: { translation: [0, 0, -6], euler: [0, 90, 0] } });
+
+	// if (wasKeyJustPressed("Space")) {
+		// console.log("space pressed!");
+	// }
 
 	const speed = 10 * delta;
 	const rotationSpeed = 180 * delta;
