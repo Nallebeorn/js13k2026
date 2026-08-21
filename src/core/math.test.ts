@@ -113,9 +113,9 @@ describe("math", () => {
 				test(`${args}`, () => {
 					const [fovy, aspect, near] = args;
 					const preProcessedFov = 1.0 / Math.tan(fovy / 2);
-					const mine = projectPerspective(preProcessedFov, aspect, near)
-					const expected = mat4.perspective(mat4.create(), fovy, aspect, near, Infinity);
-					expect(mine).toStrictEqual(expected);
+					const mine = projectPerspective(preProcessedFov, aspect, near).toFloat32Array();
+					const expected = new Float32Array(mat4.perspective(mat4.create(), fovy, aspect, near, Infinity));
+					expect(mine).toEqual(expected);
 				});
 			})
 		})

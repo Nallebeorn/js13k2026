@@ -1,6 +1,6 @@
 import { gl } from "./renderingGlobals.ts";
-import { GL_ARRAY_BUFFER, GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_BUFFER_BIT, GL_DEPTH_ATTACHMENT, GL_DEPTH_BUFFER_BIT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT24, GL_DEPTH_TEST, GL_FLOAT, GL_FRAMEBUFFER, GL_RGBA, GL_STATIC_DRAW, GL_TEXTURE0, GL_TEXTURE1, GL_TEXTURE_2D, GL_TRIANGLES, GL_UNSIGNED_BYTE, GL_UNSIGNED_INT } from "./glConstants.ts";
-import { IDENTITY, projectPerspective } from "../core/math.ts";
+import { GL_ARRAY_BUFFER, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_BUFFER_BIT, GL_DEPTH_ATTACHMENT, GL_DEPTH_BUFFER_BIT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT24, GL_DEPTH_TEST, GL_FLOAT, GL_FRAMEBUFFER, GL_FRAMEBUFFER_COMPLETE, GL_NEAREST, GL_RGBA, GL_STATIC_DRAW, GL_TEXTURE0, GL_TEXTURE1, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_TEXTURE_WRAP_S, GL_TEXTURE_WRAP_T, GL_TRIANGLES, GL_UNSIGNED_BYTE, GL_UNSIGNED_INT } from "./glConstants.ts";
+import { createMatrix, IDENTITY, projectPerspective, type Transform } from "../core/math.ts";
 import { DEBUG } from "../debug.ts";
 import { objectShader, objectShaderInfo, postProcessShader, postProcessShaderInfo } from "./shaders/shaders.ts";
 import { deserializeObjects } from "../gamedata/binreader.ts";
@@ -20,9 +20,11 @@ gl.bindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
 const createRenderTexture = (attachment: GLenum, internalFormat: GLenum, format: GLenum, type: GLenum) => {
 	const texture = gl.createTexture();
-	gl.bindTexture(gl.TEXTURE_2D, texture);
+	gl.bindTexture(GL_TEXTURE_2D, texture);
 	gl.texImage2D(GL_TEXTURE_2D, 0, internalFormat, CANVAS_WIDTH, CANVAS_HEIGHT, 0, format, type, null);
-	gl.texParameteri(GL_TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+	gl.texParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	gl.texParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	gl.texParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	gl.framebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, texture, 0);
 	return texture;
 }
@@ -35,7 +37,7 @@ gl.drawBuffers([GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1]);
 if (DEBUG) {
 	const status = gl.checkFramebufferStatus(GL_FRAMEBUFFER);
 
-	if (status !== gl.FRAMEBUFFER_COMPLETE) {
+	if (status !== GL_FRAMEBUFFER_COMPLETE) {
     console.error("Framebuffer incomplete:", "0x" + status.toString(16));
 	}
 }
@@ -84,7 +86,7 @@ gl.enable(GL_DEPTH_TEST);
 
 const fov = 2.4; // ≈ TAU/8 radians = 45°
 const aspect = CANVAS_WIDTH / CANVAS_HEIGHT;
-const projectionMatrix = new DOMMatrix(projectPerspective(fov, aspect, 0.1));
+const projectionMatrix = projectPerspective(fov, aspect, 0.1);
 
 // * Render API
 function drawObject(object: ObjectInfo, color: Color, transform: DOMMatrix) {
@@ -99,7 +101,7 @@ function drawObject(object: ObjectInfo, color: Color, transform: DOMMatrix) {
 	gl.drawArrays(GL_TRIANGLES, object.offset / 4, object.size / 4);
 }
 
-export function drawScene(scene: SceneHandle, slotTransforms?: Record<number, DOMMatrix>) {
+export function drawScene(scene: SceneHandle, slotTransforms?: Record<number, Transform>) {
 	let transformSlotIndex = 0;
 	for (const command of objectsBank[scene]!) {
 		color = command.color ?? color;
@@ -110,8 +112,8 @@ export function drawScene(scene: SceneHandle, slotTransforms?: Record<number, DO
 		if (command.pushTransform) {
 			transformStack.push(
 				transformStack.at(-1)!
-					.multiply(command.pushTransform)
-					.multiply(slotTransforms?.[transformSlotIndex++] ?? IDENTITY)
+					.multiply(createMatrix(command.pushTransform))
+					.multiply(createMatrix(slotTransforms?.[transformSlotIndex++]))
 			);
 		}
 

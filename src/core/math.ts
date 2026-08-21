@@ -1,5 +1,5 @@
 export const TAU = Math.PI * 2;
-export const IDENTITY = new DOMMatrix();
+export const IDENTITY = new DOMMatrix;
 
 export function degtorad(degrees: number) {
 	return degrees * Math.PI / 180;
@@ -17,6 +17,11 @@ export type Mat4 = [
 	number, number, number, number,
 	number, number, number, number,
 ]
+
+export interface Transform {
+	translation?: Vec3 | 0,
+	euler?: Vec3 | 0,
+}
 
 export function add<T extends AnyVec>(lhs: T, rhs: NoInfer<T>): T {
 	return lhs.map((a, i) => a + rhs[i]!) as T;
@@ -46,14 +51,21 @@ export function normalize<T extends AnyVec>(vec: T): T {
 	return vec.map(a => a / length(vec)) as T;
 }
 
-export function projectPerspective(fovyFactor: number, aspect: number, near: number): Mat4 {
+export function projectPerspective(fovyFactor: number, aspect: number, near: number): DOMMatrix {
 	const f = fovyFactor;
-	return [
+	return new DOMMatrix([
 		f / aspect, 0,  0,				 0,
 		0, 					f,  0, 				 0,
 		0, 					0, -1,				-1,
 		0, 					0, -2 *  near, 0,
-	];
+	]);
+}
+
+export function createMatrix(transform?: Transform): DOMMatrix {
+	let matrix = IDENTITY;
+	if (transform?.translation) matrix = matrix.translate(...transform.translation);
+	if (transform?.euler) matrix = matrix.rotate(...transform.euler);
+	return matrix;
 }
 
 export function identityMat4(): Mat4 {
