@@ -58,8 +58,9 @@ export function serializeObjects(): {
 				}
 
 				if (node.slotName) {
-					(slotNames[obj.name] ??= {})[node.slotName] = transformSlotIndex++;
+					(slotNames[obj.name] ??= {})[node.slotName] = transformSlotIndex;
 				}
+				transformSlotIndex++;
 			}
 
 			if (node.shape) {

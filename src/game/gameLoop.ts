@@ -1,5 +1,5 @@
 import { delta, time } from "../core/time.ts";
-import { obj_cubeStack, obj_cubeStack_boxSlot, obj_cubeStack_pillySlot, obj_oldScene, obj_oldScene_box1Slot, obj_oldScene_box2Slot, obj_oldScene_box3Slot, obj_oldScene_clubSlot, obj_unicorn, obj_unicorn_rootSlot, type SceneHandle } from "../gamedata/objects.gen.ts";
+import { obj_unicorn, obj_unicorn_headSlot, obj_unicorn_neckSlot, obj_unicorn_rootSlot, obj_unicorn_tailSlot } from "../gamedata/objects.gen.ts";
 import { isKeyHeld, mouseDeltaX, wasKeyJustPressed } from "../input/input.ts";
 import { cameraTransform, drawScene, updateCameraTransform } from "../rendering/renderer.ts";
 
@@ -18,7 +18,21 @@ export function processFrame() {
 	// [obj_cubeStack_pillySlot]: { translation: [0, 0.5 * (Math.sin(time * 20) * 0.5 + 0.5), 0] },
 	// });
 
-	drawScene(obj_unicorn, { [obj_unicorn_rootSlot]: { translation: [0, 0, -6], euler: [0, rotation, 0] } });
+	drawScene(obj_unicorn, {
+		[obj_unicorn_rootSlot]: {
+			translation: [0, 0, -6],
+			euler: [0, rotation, 0],
+		},
+		[obj_unicorn_neckSlot]: {
+			euler: [Math.sin(time * 10) * 10, 0, 0],
+		},
+		[obj_unicorn_headSlot]: {
+			euler: [Math.sin(0.2 + time * 10) * 10, 0, 0],
+		},
+		[obj_unicorn_tailSlot]: {
+			euler: [0, 0, Math.sin(time * 6) * 30]
+		}
+	});
 
 	if (wasKeyJustPressed("Space")) {
 		console.log("space pressed!");

@@ -116,8 +116,8 @@ export function drawScene(scene: SceneHandle, slotTransforms?: Record<number, Tr
 		if (command.pushTransform) {
 			transformStack.push(
 				transformStack.at(-1)!
-					.multiply(createMatrix(slotTransforms?.[transformSlotIndex++]))
 					.multiply(createMatrix(command.pushTransform))
+					.multiply(createMatrix(slotTransforms?.[transformSlotIndex++]))
 			);
 		}
 

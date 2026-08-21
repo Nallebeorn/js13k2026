@@ -21,7 +21,7 @@ export default [
 		nodes: [
 			{
 				slotName: "root",
-				translate: [0, 0, -0.5],
+				translate: [0, 0, 0],
 				children: [
 					...[-1, 1].flatMap((s): ObjectNode[] => [
 						{
@@ -103,6 +103,7 @@ export default [
 					},
 					{
 						translate: [0, 0, 1.2], // neck
+						slotName: "neck",
 						euler: [45, 0, 0],
 						shape: "pill",
 						bottomRadius: 0.45,
@@ -111,6 +112,7 @@ export default [
 						children: [
 							{
 								shape: "pill", // head
+								slotName: "head",
 								translate: [0, 1, 0],
 								euler: [90, 0, 0],
 								bottomRadius: 0.3,
@@ -143,89 +145,108 @@ export default [
 								topRadius: 0,
 								newObjectIndex: true,
 							},
+							{
+								shape: "pill",
+								translate: [0, .4, -0.2],
+								euler: [15, 0, 0],
+								bottomRadius: 0.4,
+								topRadius: 0.3,
+								height: 0.6,
+							}
 						],
 					},
-				],
-			},
-		],
-	},
-	{
-		// ? cubestack
-		name: "cubeStack",
-		nodes: [
-			{
-				translate: [2, -1, -6],
-				color: COLOR_ORANGE,
-				euler: [0, 0, 45],
-				shape: "box",
-				a1: 0.5,
-				slotName: "box",
-				children: [
 					{
+						shape: "pill", // tail
+						slotName: "tail",
 						newObjectIndex: true,
-						translate: [0, 1, 0],
-						shape: "pill",
-						bottomRadius: 0.5,
-						slotName: "pilly",
+						color: COLOR_YELLOW,
+						translate: [0, 0.1, -0.5],
+						euler: [-170, 0, 0],
+						bottomRadius: 0.1,
+						height: 1,
+						topRadius: 0.2,
 					},
 				],
 			},
 		],
 	},
-	{
-		// ? oldscene
-		name: "oldScene",
-		nodes: [
-			{
-				slotName: "box1",
-				newObjectIndex: true,
-				translate: [0, 0, -6],
-				color: COLOR_LIGHTGREY,
-				shape: "box",
-				a1: 0.4,
-				height: 1,
-				a2: 1,
-				b2: 1,
-			},
-			{
-				slotName: "box2",
-				newObjectIndex: true,
-				translate: [-0.7, -0.3, -5],
-				color: COLOR_YELLOW,
-				shape: "box",
-				a1: 0.4,
-				height: 1,
-				a2: 1,
-				b2: 1,
-			},
-			{
-				slotName: "box3",
-				newObjectIndex: true,
-				translate: [0.8, 0.5, -4.5],
-				color: COLOR_VIOLET,
-				shape: "box",
-				a1: 0.4,
-				height: 1,
-				a2: 1,
-				b2: 1,
-			},
-			{
-				slotName: "club",
-				newObjectIndex: true,
-				translate: [0, 0, -4],
-				color: COLOR_WHITE,
-				shape: "pill",
-				bottomRadius: 0.5,
-				topRadius: 0.2,
-				height: 1,
-				children: [
-					{
-						translate: [0, 1, 0],
-						shape: "pill",
-						bottomRadius: 0.5,
-					},
-				],
-			},
-		],
-	},
+	// {
+	// 	// ? cubestack
+	// 	name: "cubeStack",
+	// 	nodes: [
+	// 		{
+	// 			translate: [2, -1, -6],
+	// 			color: COLOR_ORANGE,
+	// 			euler: [0, 0, 45],
+	// 			shape: "box",
+	// 			a1: 0.5,
+	// 			slotName: "box",
+	// 			children: [
+	// 				{
+	// 					newObjectIndex: true,
+	// 					translate: [0, 1, 0],
+	// 					shape: "pill",
+	// 					bottomRadius: 0.5,
+	// 					slotName: "pilly",
+	// 				},
+	// 			],
+	// 		},
+	// 	],
+	// },
+	// {
+	// 	// ? oldscene
+	// 	name: "oldScene",
+	// 	nodes: [
+	// 		{
+	// 			slotName: "box1",
+	// 			newObjectIndex: true,
+	// 			translate: [0, 0, -6],
+	// 			color: COLOR_LIGHTGREY,
+	// 			shape: "box",
+	// 			a1: 0.4,
+	// 			height: 1,
+	// 			a2: 1,
+	// 			b2: 1,
+	// 		},
+	// 		{
+	// 			slotName: "box2",
+	// 			newObjectIndex: true,
+	// 			translate: [-0.7, -0.3, -5],
+	// 			color: COLOR_YELLOW,
+	// 			shape: "box",
+	// 			a1: 0.4,
+	// 			height: 1,
+	// 			a2: 1,
+	// 			b2: 1,
+	// 		},
+	// 		{
+	// 			slotName: "box3",
+	// 			newObjectIndex: true,
+	// 			translate: [0.8, 0.5, -4.5],
+	// 			color: COLOR_VIOLET,
+	// 			shape: "box",
+	// 			a1: 0.4,
+	// 			height: 1,
+	// 			a2: 1,
+	// 			b2: 1,
+	// 		},
+	// 		{
+	// 			slotName: "club",
+	// 			newObjectIndex: true,
+	// 			translate: [0, 0, -4],
+	// 			color: COLOR_WHITE,
+	// 			shape: "pill",
+	// 			bottomRadius: 0.5,
+	// 			topRadius: 0.2,
+	// 			height: 1,
+	// 			children: [
+	// 				{
+	// 					translate: [0, 1, 0],
+	// 					shape: "pill",
+	// 					bottomRadius: 0.5,
+	// 				},
+	// 			],
+	// 		},
+	// 	],
+	// },
 ] satisfies ObjectDescriptor[];
