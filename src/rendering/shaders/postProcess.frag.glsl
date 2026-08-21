@@ -13,7 +13,8 @@ void main() {
 			length(texture(s, v*.5+.5 + vec2(2./640., 0)) - texture(s, v*.5+.5)),
 			length(texture(s, v*.5+.5 + vec2(0, 2./480.)) - texture(s, v*.5+.5))
 		) > 0.
-		? vec3(0.902, 0.251, 0.792)
+		// ? vec3(0.902, 0.251, 0.792)
+		? vec3(0.671, 0.322, 0.212)
 		: mix(
 			mix(vec3(1), vec3(.698, 1, 1), v.y*0.5+0.3),
 			t.rgb,
