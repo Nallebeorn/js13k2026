@@ -20,8 +20,7 @@ export default [
 		name: "unicorn",
 		nodes: [
 			{
-				slotName: "root",
-				translate: [0, 0, 0],
+				translate: [0, 0, -.5],
 				children: [
 					...[-1, 1].flatMap((s): ObjectNode[] => [
 						{

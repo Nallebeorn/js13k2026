@@ -7,6 +7,8 @@ import { deserializeObjects } from "../gamedata/binreader.ts";
 import { colors, type Color } from "../gamedata/colors.ts";
 import { type SceneHandle } from "../gamedata/objects.gen.ts";
 
+export const ROOT_SLOT = -1;
+
 if (DEBUG && !gl) {
 	console.error("No WebGL context!");
 }
@@ -106,6 +108,7 @@ function drawObject(object: ObjectInfo, color: Color, transform: DOMMatrix) {
 }
 
 export function drawScene(scene: SceneHandle, slotTransforms?: Record<number, Transform>) {
+	transformStack.push(transformStack.at(-1)!.multiply(createMatrix(slotTransforms?.[ROOT_SLOT])))
 	let transformSlotIndex = 0;
 	for (const command of objectsBank[scene]!) {
 		color = command.color ?? color;
@@ -134,6 +137,7 @@ export function drawScene(scene: SceneHandle, slotTransforms?: Record<number, Tr
 		}
 	};
 	objectIndex++;
+	transformStack.pop();
 }
 
 export function setupFrame() {
