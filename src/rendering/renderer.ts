@@ -110,7 +110,7 @@ function drawObject(object: ObjectInfo, color: Color, transform: DOMMatrix) {
 export function drawScene(scene: SceneHandle, slotTransforms?: Record<number, Transform>) {
 	transformStack.push(transformStack.at(-1)!.multiply(createMatrix(slotTransforms?.[ROOT_SLOT])))
 	let transformSlotIndex = 0;
-	for (const command of objectsBank[scene]!) {
+	objectsBank[scene]!.map(command => {
 		color = command.color ?? color;
 		if (command.incrementSurfaceIndex) {
 			objectIndex++;
@@ -135,7 +135,7 @@ export function drawScene(scene: SceneHandle, slotTransforms?: Record<number, Tr
 		if (command.popTransform) {
 		 transformStack.pop();
 		}
-	};
+	});
 	objectIndex++;
 	transformStack.pop();
 }
