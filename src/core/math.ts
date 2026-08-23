@@ -5,6 +5,17 @@ export function degtorad(degrees: number) {
 	return degrees * Math.PI / 180;
 }
 
+export function radtodeg(radians: number) {
+	return radians * 180 / Math.PI;
+}
+
+export function rotateTowards(degrees: number, target: number, delta: number) {
+	const difference = (target - degrees + 540) % 360 - 180;
+    return Math.abs(difference) <= delta
+        ? target
+        : degrees + Math.sign(difference) * delta;
+}
+
 export type Vec2 = [number, number];
 export type Vec3 = [number, number, number];
 export type Vec4 = [number, number, number, number];

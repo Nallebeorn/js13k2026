@@ -1,4 +1,4 @@
-import { withLength } from "../core/math.ts";
+import { rotateTowards, radtodeg, withLength } from "../core/math.ts";
 import { time as currentTime, delta as deltaTime } from "../core/time.ts";
 import {
 	obj_unicorn,
@@ -6,13 +6,19 @@ import {
 	obj_unicorn_neckSlot,
 	obj_unicorn_tailSlot,
 } from "../gamedata/objects.gen.ts";
-import { isKeyHeld } from "../input/input.ts";
+import { isKeyHeld, wasKeyJustPressed } from "../input/input.ts";
 import { drawScene, ROOT_SLOT } from "../rendering/renderer.ts";
 
 const SPEED = 10;
+const GRAVITY = 80;
 
 let x = 0;
+let y = 0;
 let z = -6;
+let rotation = 0;
+let dirx = 0;
+let diry = 0;
+let vy = 0;
 
 export function processPlayer() {
 	const [movex, movey] = withLength(
@@ -22,9 +28,31 @@ export function processPlayer() {
 	x += movex;
 	z += movey;
 
+	if (movex || movey) {
+		dirx = movex;
+		diry = movey;
+	}
+
+	rotation = rotateTowards(rotation, -radtodeg(Math.atan2(diry, dirx)) + 90, deltaTime * 720)
+
+	if (y > 0) {
+		vy -= GRAVITY * deltaTime;
+	} else {
+		vy = 0;
+		y = 0;
+
+		if (wasKeyJustPressed("Space")) {
+			vy = 25;
+		}
+	}
+
+
+	y += vy * deltaTime;
+
 	drawScene(obj_unicorn, {
 		[ROOT_SLOT]: {
-			translation: [x, 0, z],
+			translation: [x, y, z],
+			euler: [0, rotation, 0]
 		},
 		[obj_unicorn_neckSlot]: {
 			euler: [
