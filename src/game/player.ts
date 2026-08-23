@@ -19,8 +19,8 @@ export function processPlayer() {
 		[isKeyHeld("KeyD") - isKeyHeld("KeyA"), isKeyHeld("KeyS") - isKeyHeld("KeyW")],
 		SPEED * deltaTime
 	)
-	x += movex;
-	z += movey;
+	// x += movex;
+	// z += movey;
 
 	drawScene(obj_unicorn, {
 		[ROOT_SLOT]: {

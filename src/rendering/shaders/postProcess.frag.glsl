@@ -7,6 +7,10 @@ layout(location=0) out vec4 o; // output color
 // c = color texture, s = surface index texture, d = depth texture
 uniform sampler2D c, s, d;
 
+float D(vec2 u) { // get linearized depth
+	return .1 / (2. * texture(d, u).r - 1.);
+}
+
 void main() {
 	o = vec4(
 		max(
@@ -15,9 +19,9 @@ void main() {
 		) > 0. // surface index outlines
 		||
 		max(
-			abs(texture(d, v*.5+.5 + vec2(2./640., 0)).r  - texture(d, v*.5+.5).r),
-			abs(texture(d, v*.5+.5 + vec2(0, 2./480.)).r  - texture(d, v*.5+.5).r)
-		) > 0.001 // depth outlines
+			abs(D(v*.5+.5 + vec2(2./640., 0))- D(v*.5+.5)),
+			abs(D(v*.5+.5 + vec2(0, 2./480.))- D(v*.5+.5))
+		) > .2 // depth outlines
 		// ? vec3(0.902, 0.251, 0.792)
 		?vec3(0.671, 0.322, 0.212)
 		:mix(
@@ -28,5 +32,5 @@ void main() {
 		1.
 	);
 	// o = vec4(texture(c, v*.5+.5).rgb, 1);
-	// o = texture(d, v*.5+.5);
+	// o = vec4(vec3(texture(d, v*.5+.5)), 1);
 }
