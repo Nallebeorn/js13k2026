@@ -1,7 +1,7 @@
 import "geometry-interfaces"; // polyfill DOMMatrix
 
 import { beforeAll, describe, expect, test } from "vitest";
-import { add, sub, length, type AnyVec, projectPerspective } from "./math.ts";
+import { add, sub, length, type AnyVec, projectPerspective, withLength } from "./math.ts";
 import { glMatrix, mat4 } from "gl-matrix";
 
 describe("math", () => {
@@ -96,6 +96,21 @@ describe("math", () => {
 				//@ts-expect-error
 				length(["1", "2"]);
 			}
+		});
+
+		describe("withLength", () => {
+			const testCases: [AnyVec, number, number[]][] = [
+				[[2, 0], 10, [10, 0]],
+				[[2, 4], 0, [0, 0]],
+				[[-2, 3.12], 0, [0, 0]],
+				[[0, 0], 10, [0, 0]],
+			];
+
+			testCases.forEach(([vec, len, expected]) => {
+				test(`withLength(${vec}, ${len}) = ${expected}`, () => {
+					expect(withLength(vec, len)).toStrictEqual(expected);
+				});
+			});
 		});
 	});
 

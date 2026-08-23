@@ -1,22 +1,30 @@
-import { time as currentTime } from "../core/time.ts";
+import { withLength } from "../core/math.ts";
+import { time as currentTime, delta as deltaTime } from "../core/time.ts";
 import {
 	obj_unicorn,
 	obj_unicorn_headSlot,
 	obj_unicorn_neckSlot,
 	obj_unicorn_tailSlot,
 } from "../gamedata/objects.gen.ts";
+import { isKeyHeld } from "../input/input.ts";
 import { drawScene, ROOT_SLOT } from "../rendering/renderer.ts";
+
+const SPEED = 10;
 
 let x = 0;
 let z = -6;
-let iam = "Unicorn";
 
 export function processPlayer() {
-	console.log("neigh", x, z, iam);
+	const [movex, movey] = withLength(
+		[isKeyHeld("KeyD") - isKeyHeld("KeyA"), isKeyHeld("KeyS") - isKeyHeld("KeyW")],
+		SPEED * deltaTime
+	)
+	x += movex;
+	z += movey;
+
 	drawScene(obj_unicorn, {
 		[ROOT_SLOT]: {
 			translation: [x, 0, z],
-			euler: [0, 180 * currentTime, 0],
 		},
 		[obj_unicorn_neckSlot]: {
 			euler: [

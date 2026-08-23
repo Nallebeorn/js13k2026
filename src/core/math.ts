@@ -51,6 +51,10 @@ export function normalize<T extends AnyVec>(vec: T): T {
 	return vec.map(a => a / length(vec)) as T;
 }
 
+export function withLength<T extends AnyVec>(vec: T, len: number): T {
+	return vec.map(a => len && length(vec) && len * a / length(vec)) as T;
+}
+
 export function projectPerspective(fovyFactor: number, aspect: number, near: number): DOMMatrix {
 	const f = fovyFactor;
 	return new DOMMatrix([
