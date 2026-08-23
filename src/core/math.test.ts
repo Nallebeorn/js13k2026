@@ -114,7 +114,7 @@ describe("math", () => {
 		});
 	});
 
-	describe.skip("matrices", () => {
+	describe("matrices", () => {
 		beforeAll(() => {
 			glMatrix.ARRAY_TYPE = Array;
 		});

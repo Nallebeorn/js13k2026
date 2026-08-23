@@ -57,17 +57,11 @@ export function withLength<T extends AnyVec>(vec: T, len: number): T {
 
 export function projectPerspective(fovyFactor: number, aspect: number, near: number): DOMMatrix {
 	const f = fovyFactor;
-	// return new DOMMatrix([
-		// f / aspect, 0,  0,				 0,
-		// 0, 					f,  0, 				 0,
-		// 0, 					0, -1,				-1,
-		// 0, 					0, -2 *  near, 0,
-	// ]);
 	return new DOMMatrix([
-		f / aspect, 0,  0,		 0,
-		0, 					f,  0,		 0,
-		0, 					0, 	0,		-1,
-		0, 					0,  near,  0,
+		f / aspect, 0,  0,				 0,
+		0, 					f,  0, 				 0,
+		0, 					0, -1,				-1,
+		0, 					0, -2 *  near, 0,
 	]);
 }
 
