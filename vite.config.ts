@@ -5,6 +5,7 @@ import { zipDist } from "./dist.ts";
 import { resolve } from "path";
 
 export default defineConfig({
+	base: "",
 	build: {
 		modulePreload: {
 			polyfill: false,
