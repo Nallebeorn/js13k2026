@@ -7,7 +7,8 @@ import {
 	obj_unicorn_tailSlot,
 } from "../gamedata/objects.gen.ts";
 import { isKeyHeld, wasKeyJustPressed } from "../input/input.ts";
-import { drawScene, ROOT_SLOT } from "../rendering/renderer.ts";
+import { addVertexData, drawScene, ROOT_SLOT } from "../rendering/renderer.ts";
+import { createBox } from "../rendering/shapes.ts";
 
 const SPEED = 10;
 const GRAVITY = 80;
@@ -49,7 +50,9 @@ export function processPlayer() {
 
 	y += vy * deltaTime;
 
-	drawScene(obj_unicorn, {
+	drawScene(0, { [ROOT_SLOT]: { translation: [0, 0, -6] } });
+
+/* 	drawScene(obj_unicorn, {
 		[ROOT_SLOT]: {
 			translation: [x, y, z],
 			euler: [0, rotation, 0]
@@ -67,5 +70,5 @@ export function processPlayer() {
 		[obj_unicorn_tailSlot]: {
 			euler: [0, 0, Math.sin(currentTime * 8) * 30],
 		},
-	});
+	}); */
 }

@@ -6,6 +6,8 @@ import { objectShader, objectShaderInfo, postProcessShader, postProcessShaderInf
 import { deserializeObjects } from "../gamedata/binreader.ts";
 import { colors, type Color } from "../gamedata/colors.ts";
 import { type SceneHandle } from "../gamedata/objects.gen.ts";
+import type { DrawCommand } from "./drawCommand.ts";
+import { createBox } from "./shapes.ts";
 
 export const ROOT_SLOT = -1;
 
@@ -62,15 +64,21 @@ const arrayBuffer = gl.createBuffer();
 gl.bindBuffer(GL_ARRAY_BUFFER, arrayBuffer);
 const vertexData: number[] = [];
 
-const objectsBank = deserializeObjects(await (await fetch("./g.bin")).arrayBuffer());
+let objectsBank: DrawCommand[][];
+export async function loadAssets() {
+	console.log("load assets!!");
+	// objectsBank = deserializeObjects(await (await fetch("./g.bin")).arrayBuffer());
+	objectsBank = [[{ drawShape: addVertexData(createBox(1, 1, 1, 1, 1)) }]];
 
-gl.bufferData(
-		GL_ARRAY_BUFFER,
-		new Float32Array(vertexData),
-		GL_STATIC_DRAW
-	);
-gl.vertexAttribPointer(0, 4, GL_FLOAT, false, 0, 0);
-gl.enableVertexAttribArray(0);
+	gl.bufferData(
+			GL_ARRAY_BUFFER,
+			new Float32Array(vertexData),
+			GL_STATIC_DRAW
+		);
+	gl.vertexAttribPointer(0, 4, GL_FLOAT, false, 0, 0);
+	gl.enableVertexAttribArray(0);
+}
+
 
 // * Set up postprocess shader
 gl.useProgram(postProcessShader);
