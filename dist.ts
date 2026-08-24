@@ -1,7 +1,8 @@
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
-import { rm, stat } from "node:fs/promises";
+import { glob, rm, stat } from "node:fs/promises";
 import type { Plugin } from "vite";
+import { join } from "node:path";
 
 const execFileAsync = promisify(execFile);
 
@@ -12,15 +13,18 @@ export function zipDist(): Plugin {
 		apply: "build",
 
 		async writeBundle() {
-			await rm("dist.zip", { force: true });
+			for await (const oldFile of glob("dist*.zip")) {
+				await rm(oldFile);
+			}
 
+			const zipFileName = `dist-${new Date().toISOString()}.zip`
 			await execFileAsync(
 				"zip",
-				["-r", "-9", "../dist.zip", "."],
+				["-r", "-9", join("..", zipFileName), "."],
 				{ cwd: "dist" },
 			);
 
-			const { size } = await stat("dist.zip");
+			const { size } = await stat(zipFileName);
 
 			const sizeLimit = 13312;
 			const sizeKb = Math.floor(size / 1024);
