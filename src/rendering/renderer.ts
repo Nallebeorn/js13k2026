@@ -164,7 +164,7 @@ export function finishFrame() {
 }
 
 // * Frame state
-export let cameraTransform = IDENTITY.translate(0, 3, 0).rotate(-10, 0, 0);
+export let cameraTransform = IDENTITY;
 export function updateCameraTransform(newCameraTransform: DOMMatrix) {
 	cameraTransform = newCameraTransform;
 }

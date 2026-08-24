@@ -20,13 +20,16 @@ document.onpointerlockchange = () => {
 }
 
 canvas.onclick = () => {
-	canvas.requestPointerLock();
+	if (document.pointerLockElement != canvas) {
+		canvas.requestPointerLock();
+	}
 };
 
 canvas.onmousemove = (event: MouseEvent) => {
-	if (document.pointerLockElement != canvas) return;
-	mouseDeltaX += event.movementX;
-	mouseDeltaY += event.movementY;
+	if (document.pointerLockElement == canvas) {
+		mouseDeltaX += event.movementX;
+		mouseDeltaY += event.movementY;
+	}
 };
 
 export function clearFrameInputs() {

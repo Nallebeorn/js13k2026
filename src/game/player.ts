@@ -1,4 +1,4 @@
-import { rotateTowards, radtodeg, withLength } from "../core/math.ts";
+import { rotateTowards, radtodeg, withLength, IDENTITY, degtorad } from "../core/math.ts";
 import { time as currentTime, delta as deltaTime } from "../core/time.ts";
 import {
 	obj_unicorn,
@@ -6,8 +6,8 @@ import {
 	obj_unicorn_neckSlot,
 	obj_unicorn_tailSlot,
 } from "../gamedata/objects.gen.ts";
-import { isKeyHeld, wasKeyJustPressed } from "../input/input.ts";
-import { drawScene, ROOT_SLOT } from "../rendering/renderer.ts";
+import { isKeyHeld, mouseDeltaX, wasKeyJustPressed } from "../input/input.ts";
+import { cameraTransform, drawScene, ROOT_SLOT, updateCameraTransform } from "../rendering/renderer.ts";
 
 const SPEED = 10;
 const GRAVITY = 80;
@@ -20,17 +20,20 @@ let dirx = 0;
 let diry = 0;
 let vy = 0;
 
+let cameraRotation = 0;
+
 export function processPlayer() {
 	const [movex, movey] = withLength(
 		[isKeyHeld("KeyD") - isKeyHeld("KeyA"), isKeyHeld("KeyS") - isKeyHeld("KeyW")],
 		SPEED * deltaTime
 	)
-	x += movex;
-	z += movey;
+	const move = cameraTransform.transformPoint(new DOMPoint(movex, 0, movey, 0));
+	x += move.x;
+	z += move.z;
 
 	if (movex || movey) {
-		dirx = movex;
-		diry = movey;
+		dirx = move.x;
+		diry = move.z;
 	}
 
 	rotation = rotateTowards(rotation, -radtodeg(Math.atan2(diry, dirx)) + 90, deltaTime * 720)
@@ -68,4 +71,13 @@ export function processPlayer() {
 			euler: [0, 0, Math.sin(currentTime * 8) * 30],
 		},
 	});
+
+	const moveYaw = mouseDeltaX * .1;
+	cameraRotation += -moveYaw * 180 * deltaTime;
+	updateCameraTransform(
+		IDENTITY
+			.translate(x, y, z)
+			.rotate(0, cameraRotation, 0)
+			.translate(0, 2, 12)
+	);
 }
