@@ -3,7 +3,7 @@ import { average, ringPush } from "./core/util.ts";
 import { DEBUG } from "./debug.ts";
 import { processFrame } from "./game/gameLoop.ts";
 import { clearFrameInputs, isKeyHeld } from "./input/input.ts";
-import { finishFrame, setupFrame } from "./rendering/renderer.ts";
+import { finishFrame, loadResources, setupFrame } from "./rendering/renderer.ts";
 
 if (DEBUG) {
 	console.log("ℹ️ DEBUG BUILD");
@@ -17,6 +17,10 @@ let timerAccumulator = 0;
 const fpsValues: number[] = [];
 const frameTimeValues: number[] = [];
 let framesRendered = 0;
+
+loadResources().then(() => {
+	requestAnimationFrame(onAnimationFrame);
+})
 
 function onAnimationFrame(timestamp: number) {
 	requestAnimationFrame(onAnimationFrame);
@@ -44,5 +48,3 @@ function onAnimationFrame(timestamp: number) {
 		}
 	}
 }
-
-requestAnimationFrame(onAnimationFrame);
