@@ -11,40 +11,32 @@ if (DEBUG) {
 	debugDiv.style = "color: yellow; font-family: monospace";
 }
 
-let previouseFrameTimestamp = 0;
-let timerAccumulator = 0;
+
 
 const fpsValues: number[] = [];
 const frameTimeValues: number[] = [];
 let framesRendered = 0;
 
-loadResources().then(() => {
-	requestAnimationFrame(onAnimationFrame);
-})
+
+// loadResources().then(() => {
+	// requestAnimationFrame(onAnimationFrame);
+// })
+
+let previouseFrameTimestamp: number | undefined;
+let timerAccumulator = 1000/60;
+
+requestAnimationFrame(onAnimationFrame);
 
 function onAnimationFrame(timestamp: number) {
-	requestAnimationFrame(onAnimationFrame);
-
-	const elapsed = timestamp - previouseFrameTimestamp || timestamp;
+	const elapsed = timestamp - (previouseFrameTimestamp ?? timestamp);
 	previouseFrameTimestamp = timestamp;
-	timerAccumulator += elapsed;
+	timerAccumulator += Math.min(elapsed, 100);
 
-	while (timerAccumulator >= 1000 / 60) {
-		const t0 = (DEBUG && performance.now()) as number;
+	if (timerAccumulator >= 1000 / 60) {
 		timerAccumulator -= 1000 / 60;
-
 		setupFrame();
-		processFrame();
 		finishFrame();
-		advanceTime();
-		clearFrameInputs();
-		if (DEBUG) {
-			const fps = 1000 / elapsed;
-			const t1 = performance.now();
-			ringPush(frameTimeValues, t1 - t0, 20);
-			if (framesRendered++ % 10 == 0) {
-				debugDiv.textContent = `${Math.round(fps)} | ${average(frameTimeValues).toFixed(3)}ms | Space held: ${isKeyHeld("Space")}`;
-			}
-		}
 	}
+
+	requestAnimationFrame(onAnimationFrame);
 }
