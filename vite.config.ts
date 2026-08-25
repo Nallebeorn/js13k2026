@@ -11,11 +11,11 @@ export default defineConfig({
 			polyfill: false,
 		},
 		assetsDir: ".",
-		rolldownOptions: {
-			output: {
-				entryFileNames: "g.js",
-			},
-		},
+		// rolldownOptions: {
+			// output: {
+				// entryFileNames: "g.js",
+			// },
+		// },
 		minify: "terser",
 		terserOptions: {
 			ecma: 2020,
