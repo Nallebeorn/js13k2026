@@ -66,9 +66,8 @@ const vertexData: number[] = [];
 
 let objectsBank: DrawCommand[][];
 export async function loadAssets() {
-	console.log("load assets!!");
-	// objectsBank = deserializeObjects(await (await fetch("./g.bin")).arrayBuffer());
-	objectsBank = [[{ drawShape: addVertexData(createBox(1, 1, 1, 1, 1)) }]];
+	objectsBank = deserializeObjects(await (await fetch("./g.bin")).arrayBuffer());
+	objectsBank.push([{ drawShape: addVertexData(createBox(1, 1, 1, 1, 1)) }]);
 
 	gl.bufferData(
 			GL_ARRAY_BUFFER,

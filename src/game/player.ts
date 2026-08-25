@@ -50,9 +50,9 @@ export function processPlayer() {
 
 	y += vy * deltaTime;
 
-	drawScene(0, { [ROOT_SLOT]: { translation: [0, 0, -6] } });
+	// drawScene(0, { [ROOT_SLOT]: { translation: [0, 0, -6] } });
 
-/* 	drawScene(obj_unicorn, {
+	drawScene(obj_unicorn, {
 		[ROOT_SLOT]: {
 			translation: [x, y, z],
 			euler: [0, rotation, 0]
@@ -70,5 +70,5 @@ export function processPlayer() {
 		[obj_unicorn_tailSlot]: {
 			euler: [0, 0, Math.sin(currentTime * 8) * 30],
 		},
-	}); */
+	});
 }
