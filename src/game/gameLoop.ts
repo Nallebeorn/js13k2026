@@ -1,7 +1,6 @@
-import { delta } from "../core/time.ts";
 import { obj_unicorn } from "../gamedata/objects.gen.ts";
-import { isKeyHeld, mouseDeltaX, wasKeyJustPressed } from "../input/input.ts";
-import { cameraTransform, drawScene, ROOT_SLOT, updateCameraTransform } from "../rendering/renderer.ts";
+import { wasKeyJustPressed } from "../input/input.ts";
+import { drawScene, ROOT_SLOT } from "../rendering/renderer.ts";
 import { processPlayer } from "./player.ts";
 
 export function processFrame() {
