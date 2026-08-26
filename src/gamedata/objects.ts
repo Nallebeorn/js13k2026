@@ -3,6 +3,7 @@ import {
 	COLOR_BLUE,
 	COLOR_CYAN,
 	COLOR_DARKGREY,
+	COLOR_GREEN,
 	COLOR_LIGHTGREY,
 	COLOR_ORANGE,
 	COLOR_PEACH,
@@ -169,83 +170,24 @@ export default [
 			},
 		],
 	},
-	// {
-	// 	// ? cubestack
-	// 	name: "cubeStack",
-	// 	nodes: [
-	// 		{
-	// 			translate: [2, -1, -6],
-	// 			color: COLOR_ORANGE,
-	// 			euler: [0, 0, 45],
-	// 			shape: "box",
-	// 			a1: 0.5,
-	// 			slotName: "box",
-	// 			children: [
-	// 				{
-	// 					newObjectIndex: true,
-	// 					translate: [0, 1, 0],
-	// 					shape: "pill",
-	// 					bottomRadius: 0.5,
-	// 					slotName: "pilly",
-	// 				},
-	// 			],
-	// 		},
-	// 	],
-	// },
-	// {
-	// 	// ? oldscene
-	// 	name: "oldScene",
-	// 	nodes: [
-	// 		{
-	// 			slotName: "box1",
-	// 			newObjectIndex: true,
-	// 			translate: [0, 0, -6],
-	// 			color: COLOR_LIGHTGREY,
-	// 			shape: "box",
-	// 			a1: 0.4,
-	// 			height: 1,
-	// 			a2: 1,
-	// 			b2: 1,
-	// 		},
-	// 		{
-	// 			slotName: "box2",
-	// 			newObjectIndex: true,
-	// 			translate: [-0.7, -0.3, -5],
-	// 			color: COLOR_YELLOW,
-	// 			shape: "box",
-	// 			a1: 0.4,
-	// 			height: 1,
-	// 			a2: 1,
-	// 			b2: 1,
-	// 		},
-	// 		{
-	// 			slotName: "box3",
-	// 			newObjectIndex: true,
-	// 			translate: [0.8, 0.5, -4.5],
-	// 			color: COLOR_VIOLET,
-	// 			shape: "box",
-	// 			a1: 0.4,
-	// 			height: 1,
-	// 			a2: 1,
-	// 			b2: 1,
-	// 		},
-	// 		{
-	// 			slotName: "club",
-	// 			newObjectIndex: true,
-	// 			translate: [0, 0, -4],
-	// 			color: COLOR_WHITE,
-	// 			shape: "pill",
-	// 			bottomRadius: 0.5,
-	// 			topRadius: 0.2,
-	// 			height: 1,
-	// 			children: [
-	// 				{
-	// 					translate: [0, 1, 0],
-	// 					shape: "pill",
-	// 					bottomRadius: 0.5,
-	// 				},
-	// 			],
-	// 		},
-	// 	],
-	// },
+	{
+		name: "unitSphere",
+		nodes: [
+			{
+				shape: "pill",
+				color: COLOR_WHITE,
+				bottomRadius: 0.5,
+			}
+		]
+	},
+	{
+		name: "unitCube",
+		nodes: [
+			{
+				shape: "box",
+				color: COLOR_WHITE,
+				a1: 1,
+			}
+		]
+	}
 ] satisfies ObjectDescriptor[];

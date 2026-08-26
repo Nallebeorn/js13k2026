@@ -1,14 +1,12 @@
 import { advanceTime } from "./core/time.ts";
 import { average, ringPush } from "./core/util.ts";
-import { DEBUG } from "./debug.ts";
+import { DEBUG, debugWatch } from "./debug.ts";
 import { processFrame } from "./game/gameLoop.ts";
 import { clearFrameInputs, isKeyHeld } from "./input/input.ts";
 import { finishFrame, loadAssets, setupFrame } from "./rendering/renderer.ts";
 
 if (DEBUG) {
 	console.log("ℹ️ DEBUG BUILD");
-	var debugDiv = document.body.appendChild(document.createElement("div"));
-	debugDiv.style = "color: yellow; font-family: monospace";
 }
 
 let previouseFrameTimestamp = 0;
@@ -44,7 +42,9 @@ function onAnimationFrame(timestamp: number) {
 			const t1 = performance.now();
 			ringPush(frameTimeValues, t1 - t0, 20);
 			if (framesRendered++ % 10 == 0) {
-				debugDiv.textContent = `${Math.round(fps)} | ${average(frameTimeValues).toFixed(3)}ms | Space held: ${isKeyHeld("Space")}`;
+				debugWatch("FPS", Math.round(fps));
+				debugWatch("ms", average(frameTimeValues).toFixed(3));
+				debugWatch("Space held", isKeyHeld("Space"));
 			}
 		}
 	}

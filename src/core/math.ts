@@ -16,6 +16,10 @@ export function rotateTowards(degrees: number, target: number, delta: number) {
         : degrees + Math.sign(difference) * delta;
 }
 
+export function clamp(x: number, min: number, max: number) {
+	return x < min ? min : (x > max ? max : x);
+}
+
 export type Vec2 = [number, number];
 export type Vec3 = [number, number, number];
 export type Vec4 = [number, number, number, number];
@@ -32,6 +36,7 @@ export type Mat4 = [
 export interface Transform {
 	translation?: Vec3 | 0,
 	euler?: Vec3 | 0,
+	scale?: Vec3 | 0,
 }
 
 export function add<T extends AnyVec>(lhs: T, rhs: NoInfer<T>): T {
@@ -80,6 +85,7 @@ export function createMatrix(transform?: Transform): DOMMatrix {
 	let matrix = IDENTITY;
 	if (transform?.translation) matrix = matrix.translate(...transform.translation);
 	if (transform?.euler) matrix = matrix.rotate(...transform.euler);
+	if (transform?.scale) matrix = matrix.scale(...transform.scale);
 	return matrix;
 }
 

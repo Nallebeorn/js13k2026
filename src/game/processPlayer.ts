@@ -1,33 +1,19 @@
-import { rotateTowards, radtodeg, withLength, IDENTITY, add, type Vec3, length } from "../core/math.ts";
+import { withLength, rotateTowards, radtodeg, type Vec3, add, IDENTITY } from "../core/math.ts";
 import { delta as deltaTime } from "../core/time.ts";
 import { debugWatch } from "../debug.ts";
-import { COLOR_BLUE, COLOR_GREEN, COLOR_RED } from "../gamedata/colors.ts";
-import {
-	obj_unitSphere,
-	obj_unitCube,
-} from "../gamedata/objects.gen.ts";
-import { isKeyHeld, mouseDeltaX, wasKeyJustPressed } from "../input/input.ts";
-import { penetrateSphereCube, penetrateSpheres, type BoxCollider, type SphereCollider } from "../physics/collision.ts";
+import { COLOR_RED, COLOR_GREEN, COLOR_BLUE } from "../gamedata/colors.ts";
+import { obj_unitSphere, obj_unitCube } from "../gamedata/objects.gen.ts";
+import { isKeyHeld, wasKeyJustPressed, mouseDeltaX } from "../input/input.ts";
+import { type SphereCollider, type BoxCollider, penetrateSpheres, penetrateSphereCube } from "../physics/collision.ts";
 import { cameraTransform, drawScene, ROOT_SLOT, updateCameraTransform } from "../rendering/renderer.ts";
+import { SPEED, x, z, dirx, diry, rotation, y, vy, GRAVITY, cameraRotation } from "./player.ts";
 
-const SPEED = 10;
-const GRAVITY = 80;
-
-let x = 0;
-let y = 0;
-let z = -6;
-let rotation = 0;
-let dirx = 0;
-let diry = 0;
-let vy = 0;
-
-let cameraRotation = 0;
 
 export function processPlayer() {
 	const [movex, movey] = withLength(
 		[isKeyHeld("KeyD") - isKeyHeld("KeyA"), isKeyHeld("KeyS") - isKeyHeld("KeyW")],
 		SPEED * deltaTime
-	)
+	);
 	const move = cameraTransform.transformPoint(new DOMPoint(movex, 0, movey, 0));
 	x += move.x;
 	z += move.z;
@@ -37,7 +23,7 @@ export function processPlayer() {
 		diry = move.z;
 	}
 
-	rotation = rotateTowards(rotation, -radtodeg(Math.atan2(diry, dirx)) + 90, deltaTime * 720)
+	rotation = rotateTowards(rotation, -radtodeg(Math.atan2(diry, dirx)) + 90, deltaTime * 720);
 
 	if (y > 0) {
 		vy -= GRAVITY * deltaTime;
@@ -64,42 +50,38 @@ export function processPlayer() {
 	debugWatch("penetration", collision.depth.toFixed(3));
 	[x, y, z] = add([x, y, z], collision.depenetration);
 	vy += collision.depenetration[1] / deltaTime;
-
-	const cubeCollision = penetrateSphereCube(playerSphere, staticBox);
-	drawScene(obj_unitSphere, { [ROOT_SLOT]: { translation: cubeCollision.closest, scale: [.5, .5, .5] } }, COLOR_BLUE);
-	debugWatch("cubepen", cubeCollision.depth.toFixed(3));
-	[x, y, z] = add([x, y, z], cubeCollision.depenetration);
-	vy += cubeCollision.depenetration[1] / deltaTime;
-
 	drawScene(
 		obj_unitSphere,
 		{ [ROOT_SLOT]: { translation: [x, y, z] } },
-		collision.depth + cubeCollision.depth > 0 ? COLOR_RED : COLOR_GREEN
-	)
-
+		collision.depth > 0 ? COLOR_RED : COLOR_GREEN
+	);
 	drawScene(obj_unitSphere);
+
+	const cubeCollision = penetrateSphereCube(playerSphere, staticBox);
+	drawScene(obj_unitSphere, { [ROOT_SLOT]: { translation: cubeCollision.closest, scale: [.5, .5, .5] } }, COLOR_BLUE);
+	debugWatch("cubepen", length(cubeCollision.depth));
 
 	drawScene(obj_unitCube, { [ROOT_SLOT]: { translation: boxPos } });
 
-	/* drawScene(obj_unicorn, {
-		[ROOT_SLOT]: {
-			translation: [x, y, z],
-			euler: [0, rotation, 0]
-		},
-		[obj_unicorn_neckSlot]: {
-			euler: [
-				Math.sin(currentTime * 10) * 15,
-				Math.sin(currentTime * 20) * 20,
-				0,
-			],
-		},
-		[obj_unicorn_headSlot]: {
-			euler: [Math.sin(0.2 + currentTime * 10) * 10, 0, 0],
-		},
-		[obj_unicorn_tailSlot]: {
-			euler: [0, 0, Math.sin(currentTime * 8) * 30],
-		},
-	}) */;
+    /* drawScene(obj_unicorn, {
+        [ROOT_SLOT]: {
+            translation: [x, y, z],
+            euler: [0, rotation, 0]
+        },
+        [obj_unicorn_neckSlot]: {
+            euler: [
+                Math.sin(currentTime * 10) * 15,
+                Math.sin(currentTime * 20) * 20,
+                0,
+            ],
+        },
+        [obj_unicorn_headSlot]: {
+            euler: [Math.sin(0.2 + currentTime * 10) * 10, 0, 0],
+        },
+        [obj_unicorn_tailSlot]: {
+            euler: [0, 0, Math.sin(currentTime * 8) * 30],
+        },
+    }) */ ;
 
 	const moveYaw = mouseDeltaX * .1;
 	cameraRotation += -moveYaw * 180 * deltaTime;

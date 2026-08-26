@@ -8,7 +8,7 @@ import { colors, type Color } from "../gamedata/colors.ts";
 import { type SceneHandle } from "../gamedata/objects.gen.ts";
 import type { DrawCommand } from "./drawCommand.ts";
 
-export const ROOT_SLOT = -1;
+export const ROOT_SLOT = "_";
 
 if (DEBUG && !gl) {
 	console.error("No WebGL context!");
@@ -112,7 +112,7 @@ function drawObject(object: ObjectInfo, color: Color, transform: DOMMatrix) {
 	gl.drawArrays(GL_TRIANGLES, object.offset / 4, object.size / 4);
 }
 
-export function drawScene(scene: SceneHandle, slotTransforms?: Record<number, Transform>) {
+export function drawScene(scene: SceneHandle, slotTransforms?: Record<number | "_", Transform>, color_override?: Color) {
 	transformStack.push(transformStack.at(-1)!.multiply(createMatrix(slotTransforms?.[ROOT_SLOT])))
 	let transformSlotIndex = 0;
 	objectsBank[scene]!.map(command => {
@@ -132,7 +132,7 @@ export function drawScene(scene: SceneHandle, slotTransforms?: Record<number, Tr
 		if (command.drawShape) {
 			drawObject(
 				command.drawShape,
-				color,
+				color_override ?? color,
 				transformStack.at(-1)!
 			)
 		}
