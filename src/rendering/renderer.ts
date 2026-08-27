@@ -65,7 +65,7 @@ const vertexData: number[] = [];
 
 let objectsBank: DrawCommand[][]
 export async function loadAssets() {
-	objectsBank = deserializeObjects(await (await fetch("./g.bin")).arrayBuffer());
+	objectsBank = deserializeObjects(await (await fetch("b?" + +new Date)).arrayBuffer());
 
 	gl.bufferData(
 			GL_ARRAY_BUFFER,

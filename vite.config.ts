@@ -51,11 +51,11 @@ export default defineConfig({
 			name: "generate-binary",
 
 			buildStart() {
-				this.addWatchFile(resolve("public/g.bin"));
+				this.addWatchFile(resolve("public/b"));
 			},
 
 			handleHotUpdate({ file, server }) {
-				if (file === resolve("public/g.bin")) {
+				if (file === resolve("public/b")) {
 					server.ws.send({type: "full-reload"})
 				}
 			}

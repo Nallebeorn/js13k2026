@@ -18,10 +18,10 @@ const slotNameConstants = Object.entries(slotNames)
 
 const typescriptOutput = `${nameConstants}\nexport type SceneHandle = ${nameConstantsUnion};\n\n${slotNameConstants}`;
 
-writeFile("public/g.bin", Buffer.from(buffer));
+writeFile("public/b", Buffer.from(buffer));
 writeFile("src/gamedata/objects.gen.ts", typescriptOutput);
 const t1 = performance.now();
-console.log(`[${getTimestamp()}] Regenerated g.bin: ${buffer.byteLength}B (${names.length} objects)`);
+console.log(`[${getTimestamp()}] Regenerated binary data file: ${buffer.byteLength}B (${names.length} objects)`);
 console.log(`Time: ${(t1 - t0).toFixed(2)}ms`);
 
 function getTimestamp(): string {
