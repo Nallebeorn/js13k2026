@@ -116,7 +116,7 @@ export function drawScene(scene: SceneHandle, slotTransforms?: Record<number | "
 	transformStack.push(transformStack.at(-1)!.multiply(createMatrix(slotTransforms?.[ROOT_SLOT])))
 	let transformSlotIndex = 0;
 	objectsBank[scene]!.map(command => {
-		color = command.color ?? color;
+		color = command.colour ?? color;
 		if (command.incrementSurfaceIndex) {
 			objectIndex++;
 		}

@@ -10,16 +10,19 @@ export function deserializeObjects(buffer: ArrayBuffer): DrawCommand[][] {
 	const objects: DrawCommand[][] = [];
 	const dv = new DataView(buffer);
 	let obj!: DrawCommand[];
-	let pos = 0;
-	while (pos < dv.byteLength) {
+
+	for (let pos = 0; pos < dv.byteLength;) {
 		const header = dv.getUint8(pos++);
 		const type = header & NODE_TYPE_MASK;
+
 		if (type == NODE_TYPE_NEW_OBJECT) {
 			objects.push(obj = []);
 		}
+
 		if (type == NODE_TYPE_COLOR) {
-			obj.push({ color: (header & COLOR_MASK) as Color});
+			obj.push({ colour: (header & COLOR_MASK) as Color});
 		}
+
 		if (type == NODE_TYPE_TRANSFORM) {
 			if (header & TRANSFORM_FLAGS_POP) {
 				obj.push({ popTransform: 1 });
@@ -40,27 +43,26 @@ export function deserializeObjects(buffer: ArrayBuffer): DrawCommand[][] {
 				});
 			}
 		}
+
 		if (type == NODE_TYPE_SHAPE) {
-			obj.push((header & SHAPE_TYPE_MASK) == SHAPE_TYPE_BOX
-				? {
-					drawShape: addVertexData(createBox(
-						dequantizeSize(dv.getUint8(pos++)),
-						dequantizeSize(dv.getUint8(pos++)),
-						dequantizeSize(dv.getUint8(pos++)),
-						dequantizeSize(dv.getUint8(pos++)),
-						dequantizeSize(dv.getUint8(pos++)),
-					)),
-					incrementSurfaceIndex: header & SHAPE_FLAGS_NEW_INDEX
-				}
-				: { // ? SHAPE_TYPE_PILL
-					drawShape: addVertexData(createPill(
-						dequantizeSize(dv.getUint8(pos++)),
-						dequantizeSize(dv.getUint8(pos++)),
-						dequantizeSize(dv.getUint8(pos++)),
-					)),
-					incrementSurfaceIndex: header & SHAPE_FLAGS_NEW_INDEX
-				}
-			);
+			obj.push({
+				drawShape: addVertexData(
+					(header & SHAPE_TYPE_MASK) == SHAPE_TYPE_BOX
+						? createBox(
+								dequantizeSize(dv.getUint8(pos++)),
+								dequantizeSize(dv.getUint8(pos++)),
+								dequantizeSize(dv.getUint8(pos++)),
+								dequantizeSize(dv.getUint8(pos++)),
+								dequantizeSize(dv.getUint8(pos++)),
+							)
+						: createPill(
+								dequantizeSize(dv.getUint8(pos++)),
+								dequantizeSize(dv.getUint8(pos++)),
+								dequantizeSize(dv.getUint8(pos++)),
+							),
+				),
+				incrementSurfaceIndex: header & SHAPE_FLAGS_NEW_INDEX,
+			});
 		}
 	}
 

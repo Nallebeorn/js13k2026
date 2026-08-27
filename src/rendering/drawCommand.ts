@@ -7,6 +7,6 @@ export interface DrawCommand {
 	popTransform?: 1;
 
 	drawShape?: ObjectInfo;
-	color?: Color;
+	colour?: Color;
 	incrementSurfaceIndex?: 0 | number;
 }
