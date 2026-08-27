@@ -7,21 +7,15 @@ import postProcessVertSource from "./postProcess.vert.glsl"
 import postProcessFragSource from "./postProcess.frag.glsl"
 
 export const objectShader = createShaderProgram(objectVertSource, objectFragSource);
-
-export const objectShaderInfo = {
-	objectToWorldUniform: gl.getUniformLocation(objectShader, "o2w"),
-	worldToClipUniform: gl.getUniformLocation(objectShader, "w2c"),
-	objectIndexUniform: gl.getUniformLocation(objectShader, "i"),
-	objectColor: gl.getUniformLocation(objectShader, "c"),
-}
+export const objectToWorldUniform = gl.getUniformLocation(objectShader, "o");
+export const worldToClipUniform = gl.getUniformLocation(objectShader, "w");
+export const objectIndexUniform = gl.getUniformLocation(objectShader, "i");
+export const objectColorUniform = gl.getUniformLocation(objectShader, "c");
 
 export const postProcessShader = createShaderProgram(postProcessVertSource, postProcessFragSource);
-
-export const postProcessShaderInfo = {
-	colorTextureUniform: gl.getUniformLocation(postProcessShader, "i"),
-	surfaceIndexTextureUniform: gl.getUniformLocation(postProcessShader, "s"),
-	depthTextureUniform: gl.getUniformLocation(postProcessShader, "d"),
-}
+export const colorTextureUniform = gl.getUniformLocation(postProcessShader, "i");
+export const surfaceIndexTextureUniform = gl.getUniformLocation(postProcessShader, "s");
+export const depthTextureUniform = gl.getUniformLocation(postProcessShader, "d");
 
 
 type ShaderType = typeof GL_VERTEX_SHADER | typeof GL_FRAGMENT_SHADER
