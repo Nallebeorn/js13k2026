@@ -42,8 +42,6 @@ export function processPlayer() {
 	vy -= GRAVITY * deltaTime;
 	y += vy * deltaTime;
 
-	const playerSphere: SphereCollider = { pos: [x, y, z], r: 0.5 };
-
 	const sphere = (x: number, y: number, z: number): SphereCollider => ({pos: [x, y, z], r: 0.5});
 	const box = (x: number, y: number, z: number): BoxCollider => ({
 		min: add([x, y, z], [-0.5, 0, -0.5]),
@@ -59,10 +57,7 @@ export function processPlayer() {
 
 	let grounded = false;
 	for (const collider of colliders) {
-		const collision = penetrateSphereGeneric(
-			playerSphere,
-			collider
-		);
+		const collision = penetrateSphereGeneric([x, y, z], 0.5, collider);
 
 		if (collision.depenetration) {
 			[x, y, z] = add([x, y, z], collision.depenetration);

@@ -12,8 +12,8 @@ export interface BoxCollider {
 
 export type Collider = SphereCollider | BoxCollider;
 
-export function penetrateSphereGeneric(a: SphereCollider, b: Collider) {
-	return ("r" in b) ? penetrateSphereSphere(a, b) : penetrateSphereCube(a, b)
+export function penetrateSphereGeneric(pos: Vec3, r: number, b: Collider) {
+	return ("r" in b) ? penetrateSphereSphere({pos, r}, b) : penetrateSphereCube({pos, r}, b)
 }
 
 export function penetrateSphereSphere(a: SphereCollider, b: SphereCollider) {
