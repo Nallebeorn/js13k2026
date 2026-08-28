@@ -44,7 +44,6 @@ export function processPlayer() {
 
 	rotation = rotateTowards(rotation, -radtodeg(Math.atan2(diry, dirx)) + 90, deltaTime * 720)
 
-	vy -= GRAVITY * deltaTime;
 	y += vy * deltaTime;
 
 	const sphere = (x: number, y: number, z: number): SphereCollider => ({pos: [x, y, z], r: 0.5});
@@ -62,12 +61,18 @@ export function processPlayer() {
 
 	let grounded = false;
 	for (const collider of colliders) {
-		const collision = penetrateCapsuleGeneric([x, y, z], scale(normalize([dirx, 0, diry]), .5), 0.5, collider);
+		const collision = penetrateCapsuleGeneric(
+			[x, y - 1, z],
+			scale(normalize([dirx, 0, diry]), .75),
+			0.5,
+			collider
+		);
 
 		if (collision.depenetration) {
 			[x, y, z] = add([x, y, z], collision.depenetration);
 			if (collision.depenetration[1] > 0) {
 				grounded = true;
+				vy = 0;
 			}
 			vy += collision.depenetration[1] / deltaTime;
 		}
@@ -81,14 +86,6 @@ export function processPlayer() {
 		} */
 	}
 
-	drawScene(obj_playerCollider, {
-		_: {
-			translation: [x, y, z],
-			euler: [0, rotation, 0]
-		}
-	});
-
-
 	if (y < 0) {
 		y = 0;
 		grounded = true;
@@ -100,6 +97,8 @@ export function processPlayer() {
 		if (wasKeyJustPressed("Space")) {
 			vy = 25;
 		}
+	} else {
+		vy -= GRAVITY * deltaTime;
 	}
 
 	for (const collider of colliders) {
@@ -110,7 +109,10 @@ export function processPlayer() {
 		}
 	}
 
-	/* drawScene(obj_unicorn, {
+
+
+
+	drawScene(obj_unicorn, {
 		[ROOT_SLOT]: {
 			translation: [x, y, z],
 			euler: [0, rotation, 0]
@@ -128,7 +130,7 @@ export function processPlayer() {
 		[obj_unicorn_tailSlot]: {
 			euler: [0, 0, Math.sin(currentTime * 8) * 30],
 		},
-	}) */;
+	});
 
 	const moveYaw = mouseDeltaX * .1;
 	cameraRotation += -moveYaw * 180 * deltaTime;

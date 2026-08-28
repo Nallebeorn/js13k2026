@@ -77,7 +77,7 @@ export function penetrateCapsuleBox(a: CapsuleCollider, b: BoxCollider) {
 	// obviously not generically accurate
 	return [
 		{ pos: cap1, r: a.r },
-		{ pos: a.centerPosition, r: a.r },
+		// { pos: a.centerPosition, r: a.r },
 		{ pos: cap2, r: a.r },
 	].reduce((deepest, current): Collision => {
 			const collision = penetrateSphereBox(current, b);

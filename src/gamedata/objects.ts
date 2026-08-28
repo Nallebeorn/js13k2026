@@ -196,10 +196,10 @@ export default [
 			{
 				shape: "pill",
 				color: COLOR_BLUE,
-				bottomRadius: 0.5,
-				height: 1,
+				bottomRadius: 1,
+				height: 2,
 				euler: [90, 0, 0],
-				translate: [0, 0, -.5],
+				translate: [0, 0, -1],
 			}
 		]
 	}
