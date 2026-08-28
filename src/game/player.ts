@@ -1,13 +1,18 @@
-import { rotateTowards, radtodeg, withLength, IDENTITY, add, type Vec3, length, midpoint } from "../core/math.ts";
-import { delta as deltaTime } from "../core/time.ts";
+import { rotateTowards, radtodeg, withLength, IDENTITY, add, type Vec3, length, midpoint, normalize, scale } from "../core/math.ts";
+import { currentTime, delta as deltaTime } from "../core/time.ts";
 import { debugWatch } from "../debug.ts";
 import { COLOR_BLUE, COLOR_GREEN, COLOR_RED } from "../gamedata/colors.ts";
 import {
 	obj_unitSphere,
 	obj_unitCube,
+	obj_unicorn,
+	obj_unicorn_neckSlot,
+	obj_unicorn_headSlot,
+	obj_unicorn_tailSlot,
+	obj_playerCollider,
 } from "../gamedata/objects.gen.ts";
 import { isKeyHeld, mouseDeltaX, wasKeyJustPressed } from "../input/input.ts";
-import { penetrateSphereGeneric, penetrateSphereCube, penetrateSphereSphere, type BoxCollider, type Collider, type SphereCollider } from "../physics/collision.ts";
+import { penetrateSphereGeneric, penetrateSphereBox, penetrateSphereSphere, type BoxCollider, type Collider, type SphereCollider, penetrateCapsuleGeneric } from "../physics/collision.ts";
 import { cameraTransform, drawScene, ROOT_SLOT, updateCameraTransform } from "../rendering/renderer.ts";
 
 const SPEED = 10;
@@ -57,7 +62,7 @@ export function processPlayer() {
 
 	let grounded = false;
 	for (const collider of colliders) {
-		const collision = penetrateSphereGeneric([x, y, z], 0.5, collider);
+		const collision = penetrateCapsuleGeneric([x, y, z], scale(normalize([dirx, 0, diry]), .5), 0.5, collider);
 
 		if (collision.depenetration) {
 			[x, y, z] = add([x, y, z], collision.depenetration);
@@ -66,7 +71,23 @@ export function processPlayer() {
 			}
 			vy += collision.depenetration[1] / deltaTime;
 		}
+
+		/* if ("projected" in collision) {
+			drawScene(obj_unitSphere, {
+				_: {
+					translation: collision.projected as Vec3,
+				}
+			});
+		} */
 	}
+
+	drawScene(obj_playerCollider, {
+		_: {
+			translation: [x, y, z],
+			euler: [0, rotation, 0]
+		}
+	});
+
 
 	if (y < 0) {
 		y = 0;
@@ -80,11 +101,6 @@ export function processPlayer() {
 			vy = 25;
 		}
 	}
-
-	drawScene(
-		obj_unitSphere,
-		{ [ROOT_SLOT]: { translation: [x, y, z] } },
-	);
 
 	for (const collider of colliders) {
 		if ("r" in collider) {

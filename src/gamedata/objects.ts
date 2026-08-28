@@ -21,7 +21,7 @@ export default [
 		name: "unicorn",
 		nodes: [
 			{
-				translate: [0, 0, -.5],
+				translate: [0, 0, -1],
 				children: [
 					...[-1, 1].flatMap((s): ObjectNode[] => [
 						{
@@ -187,6 +187,19 @@ export default [
 				shape: "box",
 				color: COLOR_WHITE,
 				a1: 1,
+			}
+		]
+	},
+	{
+		name: "playerCollider",
+		nodes: [
+			{
+				shape: "pill",
+				color: COLOR_BLUE,
+				bottomRadius: 0.5,
+				height: 1,
+				euler: [90, 0, 0],
+				translate: [0, 0, -.5],
 			}
 		]
 	}

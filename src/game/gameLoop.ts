@@ -1,5 +1,4 @@
 import { obj_unicorn } from "../gamedata/objects.gen.ts";
-import { wasKeyJustPressed } from "../input/input.ts";
 import { drawScene, ROOT_SLOT } from "../rendering/renderer.ts";
 import { processPlayer } from "./player.ts";
 
