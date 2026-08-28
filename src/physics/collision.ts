@@ -1,8 +1,8 @@
 import { clamp, length, sub, withLength, type Vec3 } from "../core/math.ts";
 
 export interface SphereCollider {
-	position: Vec3,
-	radius: number,
+	pos: Vec3,
+	r: number,
 }
 
 export interface BoxCollider {
@@ -10,22 +10,28 @@ export interface BoxCollider {
 	max: Vec3,
 }
 
-export function penetrateSpheres(a: SphereCollider, b: SphereCollider) {
-	const delta = sub(a.position, b.position)
-	const depth = Math.max(0, a.radius - length(delta) + b.radius)
+export type Collider = SphereCollider | BoxCollider;
+
+export function penetrateSphereGeneric(a: SphereCollider, b: Collider) {
+	return ("r" in b) ? penetrateSphereSphere(a, b) : penetrateSphereCube(a, b)
+}
+
+export function penetrateSphereSphere(a: SphereCollider, b: SphereCollider) {
+	const delta = sub(a.pos, b.pos)
+	const depth = Math.max(0, a.r - length(delta) + b.r)
 	return {
 		depth,
-		depenetration: withLength(delta, depth)
+		depenetration: depth && withLength(delta, depth)
 	};
 }
 
 export function penetrateSphereCube(a: SphereCollider, b: BoxCollider) {
-	const clamped = a.position.map((v, idx) => clamp(v, b.min[idx]!, b.max[idx]!)) as Vec3;
-	const delta = sub(a.position, clamped);
-	const depth = Math.max(0, a.radius - length(delta));
+	const clamped = a.pos.map((v, idx) => clamp(v, b.min[idx]!, b.max[idx]!)) as Vec3;
+	const delta = sub(a.pos, clamped);
+	const depth = Math.max(0, a.r - length(delta));
 	return {
-		closest: clamped,
+		// closest: clamped,
 		depth: depth,
-		depenetration: withLength(delta, depth),
+		depenetration: depth && withLength(delta, depth),
 	};
 }

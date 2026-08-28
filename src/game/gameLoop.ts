@@ -6,10 +6,6 @@ import { processPlayer } from "./player.ts";
 export function processFrame() {
 	processPlayer();
 
-	if (wasKeyJustPressed("Space")) {
-		console.log("space pressed!");
-	}
-
 	drawScene(obj_unicorn, {
 		[ROOT_SLOT]: {
 			translation: [0, 0, -12],

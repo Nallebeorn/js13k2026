@@ -1,4 +1,4 @@
-import { rotateTowards, radtodeg, withLength, IDENTITY, add, type Vec3, length } from "../core/math.ts";
+import { rotateTowards, radtodeg, withLength, IDENTITY, add, type Vec3, length, midpoint } from "../core/math.ts";
 import { delta as deltaTime } from "../core/time.ts";
 import { debugWatch } from "../debug.ts";
 import { COLOR_BLUE, COLOR_GREEN, COLOR_RED } from "../gamedata/colors.ts";
@@ -7,7 +7,7 @@ import {
 	obj_unitCube,
 } from "../gamedata/objects.gen.ts";
 import { isKeyHeld, mouseDeltaX, wasKeyJustPressed } from "../input/input.ts";
-import { penetrateSphereCube, penetrateSpheres, type BoxCollider, type SphereCollider } from "../physics/collision.ts";
+import { penetrateSphereGeneric, penetrateSphereCube, penetrateSphereSphere, type BoxCollider, type Collider, type SphereCollider } from "../physics/collision.ts";
 import { cameraTransform, drawScene, ROOT_SLOT, updateCameraTransform } from "../rendering/renderer.ts";
 
 const SPEED = 10;
@@ -39,47 +39,65 @@ export function processPlayer() {
 
 	rotation = rotateTowards(rotation, -radtodeg(Math.atan2(diry, dirx)) + 90, deltaTime * 720)
 
-	if (y > 0) {
-		vy -= GRAVITY * deltaTime;
-	} else {
-		vy = 0;
+	vy -= GRAVITY * deltaTime;
+	y += vy * deltaTime;
+
+	const playerSphere: SphereCollider = { pos: [x, y, z], r: 0.5 };
+
+	const sphere = (x: number, y: number, z: number): SphereCollider => ({pos: [x, y, z], r: 0.5});
+	const box = (x: number, y: number, z: number): BoxCollider => ({
+		min: add([x, y, z], [-0.5, 0, -0.5]),
+		max: add([x, y, z], [0.5, 1, 0.5])
+	});
+
+	const colliders: Collider[] = [
+		sphere(0, 0, 0),
+		box(2, 0, 0),
+		box(3, 0, 0),
+		box(2.5, 1, 0),
+	];
+
+	let grounded = false;
+	for (const collider of colliders) {
+		const collision = penetrateSphereGeneric(
+			playerSphere,
+			collider
+		);
+
+		if (collision.depenetration) {
+			[x, y, z] = add([x, y, z], collision.depenetration);
+			if (collision.depenetration[1] > 0) {
+				grounded = true;
+			}
+			vy += collision.depenetration[1] / deltaTime;
+		}
+	}
+
+	if (y < 0) {
 		y = 0;
+		grounded = true;
+	}
+
+	if (grounded) {
+		vy = 0;
 
 		if (wasKeyJustPressed("Space")) {
 			vy = 25;
 		}
 	}
 
-
-	y += vy * deltaTime;
-
-	const boxPos: Vec3 = [2, 0, 0];
-	const playerSphere: SphereCollider = { position: [x, y, z], radius: 0.5 };
-	const staticSphere: SphereCollider = { position: [0, 0, 0], radius: 0.5 };
-	const staticBox: BoxCollider = { min: add(boxPos, [-0.5, 0, -0.5]), max: add(boxPos, [0.5, 1, 0.5]) };
-	const collision = penetrateSpheres(
-		playerSphere,
-		staticSphere
-	);
-	debugWatch("penetration", collision.depth.toFixed(3));
-	[x, y, z] = add([x, y, z], collision.depenetration);
-	vy += collision.depenetration[1] / deltaTime;
-
-	const cubeCollision = penetrateSphereCube(playerSphere, staticBox);
-	drawScene(obj_unitSphere, { [ROOT_SLOT]: { translation: cubeCollision.closest, scale: [.5, .5, .5] } }, COLOR_BLUE);
-	debugWatch("cubepen", cubeCollision.depth.toFixed(3));
-	[x, y, z] = add([x, y, z], cubeCollision.depenetration);
-	vy += cubeCollision.depenetration[1] / deltaTime;
-
 	drawScene(
 		obj_unitSphere,
 		{ [ROOT_SLOT]: { translation: [x, y, z] } },
-		collision.depth + cubeCollision.depth > 0 ? COLOR_RED : COLOR_GREEN
-	)
+	);
 
-	drawScene(obj_unitSphere);
-
-	drawScene(obj_unitCube, { [ROOT_SLOT]: { translation: boxPos } });
+	for (const collider of colliders) {
+		if ("r" in collider) {
+				drawScene(obj_unitSphere, {_: { translation: collider.pos}});
+		} else {
+			drawScene(obj_unitCube, { _: { translation: add(midpoint(collider.min, collider.max), [0, -.5, 0]) } });
+		}
+	}
 
 	/* drawScene(obj_unicorn, {
 		[ROOT_SLOT]: {

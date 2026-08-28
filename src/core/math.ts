@@ -47,6 +47,14 @@ export function sub<T extends AnyVec>(lhs: T, rhs: NoInfer<T>): T {
 return lhs.map((a, i) => a - rhs[i]!) as T;
 }
 
+export function scale<T extends AnyVec>(lhs: T, scale: number): T {
+return lhs.map(a => a * scale) as T;
+}
+
+
+export function midpoint<T extends AnyVec>(a: T, b: NoInfer<T>): T {
+	return scale(add(a, b), .5);
+}
 export function dot<T extends AnyVec>(lhs: T, rhs: NoInfer<T>): number {
 	return lhs.reduce((sum, a, i) => sum + a * rhs[i]!, 0);
 }
@@ -68,7 +76,7 @@ export function normalize<T extends AnyVec>(vec: T): T {
 }
 
 export function withLength<T extends AnyVec>(vec: T, len: number): T {
-	return vec.map(a => len && length(vec) && len * a / length(vec)) as T;
+	return vec.map(a => length(vec) && len * a / length(vec)) as T;
 }
 
 export function projectPerspective(fovyFactor: number, aspect: number, near: number): DOMMatrix {
