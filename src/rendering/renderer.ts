@@ -46,37 +46,6 @@ if (DEBUG) {
 	}
 }
 
-// * Set up vertex array buffer
-export interface ObjectInfo {
-	offset: number,
-	size: number,
-}
-
-export function addVertexData(vertices: number[]): ObjectInfo {
-	return {
-		size: vertices.length,
-		offset: vertexData.push(...vertices) - vertices.length,
-	}
-};
-
-const arrayBuffer = gl.createBuffer();
-gl.bindBuffer(GL_ARRAY_BUFFER, arrayBuffer);
-const vertexData: number[] = [];
-
-let objectsBank: DrawCommand[][]
-export async function loadAssets() {
-	objectsBank = deserializeObjects(await (await fetch("b?" + +new Date)).arrayBuffer());
-
-	gl.bufferData(
-			GL_ARRAY_BUFFER,
-			new Float32Array(vertexData),
-			GL_STATIC_DRAW
-		);
-	gl.vertexAttribPointer(0, 4, GL_FLOAT, false, 0, 0);
-	gl.enableVertexAttribArray(0);
-}
-
-
 // * Set up postprocess shader
 gl.useProgram(postProcessShader);
 
@@ -98,6 +67,35 @@ gl.enable(GL_DEPTH_TEST);
 const fov = 2.4; // ≈ TAU/8 radians = 45°
 const aspect = CANVAS_WIDTH / CANVAS_HEIGHT;
 const projectionMatrix = projectPerspective(fov, aspect, 0.1);
+
+finishFrame(); // required to avoid test harness timing out waiting for FCP
+
+// * Set up vertex array buffer
+export interface ObjectInfo {
+	offset: number,
+	size: number,
+}
+
+export function addVertexData(vertices: number[]): ObjectInfo {
+	return {
+		size: vertices.length,
+		offset: vertexData.push(...vertices) - vertices.length,
+	}
+};
+
+const arrayBuffer = gl.createBuffer();
+gl.bindBuffer(GL_ARRAY_BUFFER, arrayBuffer);
+const vertexData: number[] = [];
+
+const objectsBank = deserializeObjects(await (await fetch("b?" + +new Date)).arrayBuffer());
+
+gl.bufferData(
+		GL_ARRAY_BUFFER,
+		new Float32Array(vertexData),
+		GL_STATIC_DRAW
+	);
+gl.vertexAttribPointer(0, 4, GL_FLOAT, false, 0, 0);
+gl.enableVertexAttribArray(0);
 
 // * Render API
 function drawObject(object: ObjectInfo, color: Color, transform: DOMMatrix) {

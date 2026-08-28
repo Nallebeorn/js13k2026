@@ -3,7 +3,7 @@ import { average, ringPush } from "./core/util.ts";
 import { DEBUG, debugWatch } from "./debug.ts";
 import { processFrame } from "./game/gameLoop.ts";
 import { clearFrameInputs, isKeyHeld } from "./input/input.ts";
-import { finishFrame, loadAssets, setupFrame } from "./rendering/renderer.ts";
+import { finishFrame, setupFrame } from "./rendering/renderer.ts";
 
 if (DEBUG) {
 	console.log("ℹ️ DEBUG BUILD");
@@ -16,10 +16,7 @@ const fpsValues: number[] = [];
 const frameTimeValues: number[] = [];
 let framesRendered = 0;
 
-// This little dance (render empty first frame, async asset loading) is only
-// really needed to pass the automated submission tests
-requestAnimationFrame(finishFrame);
-loadAssets().then(() => requestAnimationFrame(onAnimationFrame));
+requestAnimationFrame(onAnimationFrame);
 
 function onAnimationFrame(timestamp: number) {
 	requestAnimationFrame(onAnimationFrame);
