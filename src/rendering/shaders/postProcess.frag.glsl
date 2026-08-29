@@ -17,7 +17,7 @@ void main() {
 		max(
 			abs(texture(d, v*.5+.5 + vec2(2./640., 0)).r  - texture(d, v*.5+.5).r),
 			abs(texture(d, v*.5+.5 + vec2(0, 2./480.)).r  - texture(d, v*.5+.5).r)
-		) > 0.001 // depth outlines
+		) > .0005 // depth outlines
 		// ? vec3(0.902, 0.251, 0.792)
 		?vec3(0.671, 0.322, 0.212)
 		:mix(

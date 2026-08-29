@@ -168,10 +168,10 @@ function runAnimation(): Partial<SlotTransforms> {
 			euler: [Math.sin(runAnimationTime) * 45 + 60, 0, 0],
 		},
 		[obj_unicorn_tail2Slot]: {
-			euler: [Math.sin(runAnimationTime + Math.PI / 2) * 45, 0, 0],
+			euler: [Math.sin(runAnimationTime - Math.PI / 2) * 45, 0, 0],
 		},
 		[obj_unicorn_tail3Slot]: {
-			euler: [Math.sin(runAnimationTime + Math.PI) * 45, 0, 0],
+			euler: [Math.sin(runAnimationTime - Math.PI) * 45, 0, 0],
 		},
 		[obj_unicorn_neckSlot]: {
 			euler: [Math.sin(runAnimationTime) * 15, 0, 0],
