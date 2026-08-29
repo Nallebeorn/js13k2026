@@ -24,7 +24,7 @@ import {
 } from "../gamedata/objects.gen.ts";
 import { isKeyHeld, mouseDeltaX, wasKeyJustPressed } from "../input/input.ts";
 import { penetrateSphereGeneric, penetrateSphereBox, penetrateSphereSphere, type BoxCollider, type Collider, type SphereCollider, penetrateCapsuleGeneric } from "../physics/collision.ts";
-import { cameraTransform, drawScene, ROOT_SLOT, updateCameraTransform } from "../rendering/renderer.ts";
+import { cameraTransform, drawScene, ROOT_SLOT, updateCameraTransform, type SlotTransforms } from "../rendering/renderer.ts";
 
 const SPEED = 10;
 const GRAVITY = 80;
@@ -135,7 +135,6 @@ export function processPlayer() {
 		}
 	}
 
-	const runAnimationTime = currentTime * 17;
 	// const runAnimationTime = Math.PI / 2;
 
 
@@ -144,20 +143,22 @@ export function processPlayer() {
 			translation: [x, y, z],
 			euler: [0, rotation, 0]
 		},
-		// [obj_unicorn_neckSlot]: {
-			// euler: [
-				// Math.sin(currentTime * 10) * 15,
-				// Math.sin(currentTime * 20) * 20,
-				// 0,
-			// ],
-		// },
-		// [obj_unicorn_headSlot]: {
-			// euler: [Math.sin(0.2 + currentTime * 10) * 10, 0, 0],
-		// },
-		// [obj_unicorn_tailSlot]: {
-			// euler: [0, 0, Math.sin(currentTime * 8) * 30],
-		// },
+		...(movex || movey ? runAnimation() : neighAnimation())
+	});
 
+	const moveYaw = mouseDeltaX * .1;
+	cameraRotation += -moveYaw * 180 * deltaTime;
+	updateCameraTransform(
+		IDENTITY
+			.translate(x, y, z)
+			.rotate(0, cameraRotation, 0)
+			.translate(0, 2, 12)
+	);
+}
+
+function runAnimation(): Partial<SlotTransforms> {
+	const runAnimationTime = currentTime * 17;
+	return {
 		[obj_unicorn_bodySlot]: {
 			translation: [0, Math.cos(runAnimationTime) * .1, 0],
 		},
@@ -176,20 +177,20 @@ export function processPlayer() {
 			euler: [Math.cos(runAnimationTime) * 45, 0, 0],
 		},
 		[obj_unicorn_hindKneeRSlot]: {
-			euler: [Math.sin(runAnimationTime) * 60 + 60 , 0, 0],
+			euler: [Math.sin(runAnimationTime) * 60 + 60, 0, 0],
 		},
 		[obj_unicorn_hindHeelRSlot]: {
-			euler: [Math.sin(runAnimationTime) * -90 , 0, 0],
+			euler: [Math.sin(runAnimationTime) * -90, 0, 0],
 		},
 
 		[obj_unicorn_hindLegLSlot]: {
 			euler: [Math.cos(runAnimationTime + 1) * 45, 0, 0],
 		},
 		[obj_unicorn_hindKneeLSlot]: {
-			euler: [Math.sin(runAnimationTime + 1) * 60 + 60 , 0, 0],
+			euler: [Math.sin(runAnimationTime + 1) * 60 + 60, 0, 0],
 		},
 		[obj_unicorn_hindHeelLSlot]: {
-			euler: [Math.sin(runAnimationTime + 1) * -90 - 45 , 0, 0],
+			euler: [Math.sin(runAnimationTime + 1) * -90 - 45, 0, 0],
 		},
 
 		[obj_unicorn_foreLegRSlot]: {
@@ -205,14 +206,23 @@ export function processPlayer() {
 		[obj_unicorn_foreLegBowLSlot]: {
 			euler: [Math.sin(runAnimationTime + Math.PI + 1) * -45 + 45, 0, 0]
 		},
-	});
+	};
+}
 
-	const moveYaw = mouseDeltaX * .1;
-	cameraRotation += -moveYaw * 180 * deltaTime;
-	updateCameraTransform(
-		IDENTITY
-			.translate(x, y, z)
-			.rotate(0, cameraRotation, 0)
-			.translate(0, 2, 12)
-	);
+function neighAnimation(): Partial<SlotTransforms> {
+	return {
+		[obj_unicorn_neckSlot]: {
+			euler: [
+				Math.sin(currentTime * 10) * 15,
+				Math.sin(currentTime * 20) * 20,
+				0,
+			],
+		},
+		[obj_unicorn_headSlot]: {
+			euler: [Math.sin(0.2 + currentTime * 10) * 10, 0, 0],
+		},
+		[obj_unicorn_tailSlot]: {
+			euler: [0, 0, Math.sin(currentTime * 8) * 30],
+		},
+	};
 }

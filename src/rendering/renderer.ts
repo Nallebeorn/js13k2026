@@ -110,7 +110,9 @@ function drawObject(object: ObjectInfo, color: Color, transform: DOMMatrix) {
 	gl.drawArrays(GL_TRIANGLES, object.offset / 4, object.size / 4);
 }
 
-export function drawScene(scene: SceneHandle, slotTransforms?: Record<number | "_", Transform>, color_override?: Color) {
+export type SlotTransforms = Record<number | "_", Transform>;
+
+export function drawScene(scene: SceneHandle, slotTransforms?: SlotTransforms, color_override?: Color) {
 	transformStack.push(transformStack.at(-1)!.multiply(createMatrix(slotTransforms?.[ROOT_SLOT])))
 	let transformSlotIndex = 0;
 	objectsBank[scene]!.map(command => {
