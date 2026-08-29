@@ -1,4 +1,4 @@
-import { rotateTowards, radtodeg, withLength, IDENTITY, add, type Vec3, length, midpoint, normalize, scale } from "../core/math.ts";
+import { rotateTowards, radtodeg, withLength, IDENTITY, add, type Vec3, length, midpoint, normalize, scale, dot } from "../core/math.ts";
 import { currentTime, delta as deltaTime } from "../core/time.ts";
 import { debugWatch } from "../debug.ts";
 import { COLOR_BLUE, COLOR_GREEN, COLOR_RED } from "../gamedata/colors.ts";
@@ -44,6 +44,7 @@ export function processPlayer() {
 
 	rotation = rotateTowards(rotation, -radtodeg(Math.atan2(diry, dirx)) + 90, deltaTime * 720)
 
+	vy -= GRAVITY * deltaTime;
 	y += vy * deltaTime;
 
 	const sphere = (x: number, y: number, z: number): SphereCollider => ({pos: [x, y, z], r: 0.5});
@@ -57,6 +58,7 @@ export function processPlayer() {
 		box(2, 0, 0),
 		box(3, 0, 0),
 		box(2.5, 1, 0),
+		// {min: [2, 2, -0.5], max: [3, 20, 0.5]}
 		box(2.5, 2, 0),
 		box(2.5, 3, 0),
 		box(2.5, 4, 0),
@@ -64,39 +66,37 @@ export function processPlayer() {
 		box(2.5, 6, 0),
 	];
 
-	let grounded = false;
-	for (const levelCollider of colliders) {
-		for (const playerCollider of [
-			[0, 0, 0],
-			[0, - 1,0],
-			[-dirx, 0, -diry],
-			[-dirx, -1, -diry],
-		] satisfies Vec3[]) {
-			const collision = penetrateSphereGeneric(
-				add(playerCollider, [x, y, z]),
-				0.5,
-				levelCollider
-			);
+	function* enumerateCollisions() {
+		for (const levelCollider of colliders) {
+			for (const playerCollider of [
+				[0, 0, 0],
+				[0, -1, 0],
+				[-dirx, 0, -diry],
+				[-dirx, -1, -diry],
+			] satisfies Vec3[]) {
+				const collision = penetrateSphereGeneric(
+					add(playerCollider, [x, y, z]),
+					0.5,
+					levelCollider,
+				);
 
-			if (collision.depenetration) {
-				[x, y, z] = add([x, y, z], collision.depenetration);
-				// debugWatch("y-depen", collision.depenetration[1]);
-				if (collision.depenetration[1] > 0) {
-					// grounded = true;
-					// vy = 0;
+				if (collision.depenetration) {
+					yield collision.depenetration;
 				}
-				vy += collision.depenetration[1] / deltaTime;
 			}
-
-			/* if ("projected" in collision) {
-				drawScene(obj_unitSphere, {
-					_: {
-						translation: collision.projected as Vec3,
-					}
-				});
-			} */
 		}
+	}
 
+	for (const depenetration of enumerateCollisions()) {
+		x += depenetration[0];
+		z += depenetration[2];
+	}
+
+	let grounded = false;
+	for (const depenetration of enumerateCollisions()) {
+		y += depenetration[1];
+		vy += depenetration[1] / deltaTime;
+		grounded = true;
 	}
 
 	if (y <= 0) {
@@ -113,7 +113,7 @@ export function processPlayer() {
 			vy = 25;
 		}
 	} else {
-		vy -= GRAVITY * deltaTime;
+
 	}
 
 	for (const collider of colliders) {
