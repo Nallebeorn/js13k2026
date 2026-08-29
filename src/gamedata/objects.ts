@@ -171,8 +171,27 @@ export default [
 						translate: [0, 0.1, -0.5],
 						euler: [-170, 0, 0],
 						bottomRadius: 0.1,
-						height: 1,
+						height: 0.33,
 						topRadius: 0.2,
+						children: [
+							{
+								shape: "pill",
+								slotName: "tail2",
+								translate: [0, 0.33, 0],
+								bottomRadius: 0.2,
+								height: 0.33,
+								children: [
+									{
+										shape: "pill",
+										slotName: "tail3",
+										translate: [0, 0.33, 0],
+										bottomRadius: 0.2,
+										height: 0.33,
+										topRadius: 0.1,
+									}
+								]
+							}
+						]
 					},
 				],
 			},

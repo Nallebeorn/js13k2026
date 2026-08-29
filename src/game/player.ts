@@ -21,6 +21,8 @@ import {
 	obj_unicorn_foreLegBowRSlot,
 	obj_unicorn_foreLegBowLSlot,
 	obj_unicorn_bodySlot,
+	obj_unicorn_tail2Slot,
+	obj_unicorn_tail3Slot,
 } from "../gamedata/objects.gen.ts";
 import { isKeyHeld, mouseDeltaX, wasKeyJustPressed } from "../input/input.ts";
 import { penetrateSphereGeneric, penetrateSphereBox, penetrateSphereSphere, type BoxCollider, type Collider, type SphereCollider, penetrateCapsuleGeneric } from "../physics/collision.ts";
@@ -165,6 +167,12 @@ function runAnimation(): Partial<SlotTransforms> {
 		[obj_unicorn_tailSlot]: {
 			euler: [Math.sin(runAnimationTime) * 45 + 60, 0, 0],
 		},
+		[obj_unicorn_tail2Slot]: {
+			euler: [Math.sin(runAnimationTime + Math.PI / 2) * 45, 0, 0],
+		},
+		[obj_unicorn_tail3Slot]: {
+			euler: [Math.sin(runAnimationTime + Math.PI) * 45, 0, 0],
+		},
 		[obj_unicorn_neckSlot]: {
 			euler: [Math.sin(runAnimationTime) * 15, 0, 0],
 		},
@@ -222,7 +230,13 @@ function neighAnimation(): Partial<SlotTransforms> {
 			euler: [Math.sin(0.2 + currentTime * 10) * 10, 0, 0],
 		},
 		[obj_unicorn_tailSlot]: {
-			euler: [0, 0, Math.sin(currentTime * 8) * 30],
+			euler: [0, 0, Math.sin(currentTime * 8) * 15],
+		},
+		[obj_unicorn_tail2Slot]: {
+			euler: [0, 0, Math.sin(currentTime * 8) * 15],
+		},
+		[obj_unicorn_tail3Slot]: {
+			euler: [0, 0, Math.sin(currentTime * 8) * 15],
 		},
 	};
 }
