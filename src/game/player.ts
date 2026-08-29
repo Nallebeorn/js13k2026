@@ -10,6 +10,17 @@ import {
 	obj_unicorn_headSlot,
 	obj_unicorn_tailSlot,
 	obj_playerCollider,
+	obj_unicorn_hindLegRSlot,
+	obj_unicorn_hindKneeRSlot,
+	obj_unicorn_hindHeelRSlot,
+	obj_unicorn_hindLegLSlot,
+	obj_unicorn_hindKneeLSlot,
+	obj_unicorn_hindHeelLSlot,
+	obj_unicorn_foreLegRSlot,
+	obj_unicorn_foreLegLSlot,
+	obj_unicorn_foreLegBowRSlot,
+	obj_unicorn_foreLegBowLSlot,
+	obj_unicorn_bodySlot,
 } from "../gamedata/objects.gen.ts";
 import { isKeyHeld, mouseDeltaX, wasKeyJustPressed } from "../input/input.ts";
 import { penetrateSphereGeneric, penetrateSphereBox, penetrateSphereSphere, type BoxCollider, type Collider, type SphereCollider, penetrateCapsuleGeneric } from "../physics/collision.ts";
@@ -54,7 +65,7 @@ export function processPlayer() {
 	});
 
 	const colliders: Collider[] = [
-		sphere(0, 0, 0),
+		// sphere(0, 0, 0),
 		box(2, 0, 0),
 		box(3, 0, 0),
 		box(2.5, 1, 0),
@@ -95,8 +106,10 @@ export function processPlayer() {
 	let grounded = false;
 	for (const depenetration of enumerateCollisions()) {
 		y += depenetration[1];
-		vy += depenetration[1] / deltaTime;
-		grounded = true;
+		if (normalize(depenetration)[1] > 0.5) {
+			vy += depenetration[1] / deltaTime;
+			grounded = true;
+		}
 	}
 
 	if (y <= 0) {
@@ -112,8 +125,6 @@ export function processPlayer() {
 		if (wasKeyJustPressed("Space")) {
 			vy = 25;
 		}
-	} else {
-
 	}
 
 	for (const collider of colliders) {
@@ -124,23 +135,75 @@ export function processPlayer() {
 		}
 	}
 
+	const runAnimationTime = currentTime * 17;
+	// const runAnimationTime = Math.PI / 2;
+
+
 	drawScene(obj_unicorn, {
 		[ROOT_SLOT]: {
 			translation: [x, y, z],
 			euler: [0, rotation, 0]
 		},
-		[obj_unicorn_neckSlot]: {
-			euler: [
-				Math.sin(currentTime * 10) * 15,
-				Math.sin(currentTime * 20) * 20,
-				0,
-			],
-		},
-		[obj_unicorn_headSlot]: {
-			euler: [Math.sin(0.2 + currentTime * 10) * 10, 0, 0],
+		// [obj_unicorn_neckSlot]: {
+			// euler: [
+				// Math.sin(currentTime * 10) * 15,
+				// Math.sin(currentTime * 20) * 20,
+				// 0,
+			// ],
+		// },
+		// [obj_unicorn_headSlot]: {
+			// euler: [Math.sin(0.2 + currentTime * 10) * 10, 0, 0],
+		// },
+		// [obj_unicorn_tailSlot]: {
+			// euler: [0, 0, Math.sin(currentTime * 8) * 30],
+		// },
+
+		[obj_unicorn_bodySlot]: {
+			translation: [0, Math.cos(runAnimationTime) * .1, 0],
 		},
 		[obj_unicorn_tailSlot]: {
-			euler: [0, 0, Math.sin(currentTime * 8) * 30],
+			euler: [Math.sin(runAnimationTime) * 45 + 60, 0, 0],
+		},
+		[obj_unicorn_neckSlot]: {
+			euler: [Math.sin(runAnimationTime) * 15, 0, 0],
+		},
+		[obj_unicorn_headSlot]: {
+			euler: [Math.sin(runAnimationTime) * -10, 0, 0],
+		},
+
+
+		[obj_unicorn_hindLegRSlot]: {
+			euler: [Math.cos(runAnimationTime) * 45, 0, 0],
+		},
+		[obj_unicorn_hindKneeRSlot]: {
+			euler: [Math.sin(runAnimationTime) * 60 + 60 , 0, 0],
+		},
+		[obj_unicorn_hindHeelRSlot]: {
+			euler: [Math.sin(runAnimationTime) * -90 , 0, 0],
+		},
+
+		[obj_unicorn_hindLegLSlot]: {
+			euler: [Math.cos(runAnimationTime + 1) * 45, 0, 0],
+		},
+		[obj_unicorn_hindKneeLSlot]: {
+			euler: [Math.sin(runAnimationTime + 1) * 60 + 60 , 0, 0],
+		},
+		[obj_unicorn_hindHeelLSlot]: {
+			euler: [Math.sin(runAnimationTime + 1) * -90 - 45 , 0, 0],
+		},
+
+		[obj_unicorn_foreLegRSlot]: {
+			euler: [Math.cos(runAnimationTime + Math.PI) * 30 - 30, 0, 0],
+		},
+		[obj_unicorn_foreLegBowRSlot]: {
+			euler: [Math.sin(runAnimationTime + Math.PI) * -45 + 45, 0, 0]
+		},
+
+		[obj_unicorn_foreLegLSlot]: {
+			euler: [Math.cos(runAnimationTime + Math.PI + 1) * 30 - 45, 0, 0],
+		},
+		[obj_unicorn_foreLegBowLSlot]: {
+			euler: [Math.sin(runAnimationTime + Math.PI + 1) * -45 + 45, 0, 0]
 		},
 	});
 

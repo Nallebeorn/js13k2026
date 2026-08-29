@@ -15,6 +15,8 @@ import {
 } from "./colors.ts";
 import type { ObjectDescriptor, ObjectNode } from "./objectsSchema.ts";
 
+const side = (s: number) => s < 0 ? "R" : "L";
+
 export default [
 	{
 		// ? unicorn
@@ -22,6 +24,7 @@ export default [
 		nodes: [
 			{
 				translate: [0, 0, -1],
+				slotName: "body",
 				children: [
 					...[-1, 1].flatMap((s): ObjectNode[] => [
 						{
@@ -33,6 +36,7 @@ export default [
 							bottomRadius: 0.5,
 							height: 0.7,
 							topRadius: 0.2,
+							slotName: "hindLeg" + side(s),
 							children: [
 								{
 									shape: "pill",
@@ -40,6 +44,7 @@ export default [
 									translate: [0, .7, 0],
 									bottomRadius: 0.2,
 									height: .2,
+									slotName: "hindKnee" + side(s),
 									children: [
 										{
 											shape: "pill",
@@ -48,6 +53,7 @@ export default [
 											bottomRadius: 0.2,
 											height: .4,
 											topRadius: 0.1,
+											slotName: "hindHeel" + side(s),
 											children: [
 												{
 													shape: "box", // hooves
@@ -72,6 +78,7 @@ export default [
 							bottomRadius: 0.2,
 							height: 1.0,
 							topRadius: 0.1,
+							slotName: "foreLeg" + side(s),
 							children: [
 								{
 									shape: "pill",
@@ -79,6 +86,7 @@ export default [
 									bottomRadius: 0.1,
 									height: 0.4,
 									topRadius: 0.1,
+									slotName: "foreLegBow" + side(s),
 									children: [
 										{
 											shape: "box", // hooves
