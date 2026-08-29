@@ -38,8 +38,8 @@ export function processPlayer() {
 	z += move.z;
 
 	if (movex || movey) {
-		dirx = move.x;
-		diry = move.z;
+		[dirx, , diry] = normalize([move.x, , move.z] as unknown as Vec3);
+
 	}
 
 	rotation = rotateTowards(rotation, -radtodeg(Math.atan2(diry, dirx)) + 90, deltaTime * 720)
@@ -57,39 +57,54 @@ export function processPlayer() {
 		box(2, 0, 0),
 		box(3, 0, 0),
 		box(2.5, 1, 0),
+		box(2.5, 2, 0),
+		box(2.5, 3, 0),
+		box(2.5, 4, 0),
+		box(2.5, 5, 0),
+		box(2.5, 6, 0),
 	];
 
 	let grounded = false;
-	for (const collider of colliders) {
-		const collision = penetrateCapsuleGeneric(
-			[x, y - 1, z],
-			scale(normalize([dirx, 0, diry]), .75),
-			0.5,
-			collider
-		);
+	for (const levelCollider of colliders) {
+		for (const playerCollider of [
+			[0, 0, 0],
+			[0, - 1,0],
+			[-dirx, 0, -diry],
+			[-dirx, -1, -diry],
+		] satisfies Vec3[]) {
+			const collision = penetrateSphereGeneric(
+				add(playerCollider, [x, y, z]),
+				0.5,
+				levelCollider
+			);
 
-		if (collision.depenetration) {
-			[x, y, z] = add([x, y, z], collision.depenetration);
-			if (collision.depenetration[1] > 0) {
-				grounded = true;
-				vy = 0;
+			if (collision.depenetration) {
+				[x, y, z] = add([x, y, z], collision.depenetration);
+				// debugWatch("y-depen", collision.depenetration[1]);
+				if (collision.depenetration[1] > 0) {
+					// grounded = true;
+					// vy = 0;
+				}
+				vy += collision.depenetration[1] / deltaTime;
 			}
-			vy += collision.depenetration[1] / deltaTime;
+
+			/* if ("projected" in collision) {
+				drawScene(obj_unitSphere, {
+					_: {
+						translation: collision.projected as Vec3,
+					}
+				});
+			} */
 		}
 
-		/* if ("projected" in collision) {
-			drawScene(obj_unitSphere, {
-				_: {
-					translation: collision.projected as Vec3,
-				}
-			});
-		} */
 	}
 
-	if (y < 0) {
+	if (y <= 0) {
 		y = 0;
 		grounded = true;
 	}
+
+	debugWatch("grounded", grounded ? 1 : 0);
 
 	if (grounded) {
 		vy = 0;
@@ -108,9 +123,6 @@ export function processPlayer() {
 			drawScene(obj_unitCube, { _: { translation: add(midpoint(collider.min, collider.max), [0, -.5, 0]) } });
 		}
 	}
-
-
-
 
 	drawScene(obj_unicorn, {
 		[ROOT_SLOT]: {
