@@ -60,7 +60,7 @@ export default [
 													shape: "box", // hooves
 													translate: [0, 0.4, 0],
 													euler: [10, 0, 0],
-													color: COLOR_VIOLET,
+													color: COLOR_DARKGREY,
 													a1: 0.2,
 													b2: 0.4,
 												}
@@ -92,7 +92,7 @@ export default [
 										{
 											shape: "box", // hooves
 											translate: [0, 0.4, 0],
-											color: COLOR_VIOLET,
+											color: COLOR_DARKGREY,
 											a1: 0.2,
 											height: 0.2,
 											b2: 0.4,
@@ -131,7 +131,7 @@ export default [
 									{
 										shape: "pill", // eyes
 										translate: [s * (0.3 + 0.01), 0.2, -0.15],
-										color: COLOR_VIOLET,
+										color: COLOR_DARKGREY,
 										bottomRadius: 0.05,
 									},
 									{
@@ -215,6 +215,18 @@ export default [
 				shape: "box",
 				color: COLOR_WHITE,
 				a1: 1,
+			}
+		]
+	},
+	{
+		name: "cube2x2x1",
+		nodes: [
+			{
+				shape: "box",
+				color: COLOR_WHITE,
+				a1: 2,
+				b1: 2,
+				height: 1,
 			}
 		]
 	},

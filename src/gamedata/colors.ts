@@ -2,19 +2,19 @@ import type { Vec4 } from "../core/math.ts";
 import { COLOR_MASK } from "./binformatHelpers.ts";
 
 export const colors = [
-	0x000000,
-	0x5F574F,
-	0xC2C3C7,
-	0xFFF1E8,
-	0xFF004D,
-	0xFFA300,
-	0xFFEC27,
-	0x00E436,
-	0x29ADFF,
-	0x294BE7,
-	0x1D2B53,
-	0xFF77A8,
-	0xFFCCAA
+	0x000000, // COLOR_BLACK
+	0x5F574F, // COLOR_DARKGREY
+	0xC2C3C7, // COLOR_LIGHTGREY
+	0xFFF1E8, // COLOR_WHITE
+	0xFF004D, // COLOR_RED,
+	0xFFA300, // COLOR_ORANGE
+	0xFFEC27, // COLOR_YELLOW
+	0x00E436, // COLOR_GREEN
+	0x29ADFF, // COLOR_CYAN
+	0x294BE7, // COLOR_BLUE
+	0x9548FA, // COLOR_VIOLET
+	0xFF77A8, // COLOR_PINK
+	0xFFCCAA, // COLOR_PEACH
 ].map(hex => [(hex>>16), (hex&0x00ff00)>>8, hex&0xff, 0xff].map(x=>x/0xff) as Vec4);
 
 export const COLOR_BLACK = 0;

@@ -20,9 +20,17 @@ export function clamp(x: number, min: number, max: number) {
 	return x < min ? min : (x > max ? max : x);
 }
 
+export function lerp(a: number, b: number, t: number) {
+	return a + (b - a) * t;
+}
+
+export function spring(current: number, currentSpeed: number): number {
+	return lerp(currentSpeed, -current * 5, 0.2);
+}
+
 export type Vec2 = [number, number];
 export type Vec3 = [number, number, number];
-export type Vec4 = [number, number, number, number];
+export type Vec4 = [number, number, number, number];	
 
 export type AnyVec = Vec2 | Vec3 | Vec4;
 

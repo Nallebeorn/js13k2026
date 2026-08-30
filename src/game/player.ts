@@ -1,4 +1,4 @@
-import { rotateTowards, radtodeg, withLength, IDENTITY, add, type Vec3, midpoint, normalize, TAU, length, scale, sub, dot } from "../core/math.ts";
+import { rotateTowards, radtodeg, withLength, IDENTITY, add, type Vec3, midpoint, normalize, TAU, length, scale, sub, dot, clamp, spring } from "../core/math.ts";
 import { currentTime, delta as deltaTime } from "../core/time.ts";
 import { debugWatch } from "../debug.ts";
 import {
@@ -21,15 +21,20 @@ import {
 	obj_unicorn_bodySlot,
 	obj_unicorn_tail2Slot,
 	obj_unicorn_tail3Slot,
+	obj_cube2x2x1,
 } from "../gamedata/objects.gen.ts";
-import { isKeyHeld, mouseDeltaX, wasKeyJustPressed } from "../input/input.ts";
+import { isKeyHeld, mouseDeltaX, mouseDeltaY, wasKeyJustPressed } from "../input/input.ts";
 import { penetrateSphereGeneric, type BoxCollider, type Collider, type SphereCollider } from "../physics/collision.ts";
 import { cameraTransform, drawObject, ROOT_SLOT, updateCameraTransform, type SlotTransforms } from "../rendering/renderer.ts";
 
 const SPEED = 15;
+const BOOST_SPEED = 25;
+const BOOST_DURATION = 1;
 const ACCELERATION = 30;
-const DECELERATION = 40;
-const GRAVITY = 80;
+const DECELERATION = 60;
+const JUMP_SPEED = 30;
+const WALL_JUMP_SPEED = 40;
+const GRAVITY = 100;
 
 let x = 0;
 let y = 0;
@@ -40,10 +45,83 @@ let diry = 0;
 let vx = 0;
 let vy = 0;
 let vz = 0;
+let boostCharge = 0;
+let wallJumping = false;
 
-let cameraRotation = 0;
+let springSpd = 0;
+let springRot = 0;
+
+let cameraYaw = 180;
+let cameraPitch = 0;
+
+enum PlayerState {
+	MOVING,
+	WALL_LODGE,
+}
+
+let state = PlayerState.MOVING;
+
+const sphere = (x: number, y: number, z: number): SphereCollider => ({
+	pos: [x, y, z],
+	r: 0.5,
+});
+
+const box = (x: number, y: number, z: number): BoxCollider => ({
+	min: add([x, y, z], [-1, -1.5, -1]),
+	max: add([x, y, z], [1, -0.5, 1]),
+});
+
+const colliders: Collider[] = [
+	sphere(0, 0, 0),
+	box(2, 0, 0),
+	box(2, 1, 0),
+	box(2, 2, 0),
+	box(2, 3, 0),
+	box(2, 4, 0),
+
+	box(-1, 0, 0),
+	box(-1, 1, 0),
+	box(2, 5, 0),
+	box(2, 6, 0),
+];
 
 export function processPlayer() {
+	if (state == PlayerState.MOVING) processMovingState();
+	if (state == PlayerState.WALL_LODGE) processWallLodgedState();
+
+	// ? Draw level
+	for (const collider of colliders) {
+		if ("r" in collider) {
+				drawObject(obj_unitSphere, {_: { translation: collider.pos}});
+		} else {
+			drawObject(obj_cube2x2x1, { _: { translation: add(midpoint(collider.min, collider.max), [0, -.5, 0]) } });
+		}
+	}
+
+	// ? Draw unicorn
+	drawObject(obj_unicorn, {
+		[ROOT_SLOT]: {
+			translation: [x, y, z],
+			euler: [springRot, rotation, 0]
+		},
+		...getAnimation()
+	});
+
+	// ? Camera controls
+	const moveYaw = mouseDeltaX * .1;
+	const movePitch = mouseDeltaY * .1;
+	cameraYaw += -moveYaw * 180 * deltaTime;
+	cameraPitch = clamp(cameraPitch - movePitch * 180 * deltaTime, -80, 30)
+	debugWatch("pitch", cameraPitch.toFixed(3));
+	updateCameraTransform(
+		IDENTITY
+			.translate(x, y, z)
+			.rotate(cameraPitch, cameraYaw, 0)
+			.translate(0, 2, 12)
+	);
+}
+
+function processMovingState() {
 	const [movex, movey] = withLength(
 		[isKeyHeld("KeyD") - isKeyHeld("KeyA"), isKeyHeld("KeyS") - isKeyHeld("KeyW")],
 		ACCELERATION * deltaTime
@@ -51,11 +129,6 @@ export function processPlayer() {
 	const move = cameraTransform.transformPoint(new DOMPoint(movex, 0, movey, 0));
 	vx += move.x;
 	vz += move.z;
-
-
-	const speed = length([vx, 0, vz]);
-	[vx, , vz] = withLength([vx, 0, vz], Math.min(SPEED, speed));
-	debugWatch("speed", speed.toFixed(3));
 
 	if (movex || movey) {
 		[dirx, , diry] = normalize([move.x, , move.z] as unknown as Vec3);
@@ -69,32 +142,16 @@ export function processPlayer() {
 		[vx, , vz] = sub([vx, 0, vz], decel);
 	}
 
+	const speed = length([vx, 0, vz]);
+	[vx, , vz] = withLength([vx, 0, vz], Math.min(boostCharge > BOOST_DURATION ? BOOST_SPEED : SPEED, speed));
+	debugWatch("speed", speed.toFixed(3));
+
 	rotation = rotateTowards(rotation, -radtodeg(Math.atan2(diry, dirx)) + 90, deltaTime * 720)
 
 	vy -= GRAVITY * deltaTime;
 	y += vy * deltaTime;
 	x += vx * deltaTime;
 	z += vz * deltaTime;
-
-
-	const sphere = (x: number, y: number, z: number): SphereCollider => ({pos: [x, y, z], r: 0.5});
-	const box = (x: number, y: number, z: number): BoxCollider => ({
-		min: add([x, y, z], [-0.5, 0, -0.5]),
-		max: add([x, y, z], [0.5, 1, 0.5])
-	});
-
-	const colliders: Collider[] = [
-		// sphere(0, 0, 0),
-		box(2, 0, 0),
-		box(3, 0, 0),
-		box(2.5, 1, 0),
-		// {min: [2, 2, -0.5], max: [3, 20, 0.5]}
-		box(2.5, 2, 0),
-		box(2.5, 3, 0),
-		box(2.5, 4, 0),
-		box(2.5, 5, 0),
-		box(2.5, 6, 0),
-	];
 
 	function* enumerateCollisions() {
 		for (const levelCollider of colliders) {
@@ -119,7 +176,16 @@ export function processPlayer() {
 
 	for (const depenetration of enumerateCollisions()) {
 		x += depenetration[0];
+		vx += depenetration[0] / deltaTime;
 		z += depenetration[2];
+		vz += depenetration[2] / deltaTime;
+		if (dot(normalize(depenetration), [-dirx, 0, -diry]) > 0.6 && boostCharge > BOOST_DURATION) {
+			state = PlayerState.WALL_LODGE;
+			x -= dirx * .8;
+			z -= diry * .8;
+			boostCharge = 0;
+			springRot = 45;
+		}
 	}
 
 	let grounded = false;
@@ -140,43 +206,51 @@ export function processPlayer() {
 
 	if (grounded) {
 		vy = 0;
+		wallJumping = false;
+
+		if (speed >= SPEED) {
+			boostCharge += deltaTime;
+			debugWatch("boost", boostCharge.toFixed(2));
+		} else {
+			boostCharge = 0;
+		}
 
 		if (wasKeyJustPressed("Space")) {
-			vy = 25;
+			vy = JUMP_SPEED;
 		}
 	}
+}
 
-	for (const collider of colliders) {
-		if ("r" in collider) {
-				drawObject(obj_unitSphere, {_: { translation: collider.pos}});
+function processWallLodgedState() {
+	if (isKeyHeld("Space")) {
+		springSpd = 0;
+		springRot = Math.max(springRot - 90 * deltaTime, -60);
+	} else {
+		if (springRot <= -60) {
+			state = PlayerState.MOVING;
+			vy = WALL_JUMP_SPEED;
+			wallJumping = true;
+			springRot = 0;
+			springSpd = 0;
 		} else {
-			drawObject(obj_unitCube, { _: { translation: add(midpoint(collider.min, collider.max), [0, -.5, 0]) } });
+			springSpd = spring(springRot, springSpd);
+			springRot += springSpd;
 		}
 	}
+}
 
-	// const runAnimationTime = Math.PI / 2;
-
-
-	drawObject(obj_unicorn, {
-		[ROOT_SLOT]: {
-			translation: [x, y, z],
-			euler: [0, rotation, 0]
-		},
-		...(vx || vz ? runAnimation() : neighAnimation())
-	});
-
-	const moveYaw = mouseDeltaX * .1;
-	cameraRotation += -moveYaw * 180 * deltaTime;
-	updateCameraTransform(
-		IDENTITY
-			.translate(x, y, z)
-			.rotate(0, cameraRotation, 0)
-			.translate(0, 2, 12)
-	);
+function getAnimation(): Partial<SlotTransforms> {
+	if (state == PlayerState.WALL_LODGE) return wallLodgedAnimation();
+	if (vy != 0 && wallJumping) return wallJumpAnimation();
+	if (vy != 0 && boostCharge > BOOST_DURATION) return boostJumpAnimation();
+	if (vy > 0) return jumpAnimation();
+	if (vy < 0) return fallAnimation();
+	if (vx || vz) return runAnimation();
+	return idleAnimation();
 }
 
 function runAnimation(): Partial<SlotTransforms> {
-	const runAnimationTime = currentTime * 19;
+	const runAnimationTime = boostCharge > BOOST_DURATION ? currentTime * 30 : currentTime * 19;
 	return {
 		[obj_unicorn_bodySlot]: {
 			translation: [0, Math.cos(runAnimationTime) * .1, 0],
@@ -185,10 +259,10 @@ function runAnimation(): Partial<SlotTransforms> {
 			euler: [Math.sin(runAnimationTime) * 45 + 60, 0, 0],
 		},
 		[obj_unicorn_tail2Slot]: {
-			euler: [Math.sin(runAnimationTime - Math.PI / 2) * 45, 0, 0],
+			euler: [Math.sin(runAnimationTime - 1) * 45, 0, 0],
 		},
 		[obj_unicorn_tail3Slot]: {
-			euler: [Math.sin(runAnimationTime - Math.PI) * 45, 0, 0],
+			euler: [Math.sin(runAnimationTime - 2) * 45, 0, 0],
 		},
 		[obj_unicorn_neckSlot]: {
 			euler: [Math.sin(runAnimationTime) * 15, 0, 0],
@@ -234,7 +308,7 @@ function runAnimation(): Partial<SlotTransforms> {
 	};
 }
 
-function neighAnimation(): Partial<SlotTransforms> {
+function idleAnimation(): Partial<SlotTransforms> {
 	const t = ((currentTime * 10 / Math.PI) % 14) <= 4 ? currentTime * 10 : 0;
 
 	return {
@@ -258,4 +332,171 @@ function neighAnimation(): Partial<SlotTransforms> {
 			euler: [0, 0, Math.sin(currentTime * 8) * 15],
 		},
 	};
+}
+
+function jumpAnimation(): Partial<SlotTransforms> {
+	return {
+		[obj_unicorn_bodySlot]: {
+			euler: [-15, 0, 0],
+		},
+		[obj_unicorn_headSlot]: {
+			euler: [10, 0, 0],
+		},
+
+		[obj_unicorn_foreLegRSlot]: {
+			euler: [-60, 0, 0]
+		},
+		[obj_unicorn_foreLegBowRSlot]: {
+			euler: [120, 0, 0],
+		},
+		[obj_unicorn_foreLegLSlot]: {
+			euler: [-60, 0, 0]
+		},
+		[obj_unicorn_foreLegBowLSlot]: {
+			euler: [120, 0, 0],
+		},
+
+		[obj_unicorn_hindLegRSlot]: {
+			euler: [45, 0, 0]
+		},
+		[obj_unicorn_hindLegLSlot]: {
+			euler: [45, 0, 0]
+		},
+
+		[obj_unicorn_tailSlot]: {
+			euler: [Math.sin(currentTime * 19) * 45 + 60, 0, 0],
+		},
+		[obj_unicorn_tail2Slot]: {
+			euler: [Math.sin(currentTime * 19 - 1) * 45, 0, 0],
+		},
+		[obj_unicorn_tail3Slot]: {
+			euler: [Math.sin(currentTime * 19 - 2) * 45, 0, 0],
+		},
+	}
+}
+
+function fallAnimation(): Partial<SlotTransforms> {
+	return {
+		[obj_unicorn_bodySlot]: {
+			euler: [15, 0, 0],
+		},
+		[obj_unicorn_headSlot]: {
+			euler: [-10, 0, 0],
+		},
+
+		[obj_unicorn_foreLegRSlot]: {
+			euler: [-45, 0, 0]
+		},
+
+		[obj_unicorn_foreLegLSlot]: {
+			euler: [-60, 0, 0]
+		},
+		[obj_unicorn_foreLegBowLSlot]: {
+			euler: [15, 0, 0],
+		},
+
+		[obj_unicorn_hindLegRSlot]: {
+			euler: [-45, 0, 0]
+		},
+		[obj_unicorn_hindKneeRSlot]: {
+			euler: [90, 0, 0],
+		},
+		[obj_unicorn_hindHeelRSlot]: {
+			euler: [-90, 0, 0],
+		},
+
+		[obj_unicorn_hindLegLSlot]: {
+			euler: [-45, 0, 0]
+		},
+		[obj_unicorn_hindKneeLSlot]: {
+			euler: [90, 0, 0],
+		},
+		[obj_unicorn_hindHeelLSlot]: {
+			euler: [-90, 0, 0],
+		},
+
+		[obj_unicorn_tailSlot]: {
+			euler: [Math.sin(currentTime * 19) * 45 + 120, 0, 0],
+		},
+		[obj_unicorn_tail2Slot]: {
+			euler: [Math.sin(currentTime * 19 - 1) * 45, 0, 0],
+		},
+		[obj_unicorn_tail3Slot]: {
+			euler: [Math.sin(currentTime * 19 - 2) * 45, 0, 0],
+		},
+	}
+}
+
+function boostJumpAnimation(): Partial<SlotTransforms> {
+	return {
+		[obj_unicorn_bodySlot]: {
+			euler: [0, 0, currentTime * 1666]
+		},
+		[obj_unicorn_neckSlot]: {
+			euler: [45, 0, 0],
+		},
+		[obj_unicorn_foreLegBowRSlot]: {
+			euler: [120, 0, 0],
+		},
+		[obj_unicorn_foreLegBowLSlot]: {
+			euler: [120, 0, 0],
+		},
+
+		[obj_unicorn_hindLegRSlot]: {
+			euler: [45, 0, 0]
+		},
+		[obj_unicorn_hindLegLSlot]: {
+			euler: [45, 0, 0]
+		},
+
+		[obj_unicorn_tailSlot]: {
+			euler: [45, 0, 0]
+		},
+		[obj_unicorn_tail2Slot]: {
+			euler: [0, 0, 60]
+		},
+		[obj_unicorn_tail3Slot]: {
+			euler: [0, 0, 60]
+		}
+	}
+}
+
+function wallLodgedAnimation(): Partial<SlotTransforms> {
+	return {
+		[obj_unicorn_neckSlot]: {
+			euler: [45, 0, 0],
+		},
+
+		[obj_unicorn_foreLegLSlot]: {
+			euler: [0, 0, Math.sin(currentTime * 4) * 15],
+		},
+		[obj_unicorn_foreLegRSlot]: {
+			euler: [0, 0, Math.sin(currentTime * 4 + 1) * 15],
+		},
+		[obj_unicorn_hindLegLSlot]: {
+			euler: [0, 0, Math.sin(currentTime * 4 + 2) * 15],
+		},
+		[obj_unicorn_hindLegRSlot]: {
+			euler: [0, 0, Math.sin(currentTime * 4 + 3) * 15],
+		},
+
+		[obj_unicorn_tailSlot]: {
+			euler: [0, 0, Math.sin(currentTime * 8) * 15],
+		},
+		[obj_unicorn_tail2Slot]: {
+			euler: [0, 0, Math.sin(currentTime * 8) * 15],
+		},
+		[obj_unicorn_tail3Slot]: {
+			euler: [0, 0, Math.sin(currentTime * 8) * 15],
+		},
+	}
+}
+
+
+function wallJumpAnimation(): Partial<SlotTransforms> {
+	return {
+		[obj_unicorn_bodySlot]: {
+			euler: [currentTime * 1111, 0, 0],
+		}
+	}
 }

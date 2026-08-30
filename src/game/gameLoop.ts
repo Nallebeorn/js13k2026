@@ -7,7 +7,7 @@ export function processFrame() {
 
 	drawObject(obj_unicorn, {
 		[ROOT_SLOT]: {
-			translation: [0, 0, -12],
+			translation: [-5, 0, -12],
 		},
 	});
 }
