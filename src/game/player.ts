@@ -1,4 +1,4 @@
-import { rotateTowards, radtodeg, withLength, IDENTITY, add, type Vec3, midpoint, normalize } from "../core/math.ts";
+import { rotateTowards, radtodeg, withLength, IDENTITY, add, type Vec3, midpoint, normalize, TAU, length, scale, sub, dot } from "../core/math.ts";
 import { currentTime, delta as deltaTime } from "../core/time.ts";
 import { debugWatch } from "../debug.ts";
 import {
@@ -27,6 +27,8 @@ import { penetrateSphereGeneric, type BoxCollider, type Collider, type SphereCol
 import { cameraTransform, drawScene, ROOT_SLOT, updateCameraTransform, type SlotTransforms } from "../rendering/renderer.ts";
 
 const SPEED = 15;
+const ACCELERATION = 15;
+const DECELERATION = 20;
 const GRAVITY = 80;
 
 let x = 0;
@@ -35,28 +37,46 @@ let z = -6;
 let rotation = 0;
 let dirx = 0;
 let diry = 0;
+let vx = 0;
 let vy = 0;
+let vz = 0;
 
 let cameraRotation = 0;
 
 export function processPlayer() {
 	const [movex, movey] = withLength(
 		[isKeyHeld("KeyD") - isKeyHeld("KeyA"), isKeyHeld("KeyS") - isKeyHeld("KeyW")],
-		SPEED * deltaTime
+		ACCELERATION * deltaTime
 	)
 	const move = cameraTransform.transformPoint(new DOMPoint(movex, 0, movey, 0));
-	x += move.x;
-	z += move.z;
+	vx += move.x;
+	vz += move.z;
+
+
+	const speed = length([vx, 0, vz]);
+	[vx, , vz] = withLength([vx, 0, vz], Math.min(SPEED, speed));
+	debugWatch("speed", speed.toFixed(3));
 
 	if (movex || movey) {
 		[dirx, , diry] = normalize([move.x, , move.z] as unknown as Vec3);
-
+		const turnBoost = -dot([dirx, 0, diry], normalize([vx, 0, vz])) * .5 + .5;
+		[vx,, vz] = add([vx, 0, vz], withLength([dirx, 0, diry], DECELERATION * turnBoost * deltaTime));
+		debugWatch("turnboost", turnBoost.toFixed(3));
+	} else {
+		const decel = withLength(
+			[vx, 0, vz],
+			Math.min(length([vx, 0, vz]), DECELERATION * deltaTime),
+		);
+		[vx, , vz] = sub([vx, 0, vz], decel);
 	}
 
 	rotation = rotateTowards(rotation, -radtodeg(Math.atan2(diry, dirx)) + 90, deltaTime * 720)
 
 	vy -= GRAVITY * deltaTime;
 	y += vy * deltaTime;
+	x += vx * deltaTime;
+	z += vz * deltaTime;
+
 
 	const sphere = (x: number, y: number, z: number): SphereCollider => ({pos: [x, y, z], r: 0.5});
 	const box = (x: number, y: number, z: number): BoxCollider => ({
@@ -80,10 +100,10 @@ export function processPlayer() {
 	function* enumerateCollisions() {
 		for (const levelCollider of colliders) {
 			for (const playerCollider of [
-				[0, 0, 0],
-				[0, -1, 0],
-				[-dirx, 0, -diry],
-				[-dirx, -1, -diry],
+				[dirx/2, 0, diry/2],
+				[dirx/2, -1, diry/2],
+				[-dirx/2, 0, -diry/2],
+				[-dirx/2, -1, -diry/2],
 			] satisfies Vec3[]) {
 				const collision = penetrateSphereGeneric(
 					add(playerCollider, [x, y, z]),
@@ -143,7 +163,7 @@ export function processPlayer() {
 			translation: [x, y, z],
 			euler: [0, rotation, 0]
 		},
-		...(movex || movey ? runAnimation() : neighAnimation())
+		...(vx || vy ? runAnimation() : neighAnimation())
 	});
 
 	const moveYaw = mouseDeltaX * .1;
@@ -216,16 +236,18 @@ function runAnimation(): Partial<SlotTransforms> {
 }
 
 function neighAnimation(): Partial<SlotTransforms> {
+	const t = ((currentTime * 10 / Math.PI) % 14) <= 4 ? currentTime * 10 : 0;
+
 	return {
 		[obj_unicorn_neckSlot]: {
 			euler: [
-				Math.sin(currentTime * 10) * 15,
-				Math.sin(currentTime * 20) * 20,
+				Math.sin(t) * 15,
+				Math.sin(t * 2) * 20,
 				0,
 			],
 		},
 		[obj_unicorn_headSlot]: {
-			euler: [Math.sin(0.2 + currentTime * 10) * 10, 0, 0],
+			euler: [Math.sin(t) * 10, 0, 0],
 		},
 		[obj_unicorn_tailSlot]: {
 			euler: [0, 0, Math.sin(currentTime * 8) * 15],
