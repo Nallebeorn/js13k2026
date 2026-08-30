@@ -1,5 +1,6 @@
 import type { Vec3 } from "../core/math.ts";
 import type { Color } from "./colors.ts";
+import type { COLOR_RAINBOW } from "./colors.ts";
 
 export interface ObjectDescriptor {
 	name: string,
@@ -9,7 +10,7 @@ export interface ObjectDescriptor {
 export type ObjectNode = (BaseObjectNode & {shape?: undefined}) | BoxDescriptor | PillDescriptor;
 
 export interface BaseObjectNode {
-	color?: Color,
+	color?: Color | typeof COLOR_RAINBOW,
 	newObjectIndex?: boolean;
 	translate?: Vec3;
 	euler?: Vec3,

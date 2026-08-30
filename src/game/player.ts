@@ -24,11 +24,11 @@ import {
 } from "../gamedata/objects.gen.ts";
 import { isKeyHeld, mouseDeltaX, wasKeyJustPressed } from "../input/input.ts";
 import { penetrateSphereGeneric, type BoxCollider, type Collider, type SphereCollider } from "../physics/collision.ts";
-import { cameraTransform, drawScene, ROOT_SLOT, updateCameraTransform, type SlotTransforms } from "../rendering/renderer.ts";
+import { cameraTransform, drawObject, ROOT_SLOT, updateCameraTransform, type SlotTransforms } from "../rendering/renderer.ts";
 
 const SPEED = 15;
-const ACCELERATION = 15;
-const DECELERATION = 20;
+const ACCELERATION = 30;
+const DECELERATION = 40;
 const GRAVITY = 80;
 
 let x = 0;
@@ -148,16 +148,16 @@ export function processPlayer() {
 
 	for (const collider of colliders) {
 		if ("r" in collider) {
-				drawScene(obj_unitSphere, {_: { translation: collider.pos}});
+				drawObject(obj_unitSphere, {_: { translation: collider.pos}});
 		} else {
-			drawScene(obj_unitCube, { _: { translation: add(midpoint(collider.min, collider.max), [0, -.5, 0]) } });
+			drawObject(obj_unitCube, { _: { translation: add(midpoint(collider.min, collider.max), [0, -.5, 0]) } });
 		}
 	}
 
 	// const runAnimationTime = Math.PI / 2;
 
 
-	drawScene(obj_unicorn, {
+	drawObject(obj_unicorn, {
 		[ROOT_SLOT]: {
 			translation: [x, y, z],
 			euler: [0, rotation, 0]

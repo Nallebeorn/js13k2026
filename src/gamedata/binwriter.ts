@@ -13,7 +13,7 @@ import {
 	SHAPE_FLAGS_NEW_INDEX,
 	NODE_TYPE_NEW_OBJECT,
 	NODE_TYPE_COLOR,
-    TRANSFORM_FLAGS_POP,
+  TRANSFORM_FLAGS_POP,
 } from "./binformatHelpers.ts";
 
 export function serializeObjects(): {

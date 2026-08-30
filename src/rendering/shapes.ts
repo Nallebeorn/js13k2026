@@ -40,7 +40,7 @@ export function createPill(
 			r * Math.cos(segment * Math.PI * 2 / segments),
 			y,
 			r * Math.sin(segment * Math.PI * 2 / segments),
-			0
+			Math.cos(segment * Math.PI * 2 / segments)*.38-.5,
 		);
 	}
 

@@ -8,6 +8,7 @@ import {
 	COLOR_ORANGE,
 	COLOR_PEACH,
 	COLOR_PINK,
+	COLOR_RAINBOW,
 	COLOR_RED,
 	COLOR_VIOLET,
 	COLOR_WHITE,
@@ -147,14 +148,14 @@ export default [
 							{
 								shape: "pill", // horn
 								translate: [0, 1.3, 0.1],
-								color: COLOR_YELLOW,
+								color: COLOR_RAINBOW,
 								height: 0.8,
 								bottomRadius: 0.1,
 								topRadius: 0,
 								newObjectIndex: true,
 							},
 							{
-								shape: "pill",
+								shape: "pill", // mane
 								translate: [0, .4, -0.2],
 								euler: [15, 0, 0],
 								bottomRadius: 0.4,
@@ -167,7 +168,7 @@ export default [
 						shape: "pill", // tail
 						slotName: "tail",
 						newObjectIndex: true,
-						color: COLOR_YELLOW,
+						color: COLOR_RAINBOW,
 						translate: [0, 0.1, -0.5],
 						euler: [-170, 0, 0],
 						bottomRadius: 0.1,

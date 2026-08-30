@@ -16,7 +16,7 @@ const slotNameConstants = Object.entries(slotNames)
 			.map(([slot, idx]) => `export const obj_${object}_${slot}Slot = ${idx};`),
 ).join("\n");
 
-const typescriptOutput = `${nameConstants}\nexport type SceneHandle = ${nameConstantsUnion};\n\n${slotNameConstants}`;
+const typescriptOutput = `${nameConstants}\nexport type RenderObjectHandle = ${nameConstantsUnion};\n\n${slotNameConstants}`;
 
 writeFile("public/b", Buffer.from(buffer));
 writeFile("src/gamedata/objects.gen.ts", typescriptOutput);

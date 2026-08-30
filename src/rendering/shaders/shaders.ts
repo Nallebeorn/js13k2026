@@ -11,6 +11,7 @@ export const objectToWorldUniform = gl.getUniformLocation(objectShader, "o");
 export const worldToClipUniform = gl.getUniformLocation(objectShader, "w");
 export const objectIndexUniform = gl.getUniformLocation(objectShader, "i");
 export const objectColorUniform = gl.getUniformLocation(objectShader, "c");
+export const objectPaletteUniform = gl.getUniformLocation(objectShader, "p");
 
 export const postProcessShader = createShaderProgram(postProcessVertSource, postProcessFragSource);
 export const colorTextureUniform = gl.getUniformLocation(postProcessShader, "i");

@@ -2,10 +2,10 @@ import { gl } from "./renderingGlobals.ts";
 import { GL_ARRAY_BUFFER, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_BUFFER_BIT, GL_DEPTH_ATTACHMENT, GL_DEPTH_BUFFER_BIT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT24, GL_DEPTH_COMPONENT32F, GL_DEPTH_TEST, GL_FLOAT, GL_FRAMEBUFFER, GL_FRAMEBUFFER_COMPLETE, GL_NEAREST, GL_RGBA, GL_STATIC_DRAW, GL_TEXTURE0, GL_TEXTURE1, GL_TEXTURE2, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_TEXTURE_MIN_FILTER, GL_TEXTURE_WRAP_S, GL_TEXTURE_WRAP_T, GL_TRIANGLES, GL_UNSIGNED_BYTE, GL_UNSIGNED_INT } from "./glConstants.ts";
 import { createMatrix, IDENTITY, projectPerspective, type Transform } from "../core/math.ts";
 import { DEBUG } from "../debug.ts";
-import { colorTextureUniform, depthTextureUniform, objectColorUniform, objectIndexUniform, objectShader, objectToWorldUniform, postProcessShader, surfaceIndexTextureUniform, worldToClipUniform } from "./shaders/shaders.ts";
+import { colorTextureUniform, depthTextureUniform, objectColorUniform, objectIndexUniform, objectPaletteUniform, objectShader, objectToWorldUniform, postProcessShader, surfaceIndexTextureUniform, worldToClipUniform } from "./shaders/shaders.ts";
 import { deserializeObjects } from "../gamedata/binreader.ts";
 import { colors, type Color } from "../gamedata/colors.ts";
-import { type SceneHandle } from "../gamedata/objects.gen.ts";
+import { type SceneHandle as RenderObjectHandle } from "../gamedata/objects.gen.ts";
 import type { DrawCommand } from "./drawCommand.ts";
 
 export const ROOT_SLOT = "_";
@@ -98,13 +98,13 @@ gl.vertexAttribPointer(0, 4, GL_FLOAT, false, 0, 0);
 gl.enableVertexAttribArray(0);
 
 // * Render API
-function drawObject(object: ObjectInfo, color: Color, transform: DOMMatrix) {
+function drawMesh(object: ObjectInfo, color: Color, transform: DOMMatrix) {
 	gl.uniformMatrix4fv(
 		objectToWorldUniform,
 		false,
 		transform.toFloat32Array(),
 	);
-	gl.uniform4fv(objectColorUniform, colors[color]!);
+	gl.uniform1i(objectColorUniform, color);
 	gl.uniform1f(objectIndexUniform, objectIndex)
 
 	gl.drawArrays(GL_TRIANGLES, object.offset / 4, object.size / 4);
@@ -112,10 +112,10 @@ function drawObject(object: ObjectInfo, color: Color, transform: DOMMatrix) {
 
 export type SlotTransforms = Record<number | "_", Transform>;
 
-export function drawScene(scene: SceneHandle, slotTransforms?: SlotTransforms, color_override?: Color) {
+export function drawObject(object: RenderObjectHandle, slotTransforms?: SlotTransforms, color_override?: Color) {
 	transformStack.push(transformStack.at(-1)!.multiply(createMatrix(slotTransforms?.[ROOT_SLOT])))
 	let transformSlotIndex = 0;
-	objectsBank[scene]!.map(command => {
+	objectsBank[object]!.map(command => {
 		color = command.colour ?? color;
 		if (command.incrementSurfaceIndex) {
 			objectIndex++;
@@ -130,7 +130,7 @@ export function drawScene(scene: SceneHandle, slotTransforms?: SlotTransforms, c
 		}
 
 		if (command.drawShape) {
-			drawObject(
+			drawMesh(
 				command.drawShape,
 				color_override ?? color,
 				transformStack.at(-1)!
@@ -154,6 +154,7 @@ export function setupFrame() {
   	false,
 		projectionMatrix.multiply(cameraTransform.inverse()).toFloat32Array(),
 	);
+	gl.uniform4fv(objectPaletteUniform, colors.flat());
 	gl.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	transformStack = [IDENTITY];
