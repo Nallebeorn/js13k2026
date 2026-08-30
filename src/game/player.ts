@@ -61,7 +61,6 @@ export function processPlayer() {
 		[dirx, , diry] = normalize([move.x, , move.z] as unknown as Vec3);
 		const turnBoost = -dot([dirx, 0, diry], normalize([vx, 0, vz])) * .5 + .5;
 		[vx,, vz] = add([vx, 0, vz], withLength([dirx, 0, diry], DECELERATION * turnBoost * deltaTime));
-		debugWatch("turnboost", turnBoost.toFixed(3));
 	} else {
 		const decel = withLength(
 			[vx, 0, vz],
@@ -163,7 +162,7 @@ export function processPlayer() {
 			translation: [x, y, z],
 			euler: [0, rotation, 0]
 		},
-		...(vx || vy ? runAnimation() : neighAnimation())
+		...(vx || vz ? runAnimation() : neighAnimation())
 	});
 
 	const moveYaw = mouseDeltaX * .1;
