@@ -1,7 +1,6 @@
-import { rotateTowards, radtodeg, withLength, IDENTITY, add, type Vec3, length, midpoint, normalize, scale, dot } from "../core/math.ts";
+import { rotateTowards, radtodeg, withLength, IDENTITY, add, type Vec3, midpoint, normalize } from "../core/math.ts";
 import { currentTime, delta as deltaTime } from "../core/time.ts";
 import { debugWatch } from "../debug.ts";
-import { COLOR_BLUE, COLOR_GREEN, COLOR_RED } from "../gamedata/colors.ts";
 import {
 	obj_unitSphere,
 	obj_unitCube,
@@ -9,7 +8,6 @@ import {
 	obj_unicorn_neckSlot,
 	obj_unicorn_headSlot,
 	obj_unicorn_tailSlot,
-	obj_playerCollider,
 	obj_unicorn_hindLegRSlot,
 	obj_unicorn_hindKneeRSlot,
 	obj_unicorn_hindHeelRSlot,
@@ -25,10 +23,10 @@ import {
 	obj_unicorn_tail3Slot,
 } from "../gamedata/objects.gen.ts";
 import { isKeyHeld, mouseDeltaX, wasKeyJustPressed } from "../input/input.ts";
-import { penetrateSphereGeneric, penetrateSphereBox, penetrateSphereSphere, type BoxCollider, type Collider, type SphereCollider, penetrateCapsuleGeneric } from "../physics/collision.ts";
+import { penetrateSphereGeneric, type BoxCollider, type Collider, type SphereCollider } from "../physics/collision.ts";
 import { cameraTransform, drawScene, ROOT_SLOT, updateCameraTransform, type SlotTransforms } from "../rendering/renderer.ts";
 
-const SPEED = 10;
+const SPEED = 15;
 const GRAVITY = 80;
 
 let x = 0;
@@ -159,7 +157,7 @@ export function processPlayer() {
 }
 
 function runAnimation(): Partial<SlotTransforms> {
-	const runAnimationTime = currentTime * 17;
+	const runAnimationTime = currentTime * 19;
 	return {
 		[obj_unicorn_bodySlot]: {
 			translation: [0, Math.cos(runAnimationTime) * .1, 0],
@@ -192,27 +190,27 @@ function runAnimation(): Partial<SlotTransforms> {
 		},
 
 		[obj_unicorn_hindLegLSlot]: {
-			euler: [Math.cos(runAnimationTime + 1) * 45, 0, 0],
+			euler: [Math.cos(runAnimationTime + 2) * 45, 0, 0],
 		},
 		[obj_unicorn_hindKneeLSlot]: {
-			euler: [Math.sin(runAnimationTime + 1) * 60 + 60, 0, 0],
+			euler: [Math.sin(runAnimationTime + 2) * 60 + 60, 0, 0],
 		},
 		[obj_unicorn_hindHeelLSlot]: {
-			euler: [Math.sin(runAnimationTime + 1) * -90 - 45, 0, 0],
+			euler: [Math.sin(runAnimationTime + 2) * -90 - 45, 0, 0],
 		},
 
 		[obj_unicorn_foreLegRSlot]: {
 			euler: [Math.cos(runAnimationTime + Math.PI) * 30 - 30, 0, 0],
 		},
 		[obj_unicorn_foreLegBowRSlot]: {
-			euler: [Math.sin(runAnimationTime + Math.PI) * -45 + 45, 0, 0]
+			euler: [Math.sin(runAnimationTime + Math.PI) * -45 + 30, 0, 0]
 		},
 
 		[obj_unicorn_foreLegLSlot]: {
 			euler: [Math.cos(runAnimationTime + Math.PI + 1) * 30 - 45, 0, 0],
 		},
 		[obj_unicorn_foreLegBowLSlot]: {
-			euler: [Math.sin(runAnimationTime + Math.PI + 1) * -45 + 45, 0, 0]
+			euler: [Math.sin(runAnimationTime + Math.PI + 1) * -45 + 30, 0, 0]
 		},
 	};
 }
