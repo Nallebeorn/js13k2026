@@ -30,7 +30,7 @@ import { cameraTransform, drawObject, ROOT_SLOT, updateCameraTransform, type Slo
 
 const SPEED = 15;
 const BOOST_SPEED = 25;
-const BOOST_DURATION = 1;
+const BOOST_DELAY = 1;
 const ACCELERATION = 45;
 const DECELERATION = 90;
 const JUMP_SPEED = 30;
@@ -42,7 +42,7 @@ let x = 0;
 let y = 0;
 let z = -6;
 let rotation = 0;
-let dirx = 0;
+let dirx = 1;
 let diry = 0;
 let vx = 0;
 let vy = 0;
@@ -63,6 +63,7 @@ enum PlayerState {
 }
 
 let state = PlayerState.MOVING;
+let isGrinding = false;
 
 const sphere = (x: number, y: number, z: number): SphereCollider => ({
 	pos: [x, y, z],
@@ -131,35 +132,42 @@ export function processPlayer() {
 }
 
 function processMovingState() {
-	const [movex, movey] = withLength(
-		[isKeyHeld("KeyD") - isKeyHeld("KeyA"), isKeyHeld("KeyS") - isKeyHeld("KeyW")],
-		ACCELERATION * deltaTime
-	)
-	const move = cameraTransform.transformPoint(new DOMPoint(movex, 0, movey, 0));
-	vx += move.x;
-	vz += move.z;
-
-	if (movex || movey) {
-		if (!(!grounded && boostCharge > BOOST_DURATION)) {
-			[dirx, , diry] = normalize([move.x, , move.z] as unknown as Vec3);
-		}
-		const turnBoost = -dot([dirx, 0, diry], normalize([vx, 0, vz])) * .5 + .5;
-		[vx,, vz] = add([vx, 0, vz], withLength([dirx, 0, diry], DECELERATION * turnBoost * deltaTime));
+	if (isGrinding) {
+		vx += dirx * ACCELERATION * deltaTime;
+		vz += diry * ACCELERATION * deltaTime;
+		boostCharge += deltaTime * 2;
 	} else {
-		const decel = withLength(
-			[vx, 0, vz],
-			Math.min(length([vx, 0, vz]), DECELERATION * deltaTime),
-		);
-		[vx, , vz] = sub([vx, 0, vz], decel);
+		const [movex, movey] = withLength(
+			[isKeyHeld("KeyD") - isKeyHeld("KeyA"), isKeyHeld("KeyS") - isKeyHeld("KeyW")],
+			ACCELERATION * deltaTime
+		)
+		const move = cameraTransform.transformPoint(new DOMPoint(movex, 0, movey, 0));
+		vx += move.x;
+		vz += move.z;
+
+		if (movex || movey) {
+			if (!(!grounded && boostCharge > BOOST_DELAY && !wasKeyJustPressed("Space"))) {
+				[dirx, , diry] = normalize([move.x, , move.z] as unknown as Vec3);
+			}
+			const turnBoost = -dot([dirx, 0, diry], normalize([vx, 0, vz])) * .5 + .5;
+			[vx,, vz] = add([vx, 0, vz], withLength([dirx, 0, diry], DECELERATION * turnBoost * deltaTime));
+		} else {
+			const decel = withLength(
+				[vx, 0, vz],
+				Math.min(length([vx, 0, vz]), DECELERATION * deltaTime),
+			);
+			[vx, , vz] = sub([vx, 0, vz], decel);
+		}
+
+		vy = Math.max(vy - GRAVITY * deltaTime, -FALL_SPEED);
 	}
 
 	const speed = length([vx, 0, vz]);
-	[vx, , vz] = withLength([vx, 0, vz], Math.min(boostCharge > BOOST_DURATION ? BOOST_SPEED : SPEED, speed));
+	[vx, , vz] = withLength([vx, 0, vz], Math.min(boostCharge > BOOST_DELAY || isGrinding ? BOOST_SPEED : SPEED, speed));
 	debugWatch("speed", speed.toFixed(3));
 
 	rotation = rotateTowards(rotation, -radtodeg(Math.atan2(diry, dirx)) + 90, deltaTime * 720)
 
-	vy = Math.max(vy - GRAVITY * deltaTime, -FALL_SPEED);
 	y += vy * deltaTime;
 	x += vx * deltaTime;
 	z += vz * deltaTime;
@@ -194,7 +202,8 @@ function processMovingState() {
 		if (vz) {
 			vz += depenetration[2] / deltaTime;
 		}
-		if (!grounded && dot(normalize(depenetration), [-dirx, 0, -diry]) > 0.6 && boostCharge > BOOST_DURATION) {
+		if (!grounded && dot(normalize(depenetration), [-dirx, 0, -diry]) > 0.6 && boostCharge > BOOST_DELAY) {
+			// ? activate wall lodge
 			state = PlayerState.WALL_LODGE;
 			x -= dirx * .8;
 			z -= diry * .8;
@@ -202,6 +211,7 @@ function processMovingState() {
 			springRot = 45;
 			vx = 0;
 			vz = 0;
+			isGrinding = false;
 		}
 	}
 
@@ -227,15 +237,25 @@ function processMovingState() {
 
 		if (speed >= SPEED) {
 			boostCharge += deltaTime;
-			debugWatch("boost", boostCharge.toFixed(2));
 		} else {
 			boostCharge = 0;
 		}
+	}
 
-		if (wasKeyJustPressed("Space")) {
+	if (wasKeyJustPressed("Space")) {
+		if (grounded || isGrinding) {
 			vy = JUMP_SPEED;
+			isGrinding = false;
+		} else if (!grounded) {
+			// ? activate grinding
+			isGrinding = true;
+			vy = 0;
+			vx = dirx * SPEED;
+			vz = diry * SPEED;
 		}
 	}
+
+	debugWatch("boost", boostCharge.toFixed(2));
 }
 
 function processWallLodgedState() {
@@ -257,10 +277,11 @@ function processWallLodgedState() {
 }
 
 function getAnimation(): Partial<SlotTransforms> {
-	// return wallLodgedAnimation();
+	// return grindAnimation();
+	if (isGrinding) return grindAnimation();
 	if (state == PlayerState.WALL_LODGE) return wallLodgedAnimation();
 	if (!grounded && wallJumping) return wallJumpAnimation();
-	if (!grounded && boostCharge > BOOST_DURATION) return boostJumpAnimation();
+	if (!grounded && boostCharge > BOOST_DELAY) return boostJumpAnimation();
 	if (vy > 0) return jumpAnimation();
 	if (vy < 0) return fallAnimation();
 	if (vx || vz) return runAnimation();
@@ -268,7 +289,7 @@ function getAnimation(): Partial<SlotTransforms> {
 }
 
 function runAnimation(): Partial<SlotTransforms> {
-	const runAnimationTime = boostCharge > BOOST_DURATION ? currentTime * 30 : currentTime * 19;
+	const runAnimationTime = boostCharge > BOOST_DELAY ? currentTime * 30 : currentTime * 19;
 	return {
 		[obj_unicorn_bodySlot]: {
 			translation: [0, Math.cos(runAnimationTime) * .1, 0],
@@ -515,6 +536,45 @@ function wallJumpAnimation(): Partial<SlotTransforms> {
 	return {
 		[obj_unicorn_bodySlot]: {
 			euler: [currentTime * 1666, 0, 0],
+		}
+	}
+}
+
+
+function grindAnimation(): Partial<SlotTransforms> {
+	return {
+		[obj_unicorn_bodySlot]: {
+			euler: [-15, 0, 0],
+		},
+		[obj_unicorn_neckSlot]: {
+			euler: [Math.sin(currentTime * 15) * 15, 0, 0],
+		},
+		[obj_unicorn_headSlot]: {
+			euler: [Math.sin(currentTime * 15 - 1) * 15, 0, 0],
+		},
+
+		[obj_unicorn_tailSlot]: {
+			euler: [Math.sin(currentTime * 19) * 45 + 60, 0, 0],
+		},
+		[obj_unicorn_tail2Slot]: {
+			euler: [Math.sin(currentTime * 19 - 1) * 45, 0, 0],
+		},
+		[obj_unicorn_tail3Slot]: {
+			euler: [Math.sin(currentTime * 19 - 2) * 45, 0, 0],
+		},
+
+		[obj_unicorn_hindLegLSlot]: {
+			euler: [-15, 0, 5],
+		},
+		[obj_unicorn_hindLegRSlot]: {
+			euler: [-15, 0, -5],
+		},
+
+		[obj_unicorn_foreLegLSlot]: {
+			euler: [15, 0, 5],
+		},
+		[obj_unicorn_foreLegRSlot]: {
+			euler: [15, 0, -5],
 		}
 	}
 }
