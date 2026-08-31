@@ -202,16 +202,23 @@ function processMovingState() {
 		if (vz) {
 			vz += depenetration[2] / deltaTime;
 		}
-		if (!grounded && dot(normalize(depenetration), [-dirx, 0, -diry]) > 0.6 && boostCharge > BOOST_DELAY) {
-			// ? activate wall lodge
-			state = PlayerState.WALL_LODGE;
-			x -= dirx * .8;
-			z -= diry * .8;
-			boostCharge = 0;
-			springRot = 45;
-			vx = 0;
-			vz = 0;
-			isGrinding = false;
+		if (!grounded && dot(normalize(depenetration), [-dirx, 0, -diry]) > 0.6) {
+			if (isGrinding) {
+				isGrinding = false;
+				vx = 0;
+				vz = 0;
+				boostCharge = 0;
+			} else if (boostCharge > BOOST_DELAY) {
+				// ? activate wall lodge
+				state = PlayerState.WALL_LODGE;
+				x -= dirx * .8;
+				z -= diry * .8;
+				boostCharge = 0;
+				springRot = 45;
+				vx = 0;
+				vz = 0;
+				isGrinding = false;
+			}
 		}
 	}
 
