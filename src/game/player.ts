@@ -275,6 +275,7 @@ function processMovingState() {
 			vz = diry * SPEED;
 			grindStart = [x, y - 1.4, z];
 			grindLength = 0;
+			wallJumping = false;
 		}
 	}
 
@@ -570,14 +571,14 @@ function grindAnimation(): Partial<SlotTransforms> {
 			euler: [-15, 0, 0],
 		},
 		[obj_unicorn_neckSlot]: {
-			euler: [Math.sin(currentTime * 15) * 15, 0, 0],
+			euler: [Math.sin(currentTime * 16) * 16, 0, Math.sin(currentTime * 4) * 16],
 		},
 		[obj_unicorn_headSlot]: {
-			euler: [Math.sin(currentTime * 15 - 1) * 15, 0, 0],
+			euler: [Math.sin(currentTime * 16 - 1) * 16, 0, 0],
 		},
 
 		[obj_unicorn_tailSlot]: {
-			euler: [Math.sin(currentTime * 19) * 45 + 60, 0, 0],
+			euler: [Math.sin(currentTime * 19) * 45 + 100, 0, 0],
 		},
 		[obj_unicorn_tail2Slot]: {
 			euler: [Math.sin(currentTime * 19 - 1) * 45, 0, 0],
