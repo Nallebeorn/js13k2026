@@ -5,8 +5,7 @@ import { DEBUG } from "../debug.ts";
 import { colorTextureUniform, depthTextureUniform, objectColorUniform, objectIndexUniform, objectPaletteUniform, objectShader, objectToWorldUniform, postProcessShader, surfaceIndexTextureUniform, worldToClipUniform } from "./shaders/shaders.ts";
 import { deserializeObjects } from "../gamedata/binreader.ts";
 import { colors, type Color } from "../gamedata/colors.ts";
-import { type SceneHandle as RenderObjectHandle } from "../gamedata/objects.gen.ts";
-import type { DrawCommand } from "./drawCommand.ts";
+import type { RenderObjectHandle } from "../gamedata/objects.gen.ts";
 
 export const ROOT_SLOT = "_";
 
@@ -66,7 +65,6 @@ gl.enable(GL_DEPTH_TEST);
 
 const fov = 2.4; // ≈ TAU/8 radians = 45°
 const aspect = CANVAS_WIDTH / CANVAS_HEIGHT;
-const projectionMatrix = projectPerspective(fov, aspect, 0.1);
 
 finishFrame(); // required to avoid test harness timing out waiting for FCP
 
@@ -152,7 +150,9 @@ export function setupFrame() {
 	gl.uniformMatrix4fv(
   	worldToClipUniform,
   	false,
-		projectionMatrix.multiply(cameraTransform.inverse()).toFloat32Array(),
+		projectPerspective(fov, aspect, 0.1)
+			.multiply(cameraTransform.inverse())
+			.toFloat32Array(),
 	);
 	gl.uniform4fv(objectPaletteUniform, colors.flat());
 	gl.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

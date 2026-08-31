@@ -1,4 +1,4 @@
-import { rotateTowards, radtodeg, withLength, IDENTITY, add, type Vec3, midpoint, normalize, TAU, length, scale, sub, dot, clamp, spring } from "../core/math.ts";
+import { rotateTowards, radtodeg, withLength, IDENTITY, add, type Vec3, midpoint, normalize, TAU, length, scale, sub, dot, clamp, spring, lerp } from "../core/math.ts";
 import { currentTime, delta as deltaTime } from "../core/time.ts";
 import { debugWatch } from "../debug.ts";
 import {
@@ -22,6 +22,7 @@ import {
 	obj_unicorn_tail2Slot,
 	obj_unicorn_tail3Slot,
 	obj_cube2x2x1,
+    obj_unicorn_hornPivotSlot,
 } from "../gamedata/objects.gen.ts";
 import { isKeyHeld, mouseDeltaX, mouseDeltaY, wasKeyJustPressed } from "../input/input.ts";
 import { penetrateSphereGeneric, type BoxCollider, type Collider, type SphereCollider } from "../physics/collision.ts";
@@ -30,11 +31,12 @@ import { cameraTransform, drawObject, ROOT_SLOT, updateCameraTransform, type Slo
 const SPEED = 15;
 const BOOST_SPEED = 25;
 const BOOST_DURATION = 1;
-const ACCELERATION = 30;
-const DECELERATION = 60;
+const ACCELERATION = 45;
+const DECELERATION = 90;
 const JUMP_SPEED = 30;
-const WALL_JUMP_SPEED = 40;
+const WALL_JUMP_SPEED = 60;
 const GRAVITY = 100;
+const FALL_SPEED = 30;
 
 let x = 0;
 let y = 0;
@@ -47,6 +49,7 @@ let vy = 0;
 let vz = 0;
 let boostCharge = 0;
 let wallJumping = false;
+let grounded = false;
 
 let springSpd = 0;
 let springRot = 0;
@@ -89,6 +92,9 @@ export function processPlayer() {
 	if (state == PlayerState.MOVING) processMovingState();
 	if (state == PlayerState.WALL_LODGE) processWallLodgedState();
 
+	debugWatch("vx", vx.toFixed(3));
+	debugWatch("vz", vz.toFixed(3));
+
 	// ? Draw level
 	for (const collider of colliders) {
 		if ("r" in collider) {
@@ -102,7 +108,10 @@ export function processPlayer() {
 	drawObject(obj_unicorn, {
 		[ROOT_SLOT]: {
 			translation: [x, y, z],
-			euler: [springRot, rotation, 0]
+			euler: [0, rotation, 0],
+		},
+		[obj_unicorn_hornPivotSlot]: {
+			euler: [springRot, 0, 0],
 		},
 		...getAnimation()
 	});
@@ -117,7 +126,7 @@ export function processPlayer() {
 		IDENTITY
 			.translate(x, y, z)
 			.rotate(cameraPitch, cameraYaw, 0)
-			.translate(0, 2, 12)
+			.translate(0, 1, 18)
 	);
 }
 
@@ -131,7 +140,9 @@ function processMovingState() {
 	vz += move.z;
 
 	if (movex || movey) {
-		[dirx, , diry] = normalize([move.x, , move.z] as unknown as Vec3);
+		if (!(!grounded && boostCharge > BOOST_DURATION)) {
+			[dirx, , diry] = normalize([move.x, , move.z] as unknown as Vec3);
+		}
 		const turnBoost = -dot([dirx, 0, diry], normalize([vx, 0, vz])) * .5 + .5;
 		[vx,, vz] = add([vx, 0, vz], withLength([dirx, 0, diry], DECELERATION * turnBoost * deltaTime));
 	} else {
@@ -148,7 +159,7 @@ function processMovingState() {
 
 	rotation = rotateTowards(rotation, -radtodeg(Math.atan2(diry, dirx)) + 90, deltaTime * 720)
 
-	vy -= GRAVITY * deltaTime;
+	vy = Math.max(vy - GRAVITY * deltaTime, -FALL_SPEED);
 	y += vy * deltaTime;
 	x += vx * deltaTime;
 	z += vz * deltaTime;
@@ -176,19 +187,25 @@ function processMovingState() {
 
 	for (const depenetration of enumerateCollisions()) {
 		x += depenetration[0];
-		vx += depenetration[0] / deltaTime;
+		if (vx) {
+			vx += depenetration[0] / deltaTime;
+		}
 		z += depenetration[2];
-		vz += depenetration[2] / deltaTime;
-		if (dot(normalize(depenetration), [-dirx, 0, -diry]) > 0.6 && boostCharge > BOOST_DURATION) {
+		if (vz) {
+			vz += depenetration[2] / deltaTime;
+		}
+		if (!grounded && dot(normalize(depenetration), [-dirx, 0, -diry]) > 0.6 && boostCharge > BOOST_DURATION) {
 			state = PlayerState.WALL_LODGE;
 			x -= dirx * .8;
 			z -= diry * .8;
 			boostCharge = 0;
 			springRot = 45;
+			vx = 0;
+			vz = 0;
 		}
 	}
 
-	let grounded = false;
+	grounded = false;
 	for (const depenetration of enumerateCollisions()) {
 		y += depenetration[1];
 		if (normalize(depenetration)[1] > 0.5) {
@@ -224,9 +241,9 @@ function processMovingState() {
 function processWallLodgedState() {
 	if (isKeyHeld("Space")) {
 		springSpd = 0;
-		springRot = Math.max(springRot - 90 * deltaTime, -60);
+		springRot = lerp(springRot, -60, 0.08);
 	} else {
-		if (springRot <= -60) {
+		if (springRot < -55) {
 			state = PlayerState.MOVING;
 			vy = WALL_JUMP_SPEED;
 			wallJumping = true;
@@ -240,9 +257,10 @@ function processWallLodgedState() {
 }
 
 function getAnimation(): Partial<SlotTransforms> {
+	// return wallLodgedAnimation();
 	if (state == PlayerState.WALL_LODGE) return wallLodgedAnimation();
-	if (vy != 0 && wallJumping) return wallJumpAnimation();
-	if (vy != 0 && boostCharge > BOOST_DURATION) return boostJumpAnimation();
+	if (!grounded && wallJumping) return wallJumpAnimation();
+	if (!grounded && boostCharge > BOOST_DURATION) return boostJumpAnimation();
 	if (vy > 0) return jumpAnimation();
 	if (vy < 0) return fallAnimation();
 	if (vx || vz) return runAnimation();
@@ -496,7 +514,7 @@ function wallLodgedAnimation(): Partial<SlotTransforms> {
 function wallJumpAnimation(): Partial<SlotTransforms> {
 	return {
 		[obj_unicorn_bodySlot]: {
-			euler: [currentTime * 1111, 0, 0],
+			euler: [currentTime * 1666, 0, 0],
 		}
 	}
 }
