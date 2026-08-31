@@ -19,7 +19,7 @@ void main() {
 			abs(texture(d, v*.5+.5 + vec2(0, 2./480.)).r  - texture(d, v*.5+.5).r)
 		) > .0005 // depth outlines
 		// ? vec3(0.902, 0.251, 0.792)
-		?vec3(0.671, 0.322, 0.212)
+		?vec3(.467, .2, .067)
 		:mix(
 			mix(vec3(1), vec3(.698, 1, 1), v.y*0.5+0.3), // sky gradient
 			texture(c, v*.5+.5).rgb,

@@ -44,7 +44,11 @@ export default defineConfig({
 			name: "strip-html",
 
 			transformIndexHtml(html) {
-				return html.replaceAll(" crossorigin", "").replaceAll("\n", "");
+				return html
+					.replaceAll(" crossorigin", "")
+					.replaceAll(/^\s*/gm, "")
+					.replaceAll("\n", "")
+					;
 			}
 		},
 		{
