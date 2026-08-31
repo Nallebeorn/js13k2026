@@ -23,6 +23,7 @@ import {
 	obj_unicorn_tail3Slot,
 	obj_cube2x2x1,
     obj_unicorn_hornPivotSlot,
+		obj_rainbow,
 } from "../gamedata/objects.gen.ts";
 import { isKeyHeld, mouseDeltaX, mouseDeltaY, wasKeyJustPressed } from "../input/input.ts";
 import { penetrateSphereGeneric, type BoxCollider, type Collider, type SphereCollider } from "../physics/collision.ts";
@@ -63,7 +64,10 @@ enum PlayerState {
 }
 
 let state = PlayerState.MOVING;
+
 let isGrinding = false;
+let grindStart: Vec3;
+let grindLength: number;
 
 const sphere = (x: number, y: number, z: number): SphereCollider => ({
 	pos: [x, y, z],
@@ -117,6 +121,15 @@ export function processPlayer() {
 		...getAnimation()
 	});
 
+	if (isGrinding) {
+		drawObject(obj_rainbow, {
+			_: {
+				translation: grindStart,
+				euler: [0, -radtodeg(Math.atan2(diry, dirx)) + 90, 0],
+			}
+		}, undefined, grindLength);
+	}
+
 	// ? Camera controls
 	const moveYaw = mouseDeltaX * .1;
 	const movePitch = mouseDeltaY * .1;
@@ -165,6 +178,7 @@ function processMovingState() {
 	const speed = length([vx, 0, vz]);
 	[vx, , vz] = withLength([vx, 0, vz], Math.min(boostCharge > BOOST_DELAY || isGrinding ? BOOST_SPEED : SPEED, speed));
 	debugWatch("speed", speed.toFixed(3));
+	grindLength += speed * deltaTime * 2;
 
 	rotation = rotateTowards(rotation, -radtodeg(Math.atan2(diry, dirx)) + 90, deltaTime * 720)
 
@@ -259,6 +273,8 @@ function processMovingState() {
 			vy = 0;
 			vx = dirx * SPEED;
 			vz = diry * SPEED;
+			grindStart = [x, y - 1.4, z];
+			grindLength = 0;
 		}
 	}
 

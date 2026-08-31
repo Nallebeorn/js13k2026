@@ -249,4 +249,18 @@ export default [
 			},
 		],
 	},
+	{
+		name: "rainbow",
+		nodes: [
+			{
+				shape: "box",
+				color: COLOR_RAINBOW,
+				a1: 1,
+				b1: 1,
+				height: 0,
+				a2: 1,
+				b2: 1,
+			}
+		]
+	}
 ] satisfies ObjectDescriptor[];

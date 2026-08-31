@@ -9,6 +9,7 @@ import postProcessFragSource from "./postProcess.frag.glsl"
 export const objectShader = createShaderProgram(objectVertSource, objectFragSource);
 export const objectToWorldUniform = gl.getUniformLocation(objectShader, "o");
 export const worldToClipUniform = gl.getUniformLocation(objectShader, "w");
+export const objectLengthUniform = gl.getUniformLocation(objectShader, "l");
 export const objectIndexUniform = gl.getUniformLocation(objectShader, "i");
 export const objectColorUniform = gl.getUniformLocation(objectShader, "c");
 export const objectPaletteUniform = gl.getUniformLocation(objectShader, "p");
