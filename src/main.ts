@@ -4,7 +4,7 @@ import { DEBUG, debugWatch } from "./debug.ts";
 import { say } from "./game/dialogue.ts";
 import { processFrame } from "./game/gameLoop.ts";
 import { clearFrameInputs, isKeyHeld } from "./input/input.ts";
-import { finishFrame, setupFrame } from "./rendering/renderer.ts";
+import { finishFrame, renderRainbow, setupFrame } from "./rendering/renderer.ts";
 
 if (DEBUG) {
 	console.log("ℹ️ DEBUG BUILD");
@@ -34,6 +34,7 @@ function onAnimationFrame(timestamp: number) {
 
 		setupFrame();
 		processFrame();
+		renderRainbow();
 		finishFrame();
 		advanceTime();
 		clearFrameInputs();

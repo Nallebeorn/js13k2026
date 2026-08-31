@@ -2,13 +2,17 @@ import { DEBUG } from "../../debug.ts";
 import { GL_COMPILE_STATUS, GL_FRAGMENT_SHADER, GL_LINK_STATUS, GL_VERTEX_SHADER } from "../glConstants.ts";
 import { gl } from "../renderingGlobals.ts";
 import objectVertSource from "./object.vert.glsl";
+import rainbowVertSource from "./rainbow.vert.glsl";
 import objectFragSource from "./object.frag.glsl";
 import postProcessVertSource from "./postProcess.vert.glsl"
 import postProcessFragSource from "./postProcess.frag.glsl"
 
 export const objectShader = createShaderProgram(objectVertSource, objectFragSource);
+export const rainbowShader = createShaderProgram(rainbowVertSource, objectFragSource);
 export const objectToWorldUniform = gl.getUniformLocation(objectShader, "o");
 export const worldToClipUniform = gl.getUniformLocation(objectShader, "w");
+export const rainbowObjectToWorldUniform = gl.getUniformLocation(rainbowShader, "o");
+export const rainbowOorldToClipUniform = gl.getUniformLocation(rainbowShader, "w");
 export const objectIndexUniform = gl.getUniformLocation(objectShader, "i");
 export const objectColorUniform = gl.getUniformLocation(objectShader, "c");
 export const objectPaletteUniform = gl.getUniformLocation(objectShader, "p");

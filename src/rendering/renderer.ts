@@ -2,7 +2,7 @@ import { gl } from "./renderingGlobals.ts";
 import { GL_ARRAY_BUFFER, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_BUFFER_BIT, GL_DEPTH_ATTACHMENT, GL_DEPTH_BUFFER_BIT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT24, GL_DEPTH_COMPONENT32F, GL_DEPTH_TEST, GL_FLOAT, GL_FRAMEBUFFER, GL_FRAMEBUFFER_COMPLETE, GL_NEAREST, GL_RGBA, GL_STATIC_DRAW, GL_TEXTURE0, GL_TEXTURE1, GL_TEXTURE2, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_TEXTURE_MIN_FILTER, GL_TEXTURE_WRAP_S, GL_TEXTURE_WRAP_T, GL_TRIANGLES, GL_UNSIGNED_BYTE, GL_UNSIGNED_INT } from "./glConstants.ts";
 import { createMatrix, IDENTITY, projectPerspective, type Transform } from "../core/math.ts";
 import { DEBUG } from "../debug.ts";
-import { colorTextureUniform, depthTextureUniform, objectColorUniform, objectIndexUniform, objectPaletteUniform, objectShader, objectToWorldUniform, postProcessShader, surfaceIndexTextureUniform, worldToClipUniform } from "./shaders/shaders.ts";
+import { colorTextureUniform, depthTextureUniform, objectColorUniform, objectIndexUniform, objectPaletteUniform, objectShader, objectToWorldUniform, postProcessShader, rainbowObjectToWorldUniform, rainbowOorldToClipUniform as rainbowWorldToClipUniform, rainbowShader, surfaceIndexTextureUniform, worldToClipUniform } from "./shaders/shaders.ts";
 import { deserializeObjects } from "../gamedata/binreader.ts";
 import { colors, type Color } from "../gamedata/colors.ts";
 import type { RenderObjectHandle } from "../gamedata/objects.gen.ts";
@@ -144,6 +144,15 @@ export function drawObject(object: RenderObjectHandle, slotTransforms?: SlotTran
 }
 
 export function setupFrame() {
+	gl.useProgram(rainbowShader);
+	gl.uniformMatrix4fv(
+  	rainbowWorldToClipUniform,
+  	false,
+		projectPerspective(fov, aspect, 0.1)
+			.multiply(cameraTransform.inverse())
+			.toFloat32Array(),
+	)
+
 	gl.useProgram(objectShader)
 	gl.bindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
@@ -160,6 +169,16 @@ export function setupFrame() {
 	transformStack = [IDENTITY];
 	objectIndex = 1;
 	color = 0;
+}
+
+export function renderRainbow() {
+	gl.useProgram(rainbowShader);
+	gl.uniformMatrix4fv(
+		rainbowObjectToWorldUniform,
+		false,
+		IDENTITY.toFloat32Array(),
+	)
+	gl.drawArrays(GL_TRIANGLES, 0, 6);
 }
 
 export function finishFrame() {

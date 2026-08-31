@@ -23,6 +23,23 @@ export function createBox(a1: number, b1: number, h: number, a2: number, b2: num
 	return vertices.flatMap((v, i) => [...corners[v]!, i / 6 | 0]);
 }
 
+export function createRainbow(length: number) {
+	const x1 = -.5;
+	const x2 = .5;
+	const y1 = 0;
+	const y2 = length;
+
+	return [
+		[x1, 0, y1, -1],
+		[x1, 0, y2, -1],
+		[x2, 0, y1, 1],
+
+		[x2, 0, y1, 1],
+		[x1, 0, y2, -1],
+		[x2, 0, y2, 1],
+	];
+}
+
 export function createPill(
 	bottomRadius: number,
 	topRadius: number,
