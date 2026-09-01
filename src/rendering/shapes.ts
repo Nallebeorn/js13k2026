@@ -20,7 +20,24 @@ export function createBox(a1: number, b1: number, h: number, a2: number, b2: num
 		4, 6, 5, 5, 6, 7, // +X
 	];
 
-	return vertices.flatMap((v, i) => [...corners[v]!, !h ? -corners[v]![0]! - .5 : i / 6 | 0]);
+	return vertices.flatMap((v, i) => [...corners[v]!, i / 6 | 0]);
+}
+
+export function createRibbon() {
+	const vertices: number[] = [];
+
+	for (let i = 0; i < 1; i += 1/32) {
+		vertices.push(...[
+			-1, 0, i, -1,
+			-1, 0, i + 1/32, -1,
+			1, 0, i, 0,
+			1, 0, i, 0,
+			-1, 0, i + 1/32, -1,
+			1, 0, i + 1/32, 0
+		]);
+	}
+
+	return vertices;
 }
 
 export function createPill(

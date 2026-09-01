@@ -1,9 +1,9 @@
 import { rotateTowards, radtodeg, withLength, IDENTITY, add, type Vec3, midpoint, normalize, TAU, length, scale, sub, dot, clamp, spring, lerp } from "../core/math.ts";
 import { currentTime, delta as deltaTime } from "../core/time.ts";
 import { debugWatch } from "../debug.ts";
+import { COLOR_RAINBOW } from "../gamedata/colors.ts";
 import {
 	obj_unitSphere,
-	obj_unitCube,
 	obj_unicorn,
 	obj_unicorn_neckSlot,
 	obj_unicorn_headSlot,
@@ -22,12 +22,11 @@ import {
 	obj_unicorn_tail2Slot,
 	obj_unicorn_tail3Slot,
 	obj_cube2x2x1,
-    obj_unicorn_hornPivotSlot,
-		obj_rainbow,
+  obj_unicorn_hornPivotSlot,
 } from "../gamedata/objects.gen.ts";
 import { isKeyHeld, mouseDeltaX, mouseDeltaY, wasKeyJustPressed } from "../input/input.ts";
 import { penetrateSphereGeneric, type BoxCollider, type Collider, type SphereCollider } from "../physics/collision.ts";
-import { cameraTransform, drawObject, ROOT_SLOT, updateCameraTransform, type SlotTransforms } from "../rendering/renderer.ts";
+import { cameraTransform, drawMesh, drawObject, rainbowMesh, ROOT_SLOT, updateCameraTransform, type SlotTransforms } from "../rendering/renderer.ts";
 
 const SPEED = 15;
 const BOOST_SPEED = 25;
@@ -122,12 +121,15 @@ export function processPlayer() {
 	});
 
 	if (isGrinding) {
-		drawObject(obj_rainbow, {
-			_: {
-				translation: grindStart,
-				euler: [0, -radtodeg(Math.atan2(diry, dirx)) + 90, 0],
-			}
-		}, undefined, grindLength);
+		drawMesh(
+			rainbowMesh,
+			COLOR_RAINBOW,
+			IDENTITY
+				.translate(...grindStart)
+				.rotate(0, -radtodeg(Math.atan2(diry, dirx)) + 90, 0),
+			grindLength,
+			1
+		);
 	}
 
 	// ? Camera controls

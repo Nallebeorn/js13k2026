@@ -235,32 +235,5 @@ export default [
 				height: 1,
 			},
 		],
-	},
-	{
-		name: "playerCollider",
-		nodes: [
-			{
-				shape: "pill",
-				color: COLOR_BLUE,
-				bottomRadius: 1,
-				height: 2,
-				euler: [90, 0, 0],
-				translate: [0, 0, -1],
-			},
-		],
-	},
-	{
-		name: "rainbow",
-		nodes: [
-			{
-				shape: "box",
-				color: COLOR_RAINBOW,
-				a1: 1,
-				b1: 1,
-				height: 0,
-				a2: 1,
-				b2: 1,
-			}
-		]
 	}
 ] satisfies ObjectDescriptor[];

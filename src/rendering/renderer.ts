@@ -2,10 +2,11 @@ import { gl } from "./renderingGlobals.ts";
 import { GL_ARRAY_BUFFER, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_BUFFER_BIT, GL_DEPTH_ATTACHMENT, GL_DEPTH_BUFFER_BIT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT24, GL_DEPTH_COMPONENT32F, GL_DEPTH_TEST, GL_FLOAT, GL_FRAMEBUFFER, GL_FRAMEBUFFER_COMPLETE, GL_NEAREST, GL_RGBA, GL_STATIC_DRAW, GL_TEXTURE0, GL_TEXTURE1, GL_TEXTURE2, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_TEXTURE_MIN_FILTER, GL_TEXTURE_WRAP_S, GL_TEXTURE_WRAP_T, GL_TRIANGLES, GL_UNSIGNED_BYTE, GL_UNSIGNED_INT } from "./glConstants.ts";
 import { createMatrix, IDENTITY, projectPerspective, type Transform } from "../core/math.ts";
 import { DEBUG } from "../debug.ts";
-import { colorTextureUniform, depthTextureUniform, objectColorUniform, objectIndexUniform, objectLengthUniform, objectPaletteUniform, objectShader, objectToWorldUniform, postProcessShader, surfaceIndexTextureUniform, worldToClipUniform } from "./shaders/shaders.ts";
+import { colorTextureUniform, depthTextureUniform, objectBendUniform, objectColorUniform, objectIndexUniform, objectLengthUniform, objectPaletteUniform, objectShader, objectToWorldUniform, postProcessShader, surfaceIndexTextureUniform, worldToClipUniform } from "./shaders/shaders.ts";
 import { deserializeObjects } from "../gamedata/binreader.ts";
 import { colors, type Color } from "../gamedata/colors.ts";
 import type { RenderObjectHandle } from "../gamedata/objects.gen.ts";
+import { createRibbon } from "./shapes.ts";
 
 export const ROOT_SLOT = "_";
 
@@ -69,12 +70,12 @@ const aspect = CANVAS_WIDTH / CANVAS_HEIGHT;
 finishFrame(); // required to avoid test harness timing out waiting for FCP
 
 // * Set up vertex array buffer
-export interface ObjectInfo {
+export interface MeshInfo {
 	offset: number,
 	size: number,
 }
 
-export function addVertexData(vertices: number[]): ObjectInfo {
+export function addVertexData(vertices: number[]): MeshInfo {
 	return {
 		size: vertices.length,
 		offset: vertexData.push(...vertices) - vertices.length,
@@ -87,6 +88,8 @@ const vertexData: number[] = [];
 
 const objectsBank = deserializeObjects(await (await fetch("b?" + +new Date)).arrayBuffer());
 
+export const rainbowMesh = addVertexData(createRibbon());
+
 gl.bufferData(
 		GL_ARRAY_BUFFER,
 		new Float32Array(vertexData),
@@ -96,11 +99,12 @@ gl.vertexAttribPointer(0, 4, GL_FLOAT, false, 0, 0);
 gl.enableVertexAttribArray(0);
 
 // * Render API
-function drawMesh(
-	object: ObjectInfo,
+export function drawMesh(
+	mesh: MeshInfo,
 	color: Color,
 	transform: DOMMatrix,
 	length: number,
+	bend: number,
 ) {
 	gl.uniformMatrix4fv(
 		objectToWorldUniform,
@@ -110,8 +114,9 @@ function drawMesh(
 	gl.uniform1i(objectColorUniform, color);
 	gl.uniform1f(objectIndexUniform, objectIndex)
 	gl.uniform1f(objectLengthUniform, length);
+	gl.uniform1f(objectBendUniform, bend);
 
-	gl.drawArrays(GL_TRIANGLES, object.offset / 4, object.size / 4);
+	gl.drawArrays(GL_TRIANGLES, mesh.offset / 4, mesh.size / 4);
 }
 
 export type SlotTransforms = Record<number | "_", Transform>;
@@ -119,8 +124,7 @@ export type SlotTransforms = Record<number | "_", Transform>;
 export function drawObject(
 	object: RenderObjectHandle,
 	slotTransforms?: SlotTransforms,
-	color_override?: Color,
-	length?: number,
+	color_override?: Color
 ) {
 	transformStack.push(transformStack.at(-1)!.multiply(createMatrix(slotTransforms?.[ROOT_SLOT])))
 	let transformSlotIndex = 0;
@@ -143,7 +147,8 @@ export function drawObject(
 				command.drawShape,
 				color_override ?? color,
 				transformStack.at(-1)!,
-				length ?? 0
+				1,
+				1
 			)
 		}
 
