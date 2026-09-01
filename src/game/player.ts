@@ -159,9 +159,9 @@ function processMovingState() {
 		vz += move.z;
 
 		if (movex || movey) {
-			if (!(!grounded && boostCharge > BOOST_DELAY && !wasKeyJustPressed("Space"))) {
+			// if (!wasKeyJustPressed("Space")) {
 				[dirx, , diry] = normalize([move.x, , move.z] as unknown as Vec3);
-			}
+			// }
 			const turnBoost = -dot([dirx, 0, diry], normalize([vx, 0, vz])) * .5 + .5;
 			[vx,, vz] = add([vx, 0, vz], withLength([dirx, 0, diry], DECELERATION * turnBoost * deltaTime));
 		} else {
@@ -216,7 +216,7 @@ function processMovingState() {
 		if (vz) {
 			vz += depenetration[2] / deltaTime;
 		}
-		if (!grounded && dot(normalize(depenetration), [-dirx, 0, -diry]) > 0.6) {
+		if (!grounded && dot(normalize(depenetration), [-dirx, 0, -diry]) > 0.3) {
 			if (isGrinding) {
 				isGrinding = false;
 				vx = 0;
