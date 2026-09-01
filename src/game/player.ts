@@ -37,6 +37,7 @@ const JUMP_SPEED = 30;
 const WALL_JUMP_SPEED = 60;
 const GRAVITY = 100;
 const FALL_SPEED = 30;
+const GRIND_LENGTH = 20;
 
 let x = 0;
 let y = 0;
@@ -127,7 +128,7 @@ export function processPlayer() {
 			IDENTITY
 				.translate(...grindStart)
 				.rotate(0, -radtodeg(Math.atan2(diry, dirx)) + 90, 0),
-			grindLength,
+			Math.min(grindLength * 2, GRIND_LENGTH),
 			1
 		);
 	}
@@ -180,9 +181,16 @@ function processMovingState() {
 	const speed = length([vx, 0, vz]);
 	[vx, , vz] = withLength([vx, 0, vz], Math.min(boostCharge > BOOST_DELAY || isGrinding ? BOOST_SPEED : SPEED, speed));
 	debugWatch("speed", speed.toFixed(3));
-	grindLength += speed * deltaTime * 2;
-
 	rotation = rotateTowards(rotation, -radtodeg(Math.atan2(diry, dirx)) + 90, deltaTime * 720)
+
+	if (isGrinding) {
+		grindLength = grindLength + speed * deltaTime;
+		debugWatch("grind length", grindLength);
+		if (grindLength > GRIND_LENGTH) {
+			isGrinding = false;
+			boostCharge = 0;
+		}
+	}
 
 	y += vy * deltaTime;
 	x += vx * deltaTime;
@@ -221,9 +229,9 @@ function processMovingState() {
 		if (!grounded && dot(normalize(depenetration), [-dirx, 0, -diry]) > 0.3) {
 			if (isGrinding) {
 				isGrinding = false;
+				boostCharge = 0;
 				vx = 0;
 				vz = 0;
-				boostCharge = 0;
 			} else if (boostCharge > BOOST_DELAY) {
 				// ? activate wall lodge
 				state = PlayerState.WALL_LODGE;
