@@ -26,7 +26,7 @@ function onAnimationFrame(timestamp: number) {
 
 	const elapsed = timestamp - previouseFrameTimestamp || timestamp;
 	previouseFrameTimestamp = timestamp;
-	timerAccumulator += elapsed;
+	timerAccumulator = Math.min(timerAccumulator + elapsed, 1000);
 
 	while (timerAccumulator >= 1000 / 60) {
 		const t0 = (DEBUG && performance.now()) as number;
