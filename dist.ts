@@ -15,9 +15,8 @@ export function zipDist(): Plugin {
 			await rm("dist.zip", { force: true });
 
 			await execFileAsync(
-				"zip",
-				["-r", "-9", "../dist.zip", "."],
-				{ cwd: "dist" },
+				"advzip",
+				["-a", "-4", "dist.zip", "dist/b", "dist/index.html"],
 			);
 
 			const { size } = await stat("dist.zip");
