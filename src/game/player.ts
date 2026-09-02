@@ -25,6 +25,8 @@ import {
   obj_unicorn_hornPivotSlot,
 	type RenderObjectHandle,
 	obj_cube32x32x1,
+	obj_pillar10,
+	obj_pillar5,
 } from "../gamedata/objects.gen.ts";
 import { isKeyHeld, mouseDeltaX, mouseDeltaY, wasKeyJustPressed } from "../input/input.ts";
 import { penetrateSphereGeneric, translateCollider, type BoxCollider, type Collider, type SphereCollider } from "../physics/collision.ts";
@@ -82,9 +84,9 @@ const box = (x: number, y: number, z: number): BoxCollider => ({
 	max: add([x, y - 1.5, z], [1, 1, 1]),
 });
 
-console.log("box", box(0, 0, 0));
-
 const levelGeometry: [RenderObjectHandle, Vec3][] = [
+	[obj_pillar10, [-5, 1, -12]],
+	[obj_pillar5, [-10, 1, -12]],
 	[obj_unitSphere, [0, 0, 0]],
 	[obj_cube2x2x1, [2, 0, 0]],
 	[obj_cube2x2x1, [2, 1, 0]],
@@ -292,6 +294,7 @@ function processMovingState() {
 		} else if (!grounded) {
 			// ? activate grinding
 			isGrinding = true;
+			boostCharge = 0;
 			vy = 0;
 			vx = dirx * SPEED;
 			vz = diry * SPEED;
@@ -590,7 +593,7 @@ function wallJumpAnimation(): Partial<SlotTransforms> {
 function grindAnimation(): Partial<SlotTransforms> {
 	return {
 		[obj_unicorn_bodySlot]: {
-			euler: [-15, 0, 0],
+			euler: [Math.min(boostCharge * 2 * 360, 360) -15, 0, 0],
 		},
 		[obj_unicorn_neckSlot]: {
 			euler: [Math.sin(currentTime * 16) * 16, 0, Math.sin(currentTime * 4) * 16],

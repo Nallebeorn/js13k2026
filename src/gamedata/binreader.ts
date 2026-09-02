@@ -1,4 +1,5 @@
-import type { BoxCollider, Collider, SphereCollider } from "../physics/collision.ts";
+import { midpoint } from "../core/math.ts";
+import type { BoxCollider, CapsuleCollider, Collider, SphereCollider } from "../physics/collision.ts";
 import { objectColliders } from "../physics/objectColliders.ts";
 import type { DrawCommand } from "../rendering/drawCommand.ts";
 import { addVertexData } from "../rendering/renderer.ts";
@@ -55,25 +56,33 @@ export function deserializeObjects(buffer: ArrayBuffer): DrawCommand[][] {
 				const h = dequantizeSize(dv.getUint8(pos++))
 				const a2 = dequantizeSize(dv.getUint8(pos++))
 				const b2 = dequantizeSize(dv.getUint8(pos++))
+
 				if (header & SHAPE_FLAGS_COLLISION) {
 					colliders.push({
 						min: [Math.min(-a1, -a2), 0, Math.min(-b1, -b2)],
 						max: [Math.max(a1, a2), h, Math.max(b1, b2)]
 					} satisfies BoxCollider);
 				}
+
 				obj.push({
 					drawShape: addVertexData(createBox(a1, b1, h, a2, b2)),
 					incrementSurfaceIndex: header & SHAPE_FLAGS_NEW_INDEX,
 				});
 			} else { // SHAPE_TYPE_PILL
+				const r1 = dequantizeSize(dv.getUint8(pos++));
+				const r2 = dequantizeSize(dv.getUint8(pos++));
+				const h = dequantizeSize(dv.getUint8(pos++));
+
+				if (header & SHAPE_FLAGS_COLLISION) {
+					colliders.push({
+						pos: [0, 0, 0],
+						r: Math.max(r1, r2),
+						vector: [0, h, 0],
+					} satisfies CapsuleCollider);
+				}
+
 				obj.push({
-					drawShape: addVertexData(
-						createPill(
-							dequantizeSize(dv.getUint8(pos++)),
-							dequantizeSize(dv.getUint8(pos++)),
-							dequantizeSize(dv.getUint8(pos++)),
-						),
-					),
+					drawShape: addVertexData(createPill(r1, r2, h)),
 					incrementSurfaceIndex: header & SHAPE_FLAGS_NEW_INDEX,
 				});
 			}

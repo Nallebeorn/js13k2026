@@ -251,7 +251,7 @@ export default [
 		],
 	},
 	{
-		name: "pillar10",
+		name: "pillar10", // ? pillar10
 		nodes: [
 			...repeat(16).map((i): ObjectNode => ({
 				euler: [0, (360 * i) / 16, 0],
@@ -266,12 +266,19 @@ export default [
 					},
 				],
 			})),
+			{ // todo: remove?
+				shape: "pill",
+				bottomRadius: 1.125,
+				height: 10,
+				collision: true
+			},
 			{
 				translate: [0, -.5, 0],
 				shape: "box",
 				a1: 4,
 				height: .75,
 				a2: 3,
+				collision: true,
 			},
 			{
 				translate: [0, 10, 0],
@@ -279,6 +286,7 @@ export default [
 				a1: 3,
 				height: .75,
 				a2: 4,
+				collision: true,
 			}
 		],
 	},
@@ -304,6 +312,7 @@ export default [
 				a1: 4,
 				height: .75,
 				a2: 3,
+				collision: true,
 			},
 			{
 				translate: [0, 5, 0],
@@ -311,6 +320,7 @@ export default [
 				a1: 3,
 				height: .75,
 				a2: 4,
+				collision: true,
 			}
 		],
 	}
