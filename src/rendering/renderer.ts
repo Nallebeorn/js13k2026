@@ -148,7 +148,7 @@ export function drawObject(
 				color_override ?? color,
 				transformStack.at(-1)!,
 				1,
-				1
+				0
 			)
 		}
 

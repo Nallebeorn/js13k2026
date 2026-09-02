@@ -128,8 +128,8 @@ export function processPlayer() {
 			IDENTITY
 				.translate(...grindStart)
 				.rotate(0, -radtodeg(Math.atan2(diry, dirx)) + 90, 0),
-			Math.min(grindLength * 2, GRIND_LENGTH),
-			1
+			grindLength * 2,
+			GRIND_LENGTH - 5
 		);
 	}
 
@@ -227,6 +227,7 @@ function processMovingState() {
 			vz += depenetration[2] / deltaTime;
 		}
 		if (!grounded && dot(normalize(depenetration), [-dirx, 0, -diry]) > 0.3) {
+			console.log("wallness", dot(normalize(depenetration), [-dirx, 0, -diry]));
 			if (isGrinding) {
 				isGrinding = false;
 				boostCharge = 0;
