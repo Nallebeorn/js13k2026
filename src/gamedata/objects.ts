@@ -1,3 +1,4 @@
+import { repeat } from "../core/util.ts";
 import {
 	COLOR_BLACK,
 	COLOR_BLUE,
@@ -238,9 +239,21 @@ export default [
 		],
 	},
 	{
+		name: "cube32x32x1",
+		nodes: [
+			{
+				shape: "box",
+				color: COLOR_WHITE,
+				a1: 32,
+				height: 1,
+				collision: true,
+			},
+		],
+	},
+	{
 		name: "pillar10",
 		nodes: [
-			...Array.from({ length: 16 }, (_, i): ObjectNode => ({
+			...repeat(16).map((i): ObjectNode => ({
 				euler: [0, (360 * i) / 16, 0],
 				children: [
 					{

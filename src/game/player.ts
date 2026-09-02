@@ -24,6 +24,7 @@ import {
 	obj_cube2x2x1,
   obj_unicorn_hornPivotSlot,
 	type RenderObjectHandle,
+	obj_cube32x32x1,
 } from "../gamedata/objects.gen.ts";
 import { isKeyHeld, mouseDeltaX, mouseDeltaY, wasKeyJustPressed } from "../input/input.ts";
 import { penetrateSphereGeneric, translateCollider, type BoxCollider, type Collider, type SphereCollider } from "../physics/collision.ts";
@@ -42,7 +43,7 @@ const FALL_SPEED = 30;
 const GRIND_LENGTH = 20;
 
 let x = 0;
-let y = 0;
+let y = 1.5;
 let z = -6;
 let rotation = 0;
 let dirx = 1;
@@ -84,16 +85,25 @@ const box = (x: number, y: number, z: number): BoxCollider => ({
 console.log("box", box(0, 0, 0));
 
 const levelGeometry: [RenderObjectHandle, Vec3][] = [
-	[obj_unitSphere, [0, -1.5, 0]],
-	[obj_cube2x2x1, [2, -1.5, 0]],
-	[obj_cube2x2x1, [2, -.5, 0]],
-	[obj_cube2x2x1, [2, .5, 0]],
-	[obj_cube2x2x1, [2, 1.5, 0]],
-	[obj_cube2x2x1, [2, 2.5, 0]],
-	[obj_cube2x2x1, [-1, -1.5, 0]],
-	[obj_cube2x2x1, [-1, -.5, 0]],
-	[obj_cube2x2x1, [2, 3.5, 0]],
-	[obj_cube2x2x1, [2, 4.5, 0]],
+	[obj_unitSphere, [0, 0, 0]],
+	[obj_cube2x2x1, [2, 0, 0]],
+	[obj_cube2x2x1, [2, 1, 0]],
+	[obj_cube2x2x1, [2, 2, 0]],
+	[obj_cube2x2x1, [2, 3, 0]],
+	[obj_cube2x2x1, [2, 4, 0]],
+	[obj_cube2x2x1, [-1, 0, 0]],
+	[obj_cube2x2x1, [-1, 1, 0]],
+	[obj_cube2x2x1, [2, 5, 0]],
+	[obj_cube2x2x1, [2, 6, 0]],
+	[obj_cube32x32x1,[0, -1, 0]],
+	[obj_cube32x32x1,[32, -1, 0]],
+	[obj_cube32x32x1,[32, -1, 32]],
+	[obj_cube32x32x1,[-32, -1, 0]],
+	[obj_cube32x32x1,[-32, -1, -32]],
+	[obj_cube32x32x1,[-32, -1, 32]],
+	[obj_cube32x32x1,[32, -1, -32]],
+	[obj_cube32x32x1,[0, -1, -32]],
+	[obj_cube32x32x1,[0, -1, 32]],
 ];
 const colliders = levelGeometry.flatMap(([object, pos]) =>
 	objectColliders[object]!.map((obj) => translateCollider(obj, pos)),

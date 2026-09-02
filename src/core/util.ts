@@ -7,3 +7,7 @@ export function ringPush<T>(array: T[], value: T, size: number) {
 		array.shift();
 	}
 }
+
+export function repeat(n: number): number[] {
+	return Array.from({ length: n }, (_, i) => i);
+}

@@ -9,12 +9,12 @@ export function processFrame() {
 
 	drawObject(obj_pillar10, {
 		[ROOT_SLOT]: {
-			translation: [-5, 0, -12],
+			translation: [-5, 1, -12],
 		},
 	});
 	drawObject(obj_pillar5, {
 		[ROOT_SLOT]: {
-			translation: [-10, 0, -12],
+			translation: [-10, 1, -12],
 		},
 	});
 
