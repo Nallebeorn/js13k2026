@@ -5,7 +5,7 @@ in vec4 v; // .xyz = local vertex pos, .w = surface ID
 
 uniform float i; // object index
 uniform int c; // object color
-uniform vec4 p[13]; // palette
+uniform vec4 p[16]; // palette
 
 layout(location=0) out vec4 o; // output color
 layout(location=1) out vec4 s; // surface index

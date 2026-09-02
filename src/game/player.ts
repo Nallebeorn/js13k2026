@@ -206,10 +206,6 @@ function processMovingState() {
 		}
 	}
 
-	y += vy * deltaTime;
-	x += vx * deltaTime;
-	z += vz * deltaTime;
-
 	function* enumerateCollisions() {
 		for (const levelCollider of colliders) {
 			for (const playerCollider of [
@@ -230,6 +226,9 @@ function processMovingState() {
 			}
 		}
 	}
+
+	x += vx * deltaTime;
+	z += vz * deltaTime;
 
 	for (const depenetration of enumerateCollisions()) {
 		x += depenetration[0];
@@ -259,6 +258,8 @@ function processMovingState() {
 			}
 		}
 	}
+
+	y += vy * deltaTime;
 
 	grounded = false;
 	for (const depenetration of enumerateCollisions()) {
@@ -593,7 +594,7 @@ function wallJumpAnimation(): Partial<SlotTransforms> {
 function grindAnimation(): Partial<SlotTransforms> {
 	return {
 		[obj_unicorn_bodySlot]: {
-			euler: [Math.min(boostCharge * 2 * 360, 360) -15, 0, 0],
+			euler: [-15, Math.min(boostCharge * 2 * 360, 360), 0],
 		},
 		[obj_unicorn_neckSlot]: {
 			euler: [Math.sin(currentTime * 16) * 16, 0, Math.sin(currentTime * 4) * 16],
@@ -603,13 +604,13 @@ function grindAnimation(): Partial<SlotTransforms> {
 		},
 
 		[obj_unicorn_tailSlot]: {
-			euler: [Math.sin(currentTime * 19) * 45 + 100, 0, 0],
+			euler: [Math.sin(currentTime * 22) * 15 + 100, 0, Math.sin(currentTime * 22) * 15],
 		},
 		[obj_unicorn_tail2Slot]: {
-			euler: [Math.sin(currentTime * 19 - 1) * 45, 0, 0],
+			euler: [Math.sin(currentTime * 22 - 1) * 45, 0, Math.sin(currentTime * 22) * 15],
 		},
 		[obj_unicorn_tail3Slot]: {
-			euler: [Math.sin(currentTime * 19 - 2) * 45, 0, 0],
+			euler: [Math.sin(currentTime * 22 - 2) * 45, 0, Math.sin(currentTime * 22) * 15],
 		},
 
 		[obj_unicorn_hindLegLSlot]: {

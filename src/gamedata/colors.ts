@@ -15,6 +15,7 @@ export const colors = [
 	0x9548FA, // COLOR_VIOLET
 	0xFF77A8, // COLOR_PINK
 	0xFFCCAA, // COLOR_PEACH
+	0x773311, // COLOR_OUTLINE
 ].map(hex => [(hex>>16), (hex&0x00ff00)>>8, hex&0xff, 0xff].map(x=>x/0xff) as Vec4);
 
 export const COLOR_BLACK = 0;
@@ -30,6 +31,7 @@ export const COLOR_BLUE = 9;
 export const COLOR_VIOLET = 10;
 export const COLOR_PINK = 11;
 export const COLOR_PEACH = 12;
+export const COLOR_OUTLINE = 13;
 
 export const COLOR_RAINBOW = COLOR_MASK; // sentinel value for bindata
 

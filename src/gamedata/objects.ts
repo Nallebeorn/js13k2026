@@ -7,6 +7,7 @@ import {
 	COLOR_GREEN,
 	COLOR_LIGHTGREY,
 	COLOR_ORANGE,
+	COLOR_OUTLINE,
 	COLOR_PEACH,
 	COLOR_PINK,
 	COLOR_RAINBOW,
@@ -136,7 +137,7 @@ export default [
 											{
 												shape: "pill", // eyes
 												translate: [s * (0.3 + 0.01), 0.2, -0.15],
-												color: COLOR_DARKGREY,
+												color: COLOR_OUTLINE,
 												bottomRadius: 0.05,
 											},
 											{
