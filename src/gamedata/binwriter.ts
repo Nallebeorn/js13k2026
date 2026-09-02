@@ -14,6 +14,7 @@ import {
 	NODE_TYPE_NEW_OBJECT,
 	NODE_TYPE_COLOR,
   TRANSFORM_FLAGS_POP,
+	SHAPE_FLAGS_COLLISION,
 } from "./binformatHelpers.ts";
 
 export function serializeObjects(): {
@@ -65,9 +66,10 @@ export function serializeObjects(): {
 
 			if (node.shape) {
 				let byte = NODE_TYPE_SHAPE;
-				node.shape == "box" && (byte |= SHAPE_TYPE_BOX);
-				node.shape == "pill" && (byte |= SHAPE_TYPE_PILL);
-				node.newObjectIndex && (byte |= SHAPE_FLAGS_NEW_INDEX);
+				if (node.shape == "box") byte |= SHAPE_TYPE_BOX;
+				if (node.shape == "pill") byte |= SHAPE_TYPE_PILL;
+				if (node.newObjectIndex) byte |= SHAPE_FLAGS_NEW_INDEX;
+				if (node.collision) byte |= SHAPE_FLAGS_COLLISION;
 				dv.setUint8(pos++, byte);
 
 				if (node.shape == "box") {

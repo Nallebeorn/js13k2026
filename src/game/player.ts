@@ -23,12 +23,14 @@ import {
 	obj_unicorn_tail3Slot,
 	obj_cube2x2x1,
   obj_unicorn_hornPivotSlot,
+	type RenderObjectHandle,
 } from "../gamedata/objects.gen.ts";
 import { isKeyHeld, mouseDeltaX, mouseDeltaY, wasKeyJustPressed } from "../input/input.ts";
-import { penetrateSphereGeneric, type BoxCollider, type Collider, type SphereCollider } from "../physics/collision.ts";
+import { penetrateSphereGeneric, translateCollider, type BoxCollider, type Collider, type SphereCollider } from "../physics/collision.ts";
+import { objectColliders } from "../physics/objectColliders.ts";
 import { cameraTransform, drawMesh, drawObject, rainbowMesh, ROOT_SLOT, updateCameraTransform, type SlotTransforms } from "../rendering/renderer.ts";
 
-const SPEED = 15;
+const SPEED = 20;
 const BOOST_SPEED = 25;
 const BOOST_DELAY = 1;
 const ACCELERATION = 45;
@@ -75,23 +77,27 @@ const sphere = (x: number, y: number, z: number): SphereCollider => ({
 });
 
 const box = (x: number, y: number, z: number): BoxCollider => ({
-	min: add([x, y, z], [-1, -1.5, -1]),
-	max: add([x, y, z], [1, -0.5, 1]),
+	min: add([x, y - 1.5, z], [-1, 0, -1]),
+	max: add([x, y - 1.5, z], [1, 1, 1]),
 });
 
-const colliders: Collider[] = [
-	sphere(0, 0, 0),
-	box(2, 0, 0),
-	box(2, 1, 0),
-	box(2, 2, 0),
-	box(2, 3, 0),
-	box(2, 4, 0),
+console.log("box", box(0, 0, 0));
 
-	box(-1, 0, 0),
-	box(-1, 1, 0),
-	box(2, 5, 0),
-	box(2, 6, 0),
+const levelGeometry: [RenderObjectHandle, Vec3][] = [
+	[obj_unitSphere, [0, -1.5, 0]],
+	[obj_cube2x2x1, [2, -1.5, 0]],
+	[obj_cube2x2x1, [2, -.5, 0]],
+	[obj_cube2x2x1, [2, .5, 0]],
+	[obj_cube2x2x1, [2, 1.5, 0]],
+	[obj_cube2x2x1, [2, 2.5, 0]],
+	[obj_cube2x2x1, [-1, -1.5, 0]],
+	[obj_cube2x2x1, [-1, -.5, 0]],
+	[obj_cube2x2x1, [2, 3.5, 0]],
+	[obj_cube2x2x1, [2, 4.5, 0]],
 ];
+const colliders = levelGeometry.flatMap(([object, pos]) =>
+	objectColliders[object]!.map((obj) => translateCollider(obj, pos)),
+);
 
 export function processPlayer() {
 	if (state == PlayerState.MOVING) processMovingState();
@@ -101,12 +107,8 @@ export function processPlayer() {
 	debugWatch("vz", vz.toFixed(3));
 
 	// ? Draw level
-	for (const collider of colliders) {
-		if ("r" in collider) {
-				drawObject(obj_unitSphere, {_: { translation: collider.pos}});
-		} else {
-			drawObject(obj_cube2x2x1, { _: { translation: add(midpoint(collider.min, collider.max), [0, -.5, 0]) } });
-		}
+	for (const [object, pos] of levelGeometry) {
+		drawObject(object, { _: { translation: pos } });
 	}
 
 	// ? Draw unicorn
@@ -227,7 +229,6 @@ function processMovingState() {
 			vz += depenetration[2] / deltaTime;
 		}
 		if (!grounded && dot(normalize(depenetration), [-dirx, 0, -diry]) > 0.3) {
-			console.log("wallness", dot(normalize(depenetration), [-dirx, 0, -diry]));
 			if (isGrinding) {
 				isGrinding = false;
 				boostCharge = 0;

@@ -15,6 +15,7 @@ export const SHAPE_TYPE_PILL = 1 << 5;
 export const SHAPE_TYPE_MASK = SHAPE_TYPE_PILL;
 
 export const SHAPE_FLAGS_NEW_INDEX = 1 << 4;
+export const SHAPE_FLAGS_COLLISION = 1 << 3;
 
 export const COLOR_MASK = 0xf;
 

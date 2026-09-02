@@ -16,6 +16,7 @@ export interface BaseObjectNode {
 	euler?: Vec3,
 	slotName?: string,
 	children?: ObjectNode[];
+	collision?: boolean;
 };
 
 interface BoxDescriptor extends BaseObjectNode {

@@ -233,6 +233,7 @@ export default [
 				a1: 2,
 				b1: 2,
 				height: 1,
+				collision: true,
 			},
 		],
 	},
