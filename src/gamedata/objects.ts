@@ -268,15 +268,16 @@ export default [
 				],
 			})),
 			{ // todo: remove?
+				translate: [0, 1.25, 0],
 				shape: "pill",
-				bottomRadius: 1.125,
-				height: 10,
+				bottomRadius: 1.25,
+				height: 10  - 1.25 * 2,
 				collision: true
 			},
 			{
 				translate: [0, -.5, 0],
 				shape: "box",
-				a1: 4,
+				a1: 3.5,
 				height: .75,
 				a2: 3,
 				collision: true,
@@ -286,7 +287,7 @@ export default [
 				shape: "box",
 				a1: 3,
 				height: .75,
-				a2: 4,
+				a2: 3.5,
 				collision: true,
 			}
 		],

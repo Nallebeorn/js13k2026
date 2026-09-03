@@ -3,6 +3,7 @@ import { add, clamp, dot, length, scale, sub, withLength, type Vec3 } from "../c
 export interface SphereCollider {
 	pos: Vec3,
 	r: number,
+	vector?: undefined,
 }
 
 export interface CapsuleCollider {
@@ -18,7 +19,7 @@ export interface BoxCollider {
 
 export function translateCollider<T extends Collider>(collider: T, pos: Vec3): T {
 	return "r" in collider
-		? ({ pos: add(collider.pos, pos), r: collider.r } as T)
+		? ({ pos: add(collider.pos, pos), r: collider.r, vector: collider.vector } as T)
 		: ({ min: add(collider.min, pos), max: add(collider.max, pos) } as T);
 }
 
@@ -32,7 +33,7 @@ export interface Collision {
 
 export function penetrateSphereGeneric(pos: Vec3, r: number, b: Collider) {
 	if ("vector" in b) {
-		return penetrateSphereCapsule({pos, r}, b)
+		return penetrateSphereCapsule({ pos, r }, b as CapsuleCollider)
 	}
 
 	if ("r" in b) {
@@ -52,11 +53,14 @@ export function penetrateSphereSphere(a: SphereCollider, b: SphereCollider) {
 }
 
 export function penetrateSphereCapsule(a: SphereCollider, b: CapsuleCollider) {
-	let t
-		= dot(sub(a.pos, a.pos), b.vector)
-		/ dot(b.vector, b.vector);
-	t = t < 0 ? 0 : (t > 1 ? 1 : t);
-	const pos = add(a.pos, scale(b.vector, t));
+	const pos = add(
+		b.pos,
+		scale(
+			b.vector,
+			clamp(dot(sub(a.pos, b.pos), b.vector) / dot(b.vector, b.vector), 0, 1),
+		),
+	);
+
 	return {
 		projected: pos,
 		...penetrateSphereSphere(a, { pos, r: b.r }),

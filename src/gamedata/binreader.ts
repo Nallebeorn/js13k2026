@@ -79,6 +79,8 @@ export function deserializeObjects(buffer: ArrayBuffer): DrawCommand[][] {
 						vector: [0, h, 0],
 					} satisfies CapsuleCollider
 				});
+
+				console.log(obj.at(-1)?.collider);
 			}
 		}
 	}

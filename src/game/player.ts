@@ -160,7 +160,6 @@ function processMovingState() {
 
 	function* enumerateCollisions() {
 		for (const levelCollider of objectColliders) {
-			console.log(levelCollider);
 			for (const playerCollider of [
 				[dirx/2, 0, diry/2],
 				[dirx/2, -1, diry/2],
