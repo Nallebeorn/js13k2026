@@ -254,27 +254,15 @@ export default [
 	{
 		name: "pillar10", // ? pillar10
 		nodes: [
-			...repeat(16).map((i): ObjectNode => ({
-				euler: [0, (360 * i) / 16, 0],
-				children: [
-					{
-						shape: "pill",
-						newObjectIndex: true,
-						color: COLOR_WHITE,
-						bottomRadius: 0.25,
-						height: 10,
-						translate: [0, 0, 1],
-					},
-				],
-			})),
-			{ // todo: remove?
+			/* { // todo: remove?
 				translate: [0, 1.25, 0],
 				shape: "pill",
 				bottomRadius: 1.25,
 				height: 10  - 1.25 * 2,
 				collision: true
-			},
+			}, */
 			{
+				color: COLOR_WHITE,
 				translate: [0, -.5, 0],
 				shape: "box",
 				a1: 3.5,
@@ -289,29 +277,30 @@ export default [
 				height: .75,
 				a2: 3.5,
 				collision: true,
-			}
-		],
-	},
-	{
-		name: "pillar5",
-		nodes: [
-			...Array.from({ length: 16 }, (_, i): ObjectNode => ({
+			},
+			...repeat(16).map((i): ObjectNode => ({
 				euler: [0, (360 * i) / 16, 0],
 				children: [
 					{
 						shape: "pill",
 						newObjectIndex: true,
-						color: COLOR_WHITE,
 						bottomRadius: 0.25,
-						height: 5,
+						height: 10,
 						translate: [0, 0, 1],
+						collision: true,
 					},
 				],
 			})),
+		],
+	},
+	{
+		name: "pillar5",
+		nodes: [
 			{
+				color: COLOR_WHITE,
 				translate: [0, -.5, 0],
 				shape: "box",
-				a1: 4,
+				a1: 3.5,
 				height: .75,
 				a2: 3,
 				collision: true,
@@ -321,9 +310,22 @@ export default [
 				shape: "box",
 				a1: 3,
 				height: .75,
-				a2: 4,
+				a2: 3.5,
 				collision: true,
-			}
+			},
+			...Array.from({ length: 16 }, (_, i): ObjectNode => ({
+				euler: [0, (360 * i) / 16, 0],
+				children: [
+					{
+						shape: "pill",
+						newObjectIndex: true,
+						bottomRadius: 0.25,
+						height: 5,
+						translate: [0, 0, 1],
+						collision: true,
+					},
+				],
+			})),
 		],
 	}
 ] satisfies ObjectDescriptor[];

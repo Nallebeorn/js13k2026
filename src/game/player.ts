@@ -216,7 +216,7 @@ function processMovingState() {
 	grounded = false;
 	for (const depenetration of enumerateCollisions()) {
 		y += depenetration[1];
-		if (normalize(depenetration)[1] > 0.5) {
+		if (Math.abs(normalize(depenetration)[1]) > 0.5) {
 			vy += depenetration[1] / deltaTime;
 			grounded = true;
 		}
