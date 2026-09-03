@@ -6,6 +6,9 @@ import { viteSingleFile } from "vite-plugin-singlefile";
 
 export default defineConfig({
 	base: "",
+	server: {
+		host: true,
+	},
 	build: {
 		modulePreload: {
 			polyfill: false,

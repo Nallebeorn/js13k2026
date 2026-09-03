@@ -23,7 +23,6 @@ export function translateCollider<T extends Collider>(collider: T, pos: Vec3): T
 		: ({ min: add(collider.min, pos), max: add(collider.max, pos) } as T);
 }
 
-
 export type Collider = SphereCollider | BoxCollider | CapsuleCollider;
 
 export interface Collision {

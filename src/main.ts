@@ -1,3 +1,4 @@
+import { srand, srandf } from "./core/random.ts";
 import { advanceTime } from "./core/time.ts";
 import { average, ringPush } from "./core/util.ts";
 import { DEBUG, debugWatch } from "./debug.ts";
@@ -22,6 +23,8 @@ requestAnimationFrame(onAnimationFrame);
 
 say("");
 
+let seed = 0;
+
 function onAnimationFrame(timestamp: number) {
 	requestAnimationFrame(onAnimationFrame);
 
@@ -32,6 +35,7 @@ function onAnimationFrame(timestamp: number) {
 	while (timerAccumulator >= 1000 / 60) {
 		const t0 = (DEBUG && performance.now()) as number;
 		timerAccumulator -= 1000 / 60;
+		// console.log("random number", srandf(seed++));
 
 		resetObjectColliders();
 		setupFrame();

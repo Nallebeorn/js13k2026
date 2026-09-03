@@ -126,8 +126,11 @@ export type SlotTransforms = Record<number | "_", Transform>;
 export function drawObject(
 	object: RenderObjectHandle,
 	slotTransforms?: SlotTransforms,
-	color_override?: Color
+	color_override?: Color,
+	newObject = true,
 ) {
+	if (newObject) objectIndex++;
+
 	transformStack.push(transformStack.at(-1)!.multiply(createMatrix(slotTransforms?.[ROOT_SLOT])))
 	let transformSlotIndex = 0;
 	objectsBank[object]!.map(command => {
@@ -167,7 +170,6 @@ export function drawObject(
 		 transformStack.pop();
 		}
 	});
-	objectIndex++;
 	transformStack.pop();
 }
 

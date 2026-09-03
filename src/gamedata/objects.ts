@@ -327,5 +327,36 @@ export default [
 				],
 			})),
 		],
+	},
+	//? clouds
+	{
+		name: "cloud0",
+		nodes: [
+			{
+				color: COLOR_WHITE,
+				shape: "pill",
+				bottomRadius: .5,
+			}
+		]
+	},
+	{
+		name: "cloud1",
+		nodes: [
+			{
+				color: COLOR_WHITE,
+				shape: "pill",
+				bottomRadius: .6,
+			}
+		]
+	},
+	{
+		name: "cloud1_5",
+		nodes: [
+			{
+				color: COLOR_WHITE,
+				shape: "pill",
+				bottomRadius: .75,
+			}
+		]
 	}
 ] satisfies ObjectDescriptor[];
