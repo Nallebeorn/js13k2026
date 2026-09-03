@@ -1,3 +1,7 @@
 import type { Collider } from "./collision.ts";
 
-export const objectColliders: Collider[][] = [];
+export let objectColliders: Collider[] = [];
+
+export const resetObjectColliders = () => {
+	objectColliders = [];
+}

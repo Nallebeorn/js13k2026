@@ -19,14 +19,14 @@ document.onpointerlockchange = () => {
 	pressedTimestamp = {};
 }
 
-canvas.onclick = () => {
-	if (document.pointerLockElement != canvas) {
-		canvas.requestPointerLock();
+document.body.onclick = () => {
+	if (document.pointerLockElement != document.body) {
+		document.body.requestPointerLock();
 	}
 };
 
-canvas.onmousemove = (event: MouseEvent) => {
-	if (document.pointerLockElement == canvas) {
+document.body.onmousemove = (event: MouseEvent) => {
+	if (document.pointerLockElement == document.body) {
 		mouseDeltaX += event.movementX;
 		mouseDeltaY += event.movementY;
 	}

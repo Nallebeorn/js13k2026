@@ -57,33 +57,27 @@ export function deserializeObjects(buffer: ArrayBuffer): DrawCommand[][] {
 				const a2 = dequantizeSize(dv.getUint8(pos++))
 				const b2 = dequantizeSize(dv.getUint8(pos++))
 
-				if (header & SHAPE_FLAGS_COLLISION) {
-					colliders.push({
-						min: [Math.min(-a1, -a2), 0, Math.min(-b1, -b2)],
-						max: [Math.max(a1, a2), h, Math.max(b1, b2)]
-					} satisfies BoxCollider);
-				}
-
 				obj.push({
 					drawShape: addVertexData(createBox(a1, b1, h, a2, b2)),
 					incrementSurfaceIndex: header & SHAPE_FLAGS_NEW_INDEX,
+					collider: (header & SHAPE_FLAGS_COLLISION) && {
+						min: [Math.min(-a1, -a2), 0, Math.min(-b1, -b2)],
+						max: [Math.max(a1, a2), h, Math.max(b1, b2)]
+					} satisfies BoxCollider
 				});
 			} else { // SHAPE_TYPE_PILL
 				const r1 = dequantizeSize(dv.getUint8(pos++));
 				const r2 = dequantizeSize(dv.getUint8(pos++));
 				const h = dequantizeSize(dv.getUint8(pos++));
 
-				if (header & SHAPE_FLAGS_COLLISION) {
-					colliders.push({
-						pos: [0, 0, 0],
-						r: Math.max(r1, r2),
-						vector: [0, h, 0],
-					} satisfies CapsuleCollider);
-				}
-
 				obj.push({
 					drawShape: addVertexData(createPill(r1, r2, h)),
 					incrementSurfaceIndex: header & SHAPE_FLAGS_NEW_INDEX,
+					collider: (header & SHAPE_FLAGS_COLLISION) && {
+						pos: [0, 0, 0],
+						r: Math.max(r1, r2),
+						vector: [0, h, 0],
+					} satisfies CapsuleCollider
 				});
 			}
 		}

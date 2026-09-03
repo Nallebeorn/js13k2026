@@ -1,5 +1,6 @@
 import type { Transform } from "../core/math.ts";
 import type { Color } from "../gamedata/colors.ts";
+import type { Collider } from "../physics/collision.ts";
 import type { MeshInfo } from "./renderer.ts";
 
 export interface DrawCommand {
@@ -9,4 +10,5 @@ export interface DrawCommand {
 	drawShape?: MeshInfo;
 	colour?: Color;
 	incrementSurfaceIndex?: 0 | number;
+	collider?: 0 | Collider;
 }

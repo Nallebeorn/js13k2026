@@ -1,2 +1,2 @@
 * Invisible objects?
-* Generate colliders from drawObject
+* Remove sphere-sphere collision, use sphere-capsule

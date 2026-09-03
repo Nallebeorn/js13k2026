@@ -1,9 +1,8 @@
-import { rotateTowards, radtodeg, withLength, IDENTITY, add, type Vec3, midpoint, normalize, TAU, length, scale, sub, dot, clamp, spring, lerp } from "../core/math.ts";
+import { rotateTowards, radtodeg, withLength, IDENTITY, add, type Vec3, normalize, length, sub, dot, clamp, spring, lerp } from "../core/math.ts";
 import { currentTime, delta as deltaTime } from "../core/time.ts";
 import { debugWatch } from "../debug.ts";
 import { COLOR_RAINBOW } from "../gamedata/colors.ts";
 import {
-	obj_unitSphere,
 	obj_unicorn,
 	obj_unicorn_neckSlot,
 	obj_unicorn_headSlot,
@@ -21,15 +20,10 @@ import {
 	obj_unicorn_bodySlot,
 	obj_unicorn_tail2Slot,
 	obj_unicorn_tail3Slot,
-	obj_cube2x2x1,
-  obj_unicorn_hornPivotSlot,
-	type RenderObjectHandle,
-	obj_cube32x32x1,
-	obj_pillar10,
-	obj_pillar5,
+	obj_unicorn_hornPivotSlot,
 } from "../gamedata/objects.gen.ts";
 import { isKeyHeld, mouseDeltaX, mouseDeltaY, wasKeyJustPressed } from "../input/input.ts";
-import { penetrateSphereGeneric, translateCollider, type BoxCollider, type Collider, type SphereCollider } from "../physics/collision.ts";
+import { penetrateSphereGeneric } from "../physics/collision.ts";
 import { objectColliders } from "../physics/objectColliders.ts";
 import { cameraTransform, drawMesh, drawObject, rainbowMesh, ROOT_SLOT, updateCameraTransform, type SlotTransforms } from "../rendering/renderer.ts";
 
@@ -74,54 +68,12 @@ let isGrinding = false;
 let grindStart: Vec3;
 let grindLength: number;
 
-const sphere = (x: number, y: number, z: number): SphereCollider => ({
-	pos: [x, y, z],
-	r: 0.5,
-});
-
-const box = (x: number, y: number, z: number): BoxCollider => ({
-	min: add([x, y - 1.5, z], [-1, 0, -1]),
-	max: add([x, y - 1.5, z], [1, 1, 1]),
-});
-
-const levelGeometry: [RenderObjectHandle, Vec3][] = [
-	[obj_pillar10, [-5, 1, -12]],
-	[obj_pillar5, [-10, 1, -12]],
-	[obj_unitSphere, [0, 0, 0]],
-	[obj_cube2x2x1, [2, 0, 0]],
-	[obj_cube2x2x1, [2, 1, 0]],
-	[obj_cube2x2x1, [2, 2, 0]],
-	[obj_cube2x2x1, [2, 3, 0]],
-	[obj_cube2x2x1, [2, 4, 0]],
-	[obj_cube2x2x1, [-1, 0, 0]],
-	[obj_cube2x2x1, [-1, 1, 0]],
-	[obj_cube2x2x1, [2, 5, 0]],
-	[obj_cube2x2x1, [2, 6, 0]],
-	[obj_cube32x32x1,[0, -1, 0]],
-	[obj_cube32x32x1,[32, -1, 0]],
-	[obj_cube32x32x1,[32, -1, 32]],
-	[obj_cube32x32x1,[-32, -1, 0]],
-	[obj_cube32x32x1,[-32, -1, -32]],
-	[obj_cube32x32x1,[-32, -1, 32]],
-	[obj_cube32x32x1,[32, -1, -32]],
-	[obj_cube32x32x1,[0, -1, -32]],
-	[obj_cube32x32x1,[0, -1, 32]],
-];
-const colliders = levelGeometry.flatMap(([object, pos]) =>
-	objectColliders[object]!.map((obj) => translateCollider(obj, pos)),
-);
-
 export function processPlayer() {
 	if (state == PlayerState.MOVING) processMovingState();
 	if (state == PlayerState.WALL_LODGE) processWallLodgedState();
 
 	debugWatch("vx", vx.toFixed(3));
 	debugWatch("vz", vz.toFixed(3));
-
-	// ? Draw level
-	for (const [object, pos] of levelGeometry) {
-		drawObject(object, { _: { translation: pos } });
-	}
 
 	// ? Draw unicorn
 	drawObject(obj_unicorn, {
@@ -157,7 +109,7 @@ export function processPlayer() {
 		IDENTITY
 			.translate(x, y, z)
 			.rotate(cameraPitch, cameraYaw, 0)
-			.translate(0, 1, 18)
+			.translate(0, 3, 18)
 	);
 }
 
@@ -207,7 +159,8 @@ function processMovingState() {
 	}
 
 	function* enumerateCollisions() {
-		for (const levelCollider of colliders) {
+		for (const levelCollider of objectColliders) {
+			console.log(levelCollider);
 			for (const playerCollider of [
 				[dirx/2, 0, diry/2],
 				[dirx/2, -1, diry/2],

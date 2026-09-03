@@ -30,7 +30,7 @@ export function spring(current: number, currentSpeed: number): number {
 
 export type Vec2 = [number, number];
 export type Vec3 = [number, number, number];
-export type Vec4 = [number, number, number, number];	
+export type Vec4 = [number, number, number, number];
 
 export type AnyVec = Vec2 | Vec3 | Vec4;
 
@@ -77,6 +77,14 @@ export function getForward(transform: DOMMatrix): Vec3 {
 		-transform.m32,
 		-transform.m33,
 	]
+}
+
+export function getPos(transform: DOMMatrix): Vec3 {
+	return [
+		transform.m41,
+		transform.m42,
+		transform.m43,
+	];
 }
 
 export function normalize<T extends AnyVec>(vec: T): T {

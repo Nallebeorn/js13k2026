@@ -4,8 +4,7 @@ A tiny browser game made for [js13kGames 2016](https://js13kgames.com/2026/).
 
 ## Building
 
-Yes, I'm a web developer, of course my 13k game has a 100M node_modules
-directory!
+Yes, I'm a web developer, of course my 13KB game has a 100MB node_modules!
 
 ### Installing development dependencies
 
@@ -19,10 +18,10 @@ bothered :)
 
 ### Build distribution
 * `pnpm run build-once` creates dist.zip. That's the game!
-* The build script expects `zip` (Info-ZIP) to exist on the path. If you're on macOS
-  or Linux, you probably already have it or can install it from your package manager.
-	On Windows, install it if you want, or just let the build fail and zip the
-	dist directory manually.
+* The build script expects `advzip` to exist on the path. If you're on Linux,
+  chances are you can install it with your system package manager, probably as
+  `advancecomp", and it's also in Homebrew on macOS for example. On Windows, you
+  can download it from their [website](https://www.advancemame.it/download).
 
 ### Development with watch mode
 

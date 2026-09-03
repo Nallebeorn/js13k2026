@@ -4,6 +4,7 @@ import { DEBUG, debugWatch } from "./debug.ts";
 import { say } from "./game/dialogue.ts";
 import { processFrame } from "./game/gameLoop.ts";
 import { clearFrameInputs, isKeyHeld } from "./input/input.ts";
+import { objectColliders, resetObjectColliders } from "./physics/objectColliders.ts";
 import { finishFrame, setupFrame } from "./rendering/renderer.ts";
 
 if (DEBUG) {
@@ -32,6 +33,7 @@ function onAnimationFrame(timestamp: number) {
 		const t0 = (DEBUG && performance.now()) as number;
 		timerAccumulator -= 1000 / 60;
 
+		resetObjectColliders();
 		setupFrame();
 		processFrame();
 		finishFrame();
