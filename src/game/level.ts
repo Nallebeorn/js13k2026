@@ -28,7 +28,7 @@ const levelGeometry: [RenderObjectHandle, Vec3][] = [
 ];
 
 const clouds: [number, Vec2, Vec2][] = [
-	[0, [-10, -10], [10, 10]],
+	[0, [-20, -20], [20, 20]],
 ];
 
 export function drawLevel() {
@@ -38,8 +38,8 @@ export function drawLevel() {
 
 	let seed = 0;
 	for (const [y, [xmin, zmin], [xmax, zmax]] of clouds) {
-		for (let z = zmin; z <= zmax; z += 0.5) {
-			for (let x = xmin; x <= xmax; x += 0.5) {
+		for (let z = zmin; z <= zmax; z++) {
+			for (let x = xmin; x <= xmax; x++) {
 				drawObject(
 					(obj_cloud0 + (srand(seed++) % 3)) as RenderObjectHandle,
 					{

@@ -26,7 +26,7 @@ export function createBox(a1: number, b1: number, h: number, a2: number, b2: num
 export function createRibbon() {
 	const vertices: number[] = [];
 
-	for (let i = 0; i < 1; i += 1/128) {
+	for (let i = 0; i < 1; i += 1/64) {
 		vertices.push(...[
 			-.5, 0, i, -1,
 			-.5, 0, i + 1/32, -1,
@@ -45,8 +45,8 @@ export function createPill(
 	topRadius: number,
 	height: number
 ) {
-	const segments = 16;
-	const capSegments = 16;
+	const segments = 12;
+	const capSegments = 6;
 
 	const vertices: number[] = [];
 	const slope = (topRadius - bottomRadius) / height;

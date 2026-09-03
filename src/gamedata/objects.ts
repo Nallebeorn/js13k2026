@@ -335,7 +335,7 @@ export default [
 			{
 				color: COLOR_WHITE,
 				shape: "pill",
-				bottomRadius: .5,
+				bottomRadius: .75,
 			}
 		]
 	},
@@ -345,7 +345,7 @@ export default [
 			{
 				color: COLOR_WHITE,
 				shape: "pill",
-				bottomRadius: .6,
+				bottomRadius: 1,
 			}
 		]
 	},
@@ -355,7 +355,7 @@ export default [
 			{
 				color: COLOR_WHITE,
 				shape: "pill",
-				bottomRadius: .75,
+				bottomRadius: 1.5,
 			}
 		]
 	}
