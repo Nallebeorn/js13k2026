@@ -14,16 +14,13 @@ export default defineConfig({
 			polyfill: false,
 		},
 		assetsDir: ".",
-		// rolldownOptions: {
-			// output: {
-				// entryFileNames: "g.js",
-			// },
-		// },
 		minify: "terser",
 		terserOptions: {
 			ecma: 2020,
 			mangle: {
-				properties: true,
+				properties: {
+					reserved: ["Space", "KeyW", "KeyA", "KeyS", "KeyD"],
+				},
 				module: true,
 				toplevel: true,
 			},

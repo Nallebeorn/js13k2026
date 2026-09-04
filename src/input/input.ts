@@ -1,4 +1,5 @@
 import { currentTime } from "../core/time.ts";
+import { DEBUG } from "../debug.ts";
 import type { KeyCode } from "./keycode.ts";
 
 let pressedTimestamp: Record<string, number> = {};
@@ -8,6 +9,9 @@ export let mouseDeltaX = 0, mouseDeltaY = 0;
 onkeydown = (event: KeyboardEvent) => {
 	if (!event.repeat) {
 		pressedTimestamp[event.code] = currentTime;
+	}
+	if (event.code == "Space") {
+		event.preventDefault();
 	}
 };
 
