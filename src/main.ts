@@ -1,11 +1,9 @@
-import { srand, srandf } from "./core/random.ts";
 import { advanceTime } from "./core/time.ts";
 import { average, ringPush } from "./core/util.ts";
 import { DEBUG, debugWatch } from "./debug.ts";
 import { say } from "./game/dialogue.ts";
 import { processFrame } from "./game/gameLoop.ts";
-import { clearFrameInputs, isKeyHeld } from "./input/input.ts";
-import { objectColliders, resetObjectColliders } from "./physics/objectColliders.ts";
+import { clearFrameInputs } from "./input/input.ts";
 import { finishFrame, setupFrame } from "./rendering/renderer.ts";
 
 if (DEBUG) {
@@ -39,7 +37,6 @@ function onAnimationFrame(timestamp: number) {
 		timerAccumulator = 0;
 		// console.log("random number", srandf(seed++));
 
-		resetObjectColliders();
 		setupFrame();
 		processFrame();
 		finishFrame();

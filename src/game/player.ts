@@ -24,7 +24,7 @@ import {
 } from "../gamedata/objects.gen.ts";
 import { isKeyHeld, mouseDeltaX, mouseDeltaY, wasKeyJustPressed } from "../input/input.ts";
 import { penetrateSphereGeneric } from "../physics/collision.ts";
-import { objectColliders } from "../physics/objectColliders.ts";
+import { staticColliders } from "../physics/objectColliders.ts";
 import { cameraTransform, drawMesh, drawObject, rainbowMesh, ROOT_SLOT, updateCameraTransform, type SlotTransforms } from "../rendering/renderer.ts";
 
 const SPEED = 20;
@@ -39,7 +39,7 @@ const FALL_SPEED = 30;
 const GRIND_LENGTH = 20;
 
 let x = 0;
-let y = 1.5;
+let y = 2;
 let z = -6;
 let rotation = 0;
 let dirx = 1;
@@ -161,7 +161,7 @@ function processMovingState() {
 	}
 
 	function* enumerateCollisions() {
-		for (const levelCollider of objectColliders) {
+		for (const levelCollider of staticColliders) {
 			for (const playerCollider of [
 				[dirx/2, 0, diry/2],
 				[dirx/2, -1, diry/2],

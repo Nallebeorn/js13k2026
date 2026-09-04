@@ -1,10 +1,8 @@
-import { midpoint } from "../core/math.ts";
-import type { BoxCollider, CapsuleCollider, Collider, SphereCollider } from "../physics/collision.ts";
-import { objectColliders } from "../physics/objectColliders.ts";
+import type { BoxCollider, CapsuleCollider, Collider } from "../physics/collision.ts";
 import type { DrawCommand } from "../rendering/drawCommand.ts";
 import { addVertexData } from "../rendering/renderer.ts";
 import { createBox, createPill } from "../rendering/shapes.ts";
-import { NODE_TYPE_MASK, NODE_TYPE_NEW_OBJECT, NODE_TYPE_COLOR, NODE_TYPE_TRANSFORM, TRANSFORM_FLAGS_TRANSLATE, TRANSFORM_FLAGS_ROTATE, NODE_TYPE_SHAPE, SHAPE_TYPE_MASK, SHAPE_TYPE_BOX, SHAPE_FLAGS_NEW_INDEX, SHAPE_TYPE_PILL, COLOR_MASK, TRANSFORM_FLAGS_POP, SHAPE_FLAGS_COLLISION } from "./binformatHelpers.ts";
+import { NODE_TYPE_MASK, NODE_TYPE_NEW_OBJECT, NODE_TYPE_COLOR, NODE_TYPE_TRANSFORM, TRANSFORM_FLAGS_TRANSLATE, TRANSFORM_FLAGS_ROTATE, NODE_TYPE_SHAPE, SHAPE_TYPE_MASK, SHAPE_TYPE_BOX, SHAPE_FLAGS_NEW_INDEX, COLOR_MASK, TRANSFORM_FLAGS_POP, SHAPE_FLAGS_COLLISION } from "./binformatHelpers.ts";
 import { dequantizePosition, dequantizeAngle, dequantizeSize } from "./binformatHelpers.ts";
 import type { Color } from "./colors.ts";
 
@@ -21,7 +19,6 @@ export function deserializeObjects(buffer: ArrayBuffer): DrawCommand[][] {
 
 		if (type == NODE_TYPE_NEW_OBJECT) {
 			objects.push(obj = []);
-			objectColliders.push(colliders = []);
 		}
 
 		if (type == NODE_TYPE_COLOR) {

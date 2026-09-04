@@ -1,7 +1,7 @@
 import { add, createMatrix, type Vec2, type Vec3 } from "../core/math.ts";
 import { srand, srandf } from "../core/random.ts";
 import { debugWatch } from "../debug.ts";
-import { COLOR_WHITE, type Color } from "../gamedata/colors.ts";
+import { COLOR_WHITE } from "../gamedata/colors.ts";
 import {
 	obj_unitSphere,
 	obj_cube2x2x1,
@@ -9,10 +9,8 @@ import {
 	obj_pillar5,
 	type RenderObjectHandle,
 } from "../gamedata/objects.gen.ts";
-import type { BoxCollider } from "../physics/collision.ts";
-import { objectColliders } from "../physics/objectColliders.ts";
-import { addVertexData, cloudMeshes, drawMesh, drawObject, incrementObjectIndex, type MeshInfo } from "../rendering/renderer.ts";
-import { createPill } from "../rendering/shapes.ts";
+import { staticColliders } from "../physics/objectColliders.ts";
+import { cloudMeshes, drawMesh, drawObject, incrementObjectIndex } from "../rendering/renderer.ts";
 
 const levelGeometry: [RenderObjectHandle, Vec3][] = [
 	[obj_pillar10, [-5, 1, -12]],
@@ -33,47 +31,36 @@ const clouds: [number, Vec2, Vec2][] = [
 	[0, [-100, -100], [100, 100]],
 ];
 
+for (const [object, pos] of levelGeometry) {
+	drawObject(object, { _: { translation: pos } }, undefined, true);
+}
+
 let seed = 0;
-const cloudColliders: BoxCollider[] = [];
-const cloudMeshInstances = clouds.map(cloud => {
-	const instanceData: [MeshInfo, Color, DOMMatrix][] = [];
-	for (const [y, [xmin, zmin], [xmax, zmax]] of clouds) {
-		for (let z = zmin; z <= zmax; z++) {
-			for (let x = xmin; x <= xmax; x++) {
-				instanceData.push([
-					cloudMeshes[srand(seed++) % 3]!,
-					COLOR_WHITE,
-					createMatrix({
-						translation: add(
-							[x, y, z],
-							[0.2 * srandf(seed++), 0.2 * srandf(seed++), 0.2 * srandf(seed++)],
-						),
-					}),
-				]);
-
-			}
+for (const [y, [xmin, zmin], [xmax, zmax]] of clouds) {
+	for (let z = zmin; z <= zmax; z++) {
+		for (let x = xmin; x <= xmax; x++) {
+			drawMesh(
+				cloudMeshes[srand(seed++) % 3]!,
+				COLOR_WHITE,
+				createMatrix({
+					translation: add(
+						[x, y, z],
+						[0.2 * srandf(seed++), 0.2 * srandf(seed++), 0.2 * srandf(seed++)],
+					),
+				}),
+				1,
+				0,
+				true,
+			);
 		}
-
-		cloudColliders.push({ min: [xmin, y - .5, zmin], max: [xmax, y + .5, zmax] });
 	}
 
-	return instanceData;
-});
+	staticColliders.push({ min: [xmin, y - .5, zmin], max: [xmax, y + .5, zmax] });
+	incrementObjectIndex();
+}
 
 export function drawLevel() {
 	const t0 = performance.now();
-
-	for (const [object, pos] of levelGeometry) {
-		drawObject(object, { _: { translation: pos } });
-	}
-	for (const cloud of cloudMeshInstances) {
-		for (const mesh of cloud) {
-			drawMesh(...mesh, 1, 0);
-		}
-		incrementObjectIndex();
-	}
-
-	objectColliders.push(...cloudColliders);
 
 	debugWatch("drawLevel", performance.now() - t0);
 }

@@ -7,7 +7,7 @@ import { deserializeObjects } from "../gamedata/binreader.ts";
 import { colors, type Color } from "../gamedata/colors.ts";
 import type { RenderObjectHandle } from "../gamedata/objects.gen.ts";
 import { createPill, createRibbon } from "./shapes.ts";
-import { objectColliders } from "../physics/objectColliders.ts";
+import { staticColliders } from "../physics/objectColliders.ts";
 import { translateCollider } from "../physics/collision.ts";
 
 export const ROOT_SLOT = "_";
@@ -107,7 +107,8 @@ gl.enableVertexAttribArray(5);
 
 // * Instance buffer
 const instanceBuffer = gl.createBuffer();
-const instanceRenderQueue = new Map<MeshInfo, { len: number, array: Float32Array }>();
+const instanceRenderList = new Map<MeshInfo, number[]>();
+const staticInstanceRenderList = new Map<MeshInfo, number[]>;
 
 const SIZEOF_FLOAT = 4;
 const NUM_FLOATS_PER_INSTANCE = 5 * 4;
@@ -120,38 +121,35 @@ export function drawMesh(
 	transform: DOMMatrix,
 	length: number,
 	bend: number,
+	isStatic?: boolean,
 ) {
-	let instanceData = instanceRenderQueue.get(mesh);
+	let instanceData = (isStatic ? staticInstanceRenderList : instanceRenderList).get(mesh);
 	if (!instanceData) {
-		instanceRenderQueue.set(mesh, instanceData = {len: 0, array: new Float32Array(NUM_FLOATS_PER_INSTANCE)});
-	}
-	if (instanceData.len >= instanceData.array.length) {
-		console.log("resize!");
-		const newArray = new Float32Array(instanceData.len * 2);
-		newArray.set(instanceData.array);
-		instanceData.array = newArray;
+		(isStatic ? staticInstanceRenderList : instanceRenderList).set(mesh, instanceData = []);
 	}
 
-	instanceData.array[instanceData.len++] = transform.m11;
-	instanceData.array[instanceData.len++] = transform.m12;
-	instanceData.array[instanceData.len++] = transform.m13;
-	instanceData.array[instanceData.len++] = transform.m14;
-	instanceData.array[instanceData.len++] = transform.m21;
-	instanceData.array[instanceData.len++] = transform.m22;
-	instanceData.array[instanceData.len++] = transform.m23;
-	instanceData.array[instanceData.len++] = transform.m24;
-	instanceData.array[instanceData.len++] = transform.m31;
-	instanceData.array[instanceData.len++] = transform.m32;
-	instanceData.array[instanceData.len++] = transform.m33;
-	instanceData.array[instanceData.len++] = transform.m34;
-	instanceData.array[instanceData.len++] = transform.m41;
-	instanceData.array[instanceData.len++] = transform.m42;
-	instanceData.array[instanceData.len++] = transform.m43;
-	instanceData.array[instanceData.len++] = transform.m44;
-	instanceData.array[instanceData.len++] = color;
-	instanceData.array[instanceData.len++] = objectIndex;
-	instanceData.array[instanceData.len++] = length;
-	instanceData.array[instanceData.len++] = bend;
+	instanceData.push(
+		transform.m11,
+		transform.m12,
+		transform.m13,
+		transform.m14,
+		transform.m21,
+		transform.m22,
+		transform.m23,
+		transform.m24,
+		transform.m31,
+		transform.m32,
+		transform.m33,
+		transform.m34,
+		transform.m41,
+		transform.m42,
+		transform.m43,
+		transform.m44,
+		color,
+		objectIndex,
+		length,
+		bend,
+	);
 }
 
 export type SlotTransforms = Record<number | "_", Transform>;
@@ -160,6 +158,7 @@ export function drawObject(
 	object: RenderObjectHandle,
 	slotTransforms?: SlotTransforms,
 	color_override?: Color,
+	isStatic?: boolean
 ) {
 	objectIndex++;
 
@@ -185,12 +184,13 @@ export function drawObject(
 				color_override ?? color,
 				transformStack.at(-1)!,
 				1,
-				0
+				0,
+				isStatic
 			)
 		}
 
-		if (command.collider) {
-			objectColliders.push(
+		if (command.collider && isStatic) {
+			staticColliders.push(
 				translateCollider(
 					command.collider,
 					getPos(transformStack.at(-1)!)
@@ -209,6 +209,8 @@ export function incrementObjectIndex() {
 	objectIndex++;
 }
 
+let startingObjectIndex = 0;
+
 export function setupFrame() {
 	gl.useProgram(objectShader)
 	gl.bindFramebuffer(GL_FRAMEBUFFER, framebuffer);
@@ -224,11 +226,10 @@ export function setupFrame() {
 	gl.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	transformStack = [IDENTITY];
-	objectIndex = 1;
+	if (!startingObjectIndex) startingObjectIndex = objectIndex;
+	objectIndex = startingObjectIndex;
 	color = 0;
-	for (const data of instanceRenderQueue.values()) {
-		data.len = 0;
-	}
+	instanceRenderList.clear();
 }
 
 let instanceBufferData = new Float32Array(0);
@@ -239,16 +240,21 @@ export function finishFrame() {
 	// * Draw instances
 	gl.bindBuffer(GL_ARRAY_BUFFER, instanceBuffer);
 
-	debugWatch("meshes", instanceRenderQueue.size);
+	debugWatch("meshes", instanceRenderList.size);
 
-	const dataSize = instanceRenderQueue.values().reduce((sum, data) => sum + data.len, 0);
+	const combinedRenderList = [
+		...staticInstanceRenderList.entries(),
+		...instanceRenderList.entries()
+	];
+
+	const dataSize = combinedRenderList.reduce((sum, [,data]) => sum + data.length, 0);
 	if (dataSize > instanceBufferData.length) {
 		instanceBufferData = new Float32Array(dataSize);
 	}
 	let cursor = 0;
-	for (const data of instanceRenderQueue.values()) {
-		instanceBufferData.set(data.array.subarray(0, data.len), cursor);
-		cursor += data.len;
+	for (const [,data] of combinedRenderList) {
+		instanceBufferData.set(data, cursor);
+		cursor += data.length;
 	}
 
 	gl.bufferData(
@@ -257,16 +263,16 @@ export function finishFrame() {
 			GL_DYNAMIC_DRAW
 		)
 	let instanceDataOffset = 0;
-	for (const [mesh, data] of instanceRenderQueue.entries()) {
+	for (const [mesh, data] of combinedRenderList) {
 		for (let i = 0; i < 5; i++) {
 			gl.vertexAttribPointer(i, 4, GL_FLOAT, false, INSTANCE_DATA_BYTES_STRIDE, instanceDataOffset + i * 4 * SIZEOF_FLOAT);
 			gl.vertexAttribDivisor(i, 1);
 			gl.enableVertexAttribArray(i);
 		}
 
-		instanceDataOffset += data.len * SIZEOF_FLOAT;
+		instanceDataOffset += data.length * SIZEOF_FLOAT;
 
-		gl.drawArraysInstanced(GL_TRIANGLES, mesh.offset / 4, mesh.size / 4, data.len / NUM_FLOATS_PER_INSTANCE)
+		gl.drawArraysInstanced(GL_TRIANGLES, mesh.offset / 4, mesh.size / 4, data.length / NUM_FLOATS_PER_INSTANCE)
 	}
 
 	debugWatch("render instances", performance.now() - t0);
@@ -282,6 +288,6 @@ export let cameraTransform = IDENTITY;
 export function updateCameraTransform(newCameraTransform: DOMMatrix) {
 	cameraTransform = newCameraTransform;
 }
-let objectIndex!: number;
+let objectIndex = 1;
 let color!: Color;
-let transformStack!: DOMMatrix[];
+let transformStack = [IDENTITY];
