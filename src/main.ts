@@ -10,6 +10,8 @@ import { finishFrame, setupFrame } from "./rendering/renderer.ts";
 
 if (DEBUG) {
 	console.log("ℹ️ DEBUG BUILD");
+	debugWatch("FPS", "-");
+	debugWatch("ms", "-");
 }
 
 let previouseFrameTimestamp = 0;
@@ -50,7 +52,6 @@ function onAnimationFrame(timestamp: number) {
 			if (framesRendered++ % 10 == 0) {
 				debugWatch("FPS", Math.round(fps));
 				debugWatch("ms", average(frameTimeValues).toFixed(3));
-				debugWatch("Space held", isKeyHeld("Space"));
 			}
 		}
 	}

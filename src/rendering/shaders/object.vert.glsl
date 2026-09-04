@@ -1,17 +1,22 @@
 #version 300 es
-in vec4 p; // .xyz = local vertex pos, .w = surface ID
-uniform mat4 o, w; // modelToWorld, worldToClip
-uniform float l, b; // length, bend;
+layout(location = 0) in mat4 o; // objectToWorld
+layout(location = 4) in vec4 d; // .x = object color, .y = object index, .z = length, .w = bend
+layout(location = 5) in vec4 p; // .xyz = local vertex pos, .w = surface ID
+uniform mat4 w; //  worldToClip
+
 out vec4 v; // .xyz = local vertex pos, .w = surface ID
+out float c, i; // object color, object index
 
 void main() {
 	vec3 P = p.xyz;
-	P.z *= l;
+	P.z *= d.z;
 	// radius = 3.
-	if (b > 0. && P.z > b) {
-		P.y -= 3. * (1.0 - cos((P.z - b) / 3. * 1.57));
-		P.z = b + 3. * sin((P.z - b) / 3. * 1.57);
+	if (d.w > 0. && P.z > d.w) {
+		P.y -= 3. * (1.0 - cos((P.z - d.w) / 3. * 1.57));
+		P.z = d.w + 3. * sin((P.z - d.w) / 3. * 1.57);
 	}
 	gl_Position = w * o * vec4(P, 1);
 	v = p;
+	i = d.y;
+	c = d.x;
 }

@@ -25,7 +25,11 @@ const watches: Record<string, any> = {}
 
 export function debugWatch(key: string, value: any) {
 	if (DEBUG) {
-		watches[key] = value;
+		if (typeof value === "number") {
+			watches[key] = value.toFixed(3);
+		} else {
+			watches[key] = value;
+		}
 		debugDiv.innerHTML = Object.entries(watches).map(([k, v]) => /*html*/`<span>${k}: ${v}</span>`).join("");
 	}
 }

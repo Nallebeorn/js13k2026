@@ -1,8 +1,8 @@
 import { gl } from "./renderingGlobals.ts";
-import { GL_ARRAY_BUFFER, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_BUFFER_BIT, GL_DEPTH_ATTACHMENT, GL_DEPTH_BUFFER_BIT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT24, GL_DEPTH_COMPONENT32F, GL_DEPTH_TEST, GL_FLOAT, GL_FRAMEBUFFER, GL_FRAMEBUFFER_COMPLETE, GL_NEAREST, GL_RGBA, GL_STATIC_DRAW, GL_TEXTURE0, GL_TEXTURE1, GL_TEXTURE2, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_TEXTURE_MIN_FILTER, GL_TEXTURE_WRAP_S, GL_TEXTURE_WRAP_T, GL_TRIANGLES, GL_UNSIGNED_BYTE, GL_UNSIGNED_INT } from "./glConstants.ts";
+import { GL_ARRAY_BUFFER, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_BUFFER_BIT, GL_DEPTH_ATTACHMENT, GL_DEPTH_BUFFER_BIT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT32F, GL_DEPTH_TEST, GL_DYNAMIC_DRAW, GL_FLOAT, GL_FRAMEBUFFER, GL_FRAMEBUFFER_COMPLETE, GL_NEAREST, GL_RGBA, GL_STATIC_DRAW, GL_TEXTURE0, GL_TEXTURE1, GL_TEXTURE2, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_TEXTURE_MIN_FILTER, GL_TEXTURE_WRAP_S, GL_TEXTURE_WRAP_T, GL_TRIANGLES, GL_UNSIGNED_BYTE } from "./glConstants.ts";
 import { createMatrix, getPos, IDENTITY, projectPerspective, type Transform } from "../core/math.ts";
-import { DEBUG } from "../debug.ts";
-import { colorTextureUniform, depthTextureUniform, objectBendUniform, objectColorUniform, objectIndexUniform, objectLengthUniform, objectPaletteUniform, objectShader, objectToWorldUniform, postProcessShader, surfaceIndexTextureUniform, worldToClipUniform } from "./shaders/shaders.ts";
+import { DEBUG, debugWatch } from "../debug.ts";
+import { colorTextureUniform, depthTextureUniform, objectPaletteUniform, objectShader, postProcessShader, surfaceIndexTextureUniform, worldToClipUniform } from "./shaders/shaders.ts";
 import { deserializeObjects } from "../gamedata/binreader.ts";
 import { colors, type Color } from "../gamedata/colors.ts";
 import type { RenderObjectHandle } from "../gamedata/objects.gen.ts";
@@ -69,7 +69,7 @@ gl.enable(GL_DEPTH_TEST);
 const fov = 2.4; // ≈ TAU/8 radians = 45°
 const aspect = CANVAS_WIDTH / CANVAS_HEIGHT;
 
-finishFrame(); // required to avoid test harness timing out waiting for FCP
+// finishFrame(); // required to avoid test harness timing out waiting for FCP
 
 // * Set up vertex array buffer
 export interface MeshInfo {
@@ -92,13 +92,18 @@ const objectsBank = deserializeObjects(await (await fetch("b?" + +new Date)).arr
 
 export const rainbowMesh = addVertexData(createRibbon());
 
+
 gl.bufferData(
 		GL_ARRAY_BUFFER,
 		new Float32Array(vertexData),
 		GL_STATIC_DRAW
 	);
-gl.vertexAttribPointer(0, 4, GL_FLOAT, false, 0, 0);
-gl.enableVertexAttribArray(0);
+gl.vertexAttribPointer(5, 4, GL_FLOAT, false, 0, 0);
+gl.enableVertexAttribArray(5);
+
+// * Instance buffer
+const instanceBuffer = gl.createBuffer();
+const instanceRenderQueue = new Map<MeshInfo, number[]>();
 
 // * Render API
 export function drawMesh(
@@ -108,7 +113,7 @@ export function drawMesh(
 	length: number,
 	bend: number,
 ) {
-	gl.uniformMatrix4fv(
+	/* gl.uniformMatrix4fv(
 		objectToWorldUniform,
 		false,
 		transform.toFloat32Array(),
@@ -119,6 +124,18 @@ export function drawMesh(
 	gl.uniform1f(objectBendUniform, bend);
 
 	gl.drawArrays(GL_TRIANGLES, mesh.offset / 4, mesh.size / 4);
+	*/
+
+	if (!instanceRenderQueue.has(mesh)) {
+		instanceRenderQueue.set(mesh, []);
+	}
+	instanceRenderQueue.get(mesh)!.push(
+		...transform.toFloat32Array(),
+		color,
+		objectIndex,
+		length,
+		bend,
+	);
 }
 
 export type SlotTransforms = Record<number | "_", Transform>;
@@ -190,9 +207,37 @@ export function setupFrame() {
 	transformStack = [IDENTITY];
 	objectIndex = 1;
 	color = 0;
+	instanceRenderQueue.clear();
 }
 
 export function finishFrame() {
+	// * Draw instances
+	gl.bindBuffer(GL_ARRAY_BUFFER, instanceBuffer);
+
+	debugWatch("num meshes", instanceRenderQueue.size);
+
+	const SIZEOF_FLOAT = 4;
+	const NUM_FLOATS_PER_INSTANCE = 5 * 4;
+	const INSTANCE_DATA_BYTES_STRIDE = SIZEOF_FLOAT * NUM_FLOATS_PER_INSTANCE;
+
+	gl.bufferData(
+			GL_ARRAY_BUFFER,
+			new Float32Array(instanceRenderQueue.values().toArray().flat()),
+			GL_DYNAMIC_DRAW
+		)
+	let instanceDataOffset = 0;
+	for (const [mesh, data] of instanceRenderQueue.entries()) {
+		for (let i = 0; i < 5; i++) {
+			gl.vertexAttribPointer(i, 4, GL_FLOAT, false, INSTANCE_DATA_BYTES_STRIDE, instanceDataOffset + i * 4 * SIZEOF_FLOAT);
+			gl.vertexAttribDivisor(i, 1);
+			gl.enableVertexAttribArray(i);
+		}
+
+		instanceDataOffset += data.length * 4;
+
+		gl.drawArraysInstanced(GL_TRIANGLES, mesh.offset / 4, mesh.size / 4, data.length / NUM_FLOATS_PER_INSTANCE)
+	}
+
 	// * Draw post processing (and blit to canvas)
 	gl.bindFramebuffer(GL_FRAMEBUFFER, null);
 	gl.useProgram(postProcessShader);
