@@ -69,11 +69,12 @@ let grindStart: Vec3;
 let grindLength: number;
 
 export function processPlayer() {
+	const t0 = performance.now();
 	if (state == PlayerState.MOVING) processMovingState();
 	if (state == PlayerState.WALL_LODGE) processWallLodgedState();
 
-	debugWatch("vx", vx.toFixed(3));
-	debugWatch("vz", vz.toFixed(3));
+	// debugWatch("vx", vx.toFixed(3));
+	// debugWatch("vz", vz.toFixed(3));
 
 	// ? Draw unicorn
 	drawObject(obj_unicorn, {
@@ -104,13 +105,14 @@ export function processPlayer() {
 	const movePitch = mouseDeltaY * .1;
 	cameraYaw += -moveYaw * 180 * deltaTime;
 	cameraPitch = clamp(cameraPitch - movePitch * 180 * deltaTime, -80, 30)
-	debugWatch("pitch", cameraPitch.toFixed(3));
 	updateCameraTransform(
 		IDENTITY
 			.translate(x, y, z)
 			.rotate(cameraPitch, cameraYaw, 0)
 			.translate(0, 3, 18)
 	);
+
+	debugWatch("player", performance.now() - t0);
 }
 
 function processMovingState() {
@@ -182,6 +184,7 @@ function processMovingState() {
 	x += vx * deltaTime;
 	z += vz * deltaTime;
 
+	const t1 = performance.now();
 	for (const depenetration of enumerateCollisions()) {
 		x += depenetration[0];
 		if (vx) {
@@ -221,6 +224,8 @@ function processMovingState() {
 			grounded = true;
 		}
 	}
+
+	debugWatch("player collisions", performance.now() - t1);
 
 	if (y <= 0) {
 		y = 0;

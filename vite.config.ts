@@ -30,6 +30,7 @@ export default defineConfig({
 			module: true,
 			toplevel: true,
 			compress: {
+				pure_funcs: ["performance.now"],
 				passes: 3,
 				unsafe: true,
 				unsafe_math: true,

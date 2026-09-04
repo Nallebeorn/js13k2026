@@ -6,7 +6,7 @@ import { colorTextureUniform, depthTextureUniform, objectPaletteUniform, objectS
 import { deserializeObjects } from "../gamedata/binreader.ts";
 import { colors, type Color } from "../gamedata/colors.ts";
 import type { RenderObjectHandle } from "../gamedata/objects.gen.ts";
-import { createRibbon } from "./shapes.ts";
+import { createPill, createRibbon } from "./shapes.ts";
 import { objectColliders } from "../physics/objectColliders.ts";
 import { translateCollider } from "../physics/collision.ts";
 
@@ -91,7 +91,11 @@ const vertexData: number[] = [];
 const objectsBank = deserializeObjects(await (await fetch("b?" + +new Date)).arrayBuffer());
 
 export const rainbowMesh = addVertexData(createRibbon());
-
+export const cloudMeshes = [
+	addVertexData(createPill(.75, .75, 0)),
+	addVertexData(createPill(1, 1, 0)),
+	addVertexData(createPill(1.5, 1.5, 0)),
+]
 
 gl.bufferData(
 		GL_ARRAY_BUFFER,
@@ -113,24 +117,27 @@ export function drawMesh(
 	length: number,
 	bend: number,
 ) {
-	/* gl.uniformMatrix4fv(
-		objectToWorldUniform,
-		false,
-		transform.toFloat32Array(),
-	);
-	gl.uniform1i(objectColorUniform, color);
-	gl.uniform1f(objectIndexUniform, objectIndex)
-	gl.uniform1f(objectLengthUniform, length);
-	gl.uniform1f(objectBendUniform, bend);
-
-	gl.drawArrays(GL_TRIANGLES, mesh.offset / 4, mesh.size / 4);
-	*/
-
-	if (!instanceRenderQueue.has(mesh)) {
-		instanceRenderQueue.set(mesh, []);
+	let instanceData = instanceRenderQueue.get(mesh);
+	if (!instanceData) {
+		instanceRenderQueue.set(mesh, instanceData = []);
 	}
-	instanceRenderQueue.get(mesh)!.push(
-		...transform.toFloat32Array(),
+	instanceData.push(
+		transform.m11,
+		transform.m12,
+		transform.m13,
+		transform.m14,
+		transform.m21,
+		transform.m22,
+		transform.m23,
+		transform.m24,
+		transform.m31,
+		transform.m32,
+		transform.m33,
+		transform.m34,
+		transform.m41,
+		transform.m42,
+		transform.m43,
+		transform.m44,
 		color,
 		objectIndex,
 		length,
@@ -144,9 +151,8 @@ export function drawObject(
 	object: RenderObjectHandle,
 	slotTransforms?: SlotTransforms,
 	color_override?: Color,
-	newObject = true,
 ) {
-	if (newObject) objectIndex++;
+	objectIndex++;
 
 	transformStack.push(transformStack.at(-1)!.multiply(createMatrix(slotTransforms?.[ROOT_SLOT])))
 	let transformSlotIndex = 0;
@@ -190,6 +196,10 @@ export function drawObject(
 	transformStack.pop();
 }
 
+export function incrementObjectIndex() {
+	objectIndex++;
+}
+
 export function setupFrame() {
 	gl.useProgram(objectShader)
 	gl.bindFramebuffer(GL_FRAMEBUFFER, framebuffer);
@@ -211,10 +221,12 @@ export function setupFrame() {
 }
 
 export function finishFrame() {
+	const t0 = performance.now();
+
 	// * Draw instances
 	gl.bindBuffer(GL_ARRAY_BUFFER, instanceBuffer);
 
-	debugWatch("num meshes", instanceRenderQueue.size);
+	debugWatch("meshes", instanceRenderQueue.size);
 
 	const SIZEOF_FLOAT = 4;
 	const NUM_FLOATS_PER_INSTANCE = 5 * 4;
@@ -237,6 +249,8 @@ export function finishFrame() {
 
 		gl.drawArraysInstanced(GL_TRIANGLES, mesh.offset / 4, mesh.size / 4, data.length / NUM_FLOATS_PER_INSTANCE)
 	}
+
+	debugWatch("render instances", performance.now() - t0);
 
 	// * Draw post processing (and blit to canvas)
 	gl.bindFramebuffer(GL_FRAMEBUFFER, null);

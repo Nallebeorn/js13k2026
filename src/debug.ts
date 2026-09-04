@@ -25,7 +25,7 @@ const watches: Record<string, any> = {}
 
 export function debugWatch(key: string, value: any) {
 	if (DEBUG) {
-		if (typeof value === "number") {
+		if (typeof value === "number" && !Number.isInteger(value)) {
 			watches[key] = value.toFixed(3);
 		} else {
 			watches[key] = value;

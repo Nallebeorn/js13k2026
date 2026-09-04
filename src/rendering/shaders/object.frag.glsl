@@ -2,7 +2,7 @@
 precision highp float;
 
 in vec4 v; // .xyz = local vertex pos, .w = surface ID
-in float c, i; // object color, object index
+flat in float c, i; // object color, object index
 
 uniform vec4 p[16]; // palette
 
@@ -11,5 +11,5 @@ layout(location=1) out vec4 s; // surface index
 
 void main() {
 	s = vec4(v.w, i, 0, 0) / 255.;
-	o = round(c) == 15. ? p[int((4. + (-v.w) * 7.))] : p[int(round(c))];// + v * vec4(-.5, 1, .5, 0) * .1;
+	o = c == 15. ? p[int((4. + (-v.w) * 7.))] : p[int(c)];// + v * vec4(-.5, 1, .5, 0) * .1;
 }

@@ -5,7 +5,7 @@ layout(location = 5) in vec4 p; // .xyz = local vertex pos, .w = surface ID
 uniform mat4 w; //  worldToClip
 
 out vec4 v; // .xyz = local vertex pos, .w = surface ID
-out float c, i; // object color, object index
+flat out float c, i; // object color, object index
 
 void main() {
 	vec3 P = p.xyz;
