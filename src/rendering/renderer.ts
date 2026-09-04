@@ -243,10 +243,15 @@ export function finishFrame() {
 		...instanceRenderList.entries()
 	];
 
-	const dataSize = combinedRenderList.reduce((sum, [,data]) => sum + data.length, 0);
+	let dataSize = 0;
+	for (const [, data] of combinedRenderList) {
+		dataSize += data.length
+	}
+
 	if (dataSize > instanceBufferData.length) {
 		instanceBufferData = new Float32Array(dataSize);
 	}
+
 	let cursor = 0;
 	for (const [,data] of combinedRenderList) {
 		instanceBufferData.set(data, cursor);
