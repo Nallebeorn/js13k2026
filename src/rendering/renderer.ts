@@ -232,9 +232,17 @@ export function finishFrame() {
 	const NUM_FLOATS_PER_INSTANCE = 5 * 4;
 	const INSTANCE_DATA_BYTES_STRIDE = SIZEOF_FLOAT * NUM_FLOATS_PER_INSTANCE;
 
+	const dataSize = instanceRenderQueue.values().reduce((sum, array) => sum + array.length, 0);
+	const bufferData = new Float32Array(dataSize);
+	let cursor = 0;
+	for (const data of instanceRenderQueue.values()) {
+		bufferData.set(data, cursor);
+		cursor += data.length;
+	}
+
 	gl.bufferData(
 			GL_ARRAY_BUFFER,
-			new Float32Array(instanceRenderQueue.values().toArray().flat()),
+			bufferData,
 			GL_DYNAMIC_DRAW
 		)
 	let instanceDataOffset = 0;

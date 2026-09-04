@@ -32,11 +32,11 @@ function onAnimationFrame(timestamp: number) {
 
 	const elapsed = timestamp - previouseFrameTimestamp || timestamp;
 	previouseFrameTimestamp = timestamp;
-	timerAccumulator = Math.min(timerAccumulator + elapsed, 200);
+	timerAccumulator += elapsed;
 
-	while (timerAccumulator >= 1000 / 60) {
+	if (timerAccumulator >= 1000 / 60) {
 		const t0 = (DEBUG && performance.now()) as number;
-		timerAccumulator -= 1000 / 60;
+		timerAccumulator = 0;
 		// console.log("random number", srandf(seed++));
 
 		resetObjectColliders();

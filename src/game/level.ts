@@ -29,7 +29,7 @@ const levelGeometry: [RenderObjectHandle, Vec3][] = [
 ];
 
 const clouds: [number, Vec2, Vec2][] = [
-	[0, [-20, -20], [20, 20]],
+	[0, [-100, -100], [100, 100]],
 ];
 
 export function drawLevel() {
