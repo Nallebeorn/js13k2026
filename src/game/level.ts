@@ -1,6 +1,5 @@
-import { add, createMatrix, type Vec2, type Vec3 } from "../core/math.ts";
+import { add, createMatrix, lerp, type Vec2, type Vec3 } from "../core/math.ts";
 import { srand, srandf } from "../core/random.ts";
-import { debugWatch } from "../debug.ts";
 import { COLOR_WHITE } from "../gamedata/colors.ts";
 import {
 	obj_unitSphere,
@@ -10,7 +9,7 @@ import {
 	type RenderObjectHandle,
 } from "../gamedata/objects.gen.ts";
 import { staticColliders } from "../physics/objectColliders.ts";
-import { cloudMeshes, drawMesh, drawObject, incrementObjectIndex } from "../rendering/renderer.ts";
+import { drawMesh, drawObject, incrementObjectIndex, unitSphere } from "../rendering/renderer.ts";
 
 const levelGeometry: [RenderObjectHandle, Vec3][] = [
 	[obj_pillar10, [-5, 1, -12]],
@@ -37,16 +36,17 @@ for (const [object, pos] of levelGeometry) {
 
 let seed = 0;
 for (const [y, [xmin, zmin], [xmax, zmax]] of clouds) {
-	for (let z = zmin; z <= zmax; z++) {
-		for (let x = xmin; x <= xmax; x++) {
+	for (let z = zmin; z <= zmax; z += 0.75) {
+		for (let x = xmin; x <= xmax; x += 0.75) {
 			drawMesh(
-				cloudMeshes[srand(seed++) % 3]!,
+				unitSphere,
 				COLOR_WHITE,
 				createMatrix({
 					translation: add(
 						[x, y, z],
 						[0.2 * srandf(seed++), 0.2 * srandf(seed++), 0.2 * srandf(seed++)],
 					),
+					scale: 0.75 + srandf(seed++) * .25
 				}),
 				1,
 				0,
@@ -57,10 +57,4 @@ for (const [y, [xmin, zmin], [xmax, zmax]] of clouds) {
 
 	staticColliders.push({ min: [xmin, y - .5, zmin], max: [xmax, y + .5, zmax] });
 	incrementObjectIndex();
-}
-
-export function drawLevel() {
-	const t0 = performance.now();
-
-	debugWatch("drawLevel", performance.now() - t0);
 }

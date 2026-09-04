@@ -225,7 +225,7 @@ function processMovingState() {
 		}
 	}
 
-	debugWatch("player collisions", performance.now() - t1);
+	debugWatch("playercoll", performance.now() - t1);
 
 	if (y <= 0) {
 		y = 0;

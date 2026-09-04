@@ -44,7 +44,7 @@ export type Mat4 = [
 export interface Transform {
 	translation?: Vec3 | 0,
 	euler?: Vec3 | 0,
-	scale?: Vec3 | 0,
+	scale?: number,
 }
 
 export function add<T extends AnyVec>(lhs: T, rhs: NoInfer<T>): T {
@@ -109,7 +109,7 @@ export function createMatrix(transform?: Transform): DOMMatrix {
 	let matrix = IDENTITY;
 	if (transform?.translation) matrix = matrix.translate(...transform.translation);
 	if (transform?.euler) matrix = matrix.rotate(...transform.euler);
-	if (transform?.scale) matrix = matrix.scale(...transform.scale);
+	if (transform?.scale) matrix = matrix.scale(transform.scale, transform.scale, transform.scale);
 	return matrix;
 }
 

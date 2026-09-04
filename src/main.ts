@@ -2,7 +2,7 @@ import { advanceTime } from "./core/time.ts";
 import { average, ringPush } from "./core/util.ts";
 import { DEBUG, debugWatch } from "./debug.ts";
 import { say } from "./game/dialogue.ts";
-import { processFrame } from "./game/gameLoop.ts";
+import { processFrame } from "./game/game.ts";
 import { clearFrameInputs } from "./input/input.ts";
 import { finishFrame, setupFrame } from "./rendering/renderer.ts";
 
