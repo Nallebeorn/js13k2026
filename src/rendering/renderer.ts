@@ -107,7 +107,11 @@ gl.enableVertexAttribArray(5);
 
 // * Instance buffer
 const instanceBuffer = gl.createBuffer();
-const instanceRenderQueue = new Map<MeshInfo, number[]>();
+const instanceRenderQueue = new Map<MeshInfo, { len: number, array: Float32Array }>();
+
+const SIZEOF_FLOAT = 4;
+const NUM_FLOATS_PER_INSTANCE = 5 * 4;
+const INSTANCE_DATA_BYTES_STRIDE = SIZEOF_FLOAT * NUM_FLOATS_PER_INSTANCE;
 
 // * Render API
 export function drawMesh(
@@ -119,30 +123,35 @@ export function drawMesh(
 ) {
 	let instanceData = instanceRenderQueue.get(mesh);
 	if (!instanceData) {
-		instanceRenderQueue.set(mesh, instanceData = []);
+		instanceRenderQueue.set(mesh, instanceData = {len: 0, array: new Float32Array(NUM_FLOATS_PER_INSTANCE)});
 	}
-	instanceData.push(
-		transform.m11,
-		transform.m12,
-		transform.m13,
-		transform.m14,
-		transform.m21,
-		transform.m22,
-		transform.m23,
-		transform.m24,
-		transform.m31,
-		transform.m32,
-		transform.m33,
-		transform.m34,
-		transform.m41,
-		transform.m42,
-		transform.m43,
-		transform.m44,
-		color,
-		objectIndex,
-		length,
-		bend,
-	);
+	if (instanceData.len >= instanceData.array.length) {
+		console.log("resize!");
+		const newArray = new Float32Array(instanceData.len * 2);
+		newArray.set(instanceData.array);
+		instanceData.array = newArray;
+	}
+
+	instanceData.array[instanceData.len++] = transform.m11;
+	instanceData.array[instanceData.len++] = transform.m12;
+	instanceData.array[instanceData.len++] = transform.m13;
+	instanceData.array[instanceData.len++] = transform.m14;
+	instanceData.array[instanceData.len++] = transform.m21;
+	instanceData.array[instanceData.len++] = transform.m22;
+	instanceData.array[instanceData.len++] = transform.m23;
+	instanceData.array[instanceData.len++] = transform.m24;
+	instanceData.array[instanceData.len++] = transform.m31;
+	instanceData.array[instanceData.len++] = transform.m32;
+	instanceData.array[instanceData.len++] = transform.m33;
+	instanceData.array[instanceData.len++] = transform.m34;
+	instanceData.array[instanceData.len++] = transform.m41;
+	instanceData.array[instanceData.len++] = transform.m42;
+	instanceData.array[instanceData.len++] = transform.m43;
+	instanceData.array[instanceData.len++] = transform.m44;
+	instanceData.array[instanceData.len++] = color;
+	instanceData.array[instanceData.len++] = objectIndex;
+	instanceData.array[instanceData.len++] = length;
+	instanceData.array[instanceData.len++] = bend;
 }
 
 export type SlotTransforms = Record<number | "_", Transform>;
@@ -217,8 +226,12 @@ export function setupFrame() {
 	transformStack = [IDENTITY];
 	objectIndex = 1;
 	color = 0;
-	instanceRenderQueue.clear();
+	for (const data of instanceRenderQueue.values()) {
+		data.len = 0;
+	}
 }
+
+let instanceBufferData = new Float32Array(0);
 
 export function finishFrame() {
 	const t0 = performance.now();
@@ -228,21 +241,19 @@ export function finishFrame() {
 
 	debugWatch("meshes", instanceRenderQueue.size);
 
-	const SIZEOF_FLOAT = 4;
-	const NUM_FLOATS_PER_INSTANCE = 5 * 4;
-	const INSTANCE_DATA_BYTES_STRIDE = SIZEOF_FLOAT * NUM_FLOATS_PER_INSTANCE;
-
-	const dataSize = instanceRenderQueue.values().reduce((sum, array) => sum + array.length, 0);
-	const bufferData = new Float32Array(dataSize);
+	const dataSize = instanceRenderQueue.values().reduce((sum, data) => sum + data.len, 0);
+	if (dataSize > instanceBufferData.length) {
+		instanceBufferData = new Float32Array(dataSize);
+	}
 	let cursor = 0;
 	for (const data of instanceRenderQueue.values()) {
-		bufferData.set(data, cursor);
-		cursor += data.length;
+		instanceBufferData.set(data.array.subarray(0, data.len), cursor);
+		cursor += data.len;
 	}
 
 	gl.bufferData(
 			GL_ARRAY_BUFFER,
-			bufferData,
+			instanceBufferData.subarray(0, dataSize),
 			GL_DYNAMIC_DRAW
 		)
 	let instanceDataOffset = 0;
@@ -253,9 +264,9 @@ export function finishFrame() {
 			gl.enableVertexAttribArray(i);
 		}
 
-		instanceDataOffset += data.length * 4;
+		instanceDataOffset += data.len * SIZEOF_FLOAT;
 
-		gl.drawArraysInstanced(GL_TRIANGLES, mesh.offset / 4, mesh.size / 4, data.length / NUM_FLOATS_PER_INSTANCE)
+		gl.drawArraysInstanced(GL_TRIANGLES, mesh.offset / 4, mesh.size / 4, data.len / NUM_FLOATS_PER_INSTANCE)
 	}
 
 	debugWatch("render instances", performance.now() - t0);
