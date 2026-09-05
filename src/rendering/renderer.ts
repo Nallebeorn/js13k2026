@@ -214,7 +214,7 @@ export function setupFrame() {
 	gl.uniformMatrix4fv(
   	worldToClipUniform,
   	false,
-		projectPerspective(fov, aspect, 1)
+		projectPerspective(fov, aspect, 0.1)
 			.multiply(cameraTransform.inverse())
 			.toFloat32Array(),
 	);

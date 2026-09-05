@@ -23,7 +23,7 @@ export function translateCollider<T extends Collider>(collider: T, pos: Vec3): T
 		: ({ min: add(collider.min, pos), max: add(collider.max, pos) } as T);
 }
 
-export type Collider = SphereCollider | BoxCollider | CapsuleCollider;
+export type Collider = BoxCollider | CapsuleCollider;
 
 export interface Collision {
 	depth: number,
@@ -31,24 +31,11 @@ export interface Collision {
 }
 
 export function penetrateSphereGeneric(pos: Vec3, r: number, b: Collider) {
-	if ("vector" in b) {
+	if ("r" in b) {
 		return penetrateSphereCapsule({ pos, r }, b as CapsuleCollider)
 	}
 
-	if ("r" in b) {
-		return penetrateSphereSphere({ pos, r }, b);
-	}
-
 	return penetrateSphereBox({ pos, r }, b);
-}
-
-export function penetrateSphereSphere(a: SphereCollider, b: SphereCollider) {
-	const delta = sub(a.pos, b.pos)
-	const depth = Math.max(0, a.r - length(delta) + b.r)
-	return {
-		depth,
-		depenetration: depth && withLength(delta, depth)
-	};
 }
 
 export function penetrateSphereCapsule(a: SphereCollider, b: CapsuleCollider) {
@@ -59,10 +46,13 @@ export function penetrateSphereCapsule(a: SphereCollider, b: CapsuleCollider) {
 			clamp(dot(sub(a.pos, b.pos), b.vector) / dot(b.vector, b.vector), 0, 1),
 		),
 	);
+	const delta = sub(a.pos, pos)
+	const depth = Math.max(0, a.r - length(delta) + b.r)
 
 	return {
 		projected: pos,
-		...penetrateSphereSphere(a, { pos, r: b.r }),
+		depth,
+		depenetration: depth && withLength(delta, depth)
 	};
 }
 

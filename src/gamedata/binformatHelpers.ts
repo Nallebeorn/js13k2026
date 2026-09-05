@@ -19,6 +19,8 @@ export const SHAPE_FLAGS_COLLISION = 1 << 3;
 
 export const COLOR_MASK = 0xf;
 
+export const NEXT_SECTION = 0x3f;
+
 export function quantizePosition(float: number) {
 	const normalized = Math.min(Math.max(float / 16, -1), 1);
 	return Math.round(normalized * 127);

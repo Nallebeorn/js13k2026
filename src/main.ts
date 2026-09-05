@@ -34,7 +34,7 @@ function onAnimationFrame(timestamp: number) {
 
 	if (timerAccumulator >= 1000 / 60) {
 		const t0 = (DEBUG && performance.now()) as number;
-		timerAccumulator = 0;
+		timerAccumulator -= 1000 / 60;
 		// console.log("random number", srandf(seed++));
 
 		setupFrame();

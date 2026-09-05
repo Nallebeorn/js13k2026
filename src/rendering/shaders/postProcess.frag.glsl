@@ -7,6 +7,10 @@ layout(location=0) out vec4 o; // output color
 // c = color texture, s = surface index texture, d = depth texture
 uniform sampler2D c, s, d;
 
+float D(vec2 u) {
+	return texture(d, v*.5+.5 + u).r;
+}
+
 void main() {
 	o = vec4(
 		max(
@@ -15,8 +19,8 @@ void main() {
 		) > 0. // surface index outlines
 		||
 		max(
-			abs(texture(d, v*.5+.5 + vec2(2./640., 0)).r  - texture(d, v*.5+.5).r),
-			abs(texture(d, v*.5+.5 + vec2(0, 2./480.)).r  - texture(d, v*.5+.5).r)
+			abs(D(vec2(2./640., 0)) - D(vec2(0, 0))),
+			abs(D(vec2(0, 2./480.)) - D(vec2(0, 0)))
 		) > .0005 // depth outlines
 		// ? vec3(0.902, 0.251, 0.792)
 		?vec3(.467, .2, .067)
