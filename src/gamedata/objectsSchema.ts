@@ -17,6 +17,7 @@ export interface BaseObjectNode {
 	slotName?: string,
 	children?: ObjectNode[];
 	collision?: boolean;
+	visible?: boolean;
 };
 
 interface BoxDescriptor extends BaseObjectNode {

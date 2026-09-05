@@ -15,6 +15,7 @@ import {
 	NODE_TYPE_COLOR,
   TRANSFORM_FLAGS_POP,
 	SHAPE_FLAGS_COLLISION,
+	SHAPE_FLAGS_VISIBLE,
 } from "./binformatHelpers.ts";
 
 export function serializeObjects(): {
@@ -70,6 +71,7 @@ export function serializeObjects(): {
 				if (node.shape == "pill") byte |= SHAPE_TYPE_PILL;
 				if (node.newObjectIndex) byte |= SHAPE_FLAGS_NEW_INDEX;
 				if (node.collision) byte |= SHAPE_FLAGS_COLLISION;
+				if (node.visible ?? true) byte |= SHAPE_FLAGS_VISIBLE;
 				dv.setUint8(pos++, byte);
 
 				if (node.shape == "box") {

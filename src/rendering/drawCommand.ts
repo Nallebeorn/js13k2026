@@ -7,7 +7,7 @@ export interface DrawCommand {
 	pushTransform?: Transform;
 	popTransform?: 1;
 
-	drawShape?: MeshInfo;
+	drawShape?: 0 | MeshInfo;
 	colour?: Color;
 	incrementSurfaceIndex?: 0 | number;
 	collider?: 0 | Collider;

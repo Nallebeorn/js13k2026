@@ -254,13 +254,14 @@ export default [
 	{
 		name: "pillar10", // ? pillar10
 		nodes: [
-			/* { // todo: remove?
+			{
 				translate: [0, 1.25, 0],
 				shape: "pill",
-				bottomRadius: 1.25,
-				height: 10  - 1.25 * 2,
-				collision: true
-			}, */
+				bottomRadius: 1.5,
+				height: 10  - 1.125 * 2,
+				collision: true,
+				visible: false,
+			},
 			{
 				color: COLOR_WHITE,
 				translate: [0, -.5, 0],
@@ -287,7 +288,6 @@ export default [
 						bottomRadius: 0.25,
 						height: 10,
 						translate: [0, 0, 1],
-						collision: true,
 					},
 				],
 			})),
@@ -296,6 +296,14 @@ export default [
 	{
 		name: "pillar5",
 		nodes: [
+			{
+				translate: [0, 1.25, 0],
+				shape: "pill",
+				bottomRadius: 1.5,
+				height: 5  - 1.125 * 2,
+				collision: true,
+				visible: false,
+			},
 			{
 				color: COLOR_WHITE,
 				translate: [0, -.5, 0],
@@ -322,7 +330,6 @@ export default [
 						bottomRadius: 0.25,
 						height: 5,
 						translate: [0, 0, 1],
-						collision: true,
 					},
 				],
 			})),
