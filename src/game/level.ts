@@ -59,6 +59,10 @@ for (const [y, [xmin, zmin], [xmax, zmax]] of clouds) {
 		}
 	}
 
-	staticColliders.push({ min: [xmin, y - .5, zmin], max: [xmax, y + .5, zmax] });
+	staticColliders.push({
+		min: [xmin, y - 1, zmin],
+		max: [xmax, y, zmax],
+		safePoint: [xmin * 0.5 + xmax * 0.5, y+1.5, zmin * 0.5 + zmax * 0.5],
+	});
 	incrementObjectIndex();
 }

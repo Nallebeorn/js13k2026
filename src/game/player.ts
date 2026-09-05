@@ -23,7 +23,7 @@ import {
 	obj_unicorn_hornPivotSlot,
 } from "../gamedata/objects.gen.ts";
 import { isKeyHeld, mouseDeltaX, mouseDeltaY, wasKeyJustPressed } from "../input/input.ts";
-import { penetrateSphereGeneric } from "../physics/collision.ts";
+import { penetrateSphereGeneric, type Collision, type ConfirmedCollision } from "../physics/collision.ts";
 import { staticColliders } from "../physics/objectColliders.ts";
 import { cameraTransform, drawMesh, drawObject, rainbowMesh, ROOT_SLOT, updateCameraTransform, type SlotTransforms } from "../rendering/renderer.ts";
 
@@ -41,6 +41,9 @@ const GRIND_LENGTH = 20;
 let x = 0;
 let y = 2;
 let z = -6;
+
+let respawnPoint: Vec3 = [x, y, z];
+
 let rotation = 0;
 let dirx = 1;
 let diry = 0;
@@ -173,7 +176,7 @@ function processMovingState() {
 				);
 
 				if (collision.depenetration) {
-					yield collision.depenetration;
+					yield collision as ConfirmedCollision;
 				}
 			}
 		}
@@ -183,7 +186,7 @@ function processMovingState() {
 	z += vz * deltaTime;
 
 	const t1 = performance.now();
-	for (const depenetration of enumerateCollisions()) {
+	for (const {depenetration} of enumerateCollisions()) {
 		x += depenetration[0];
 		if (vx) {
 			vx += depenetration[0] / deltaTime;
@@ -215,7 +218,10 @@ function processMovingState() {
 	y += vy * deltaTime;
 
 	grounded = false;
-	for (const depenetration of enumerateCollisions()) {
+	for (const { depenetration, safePoint } of enumerateCollisions()) {
+		if (safePoint) {
+			respawnPoint = safePoint;
+		}
 		y += depenetration[1];
 		if (Math.abs(normalize(depenetration)[1]) > 0.5) {
 			vy += depenetration[1] / deltaTime;
@@ -225,9 +231,12 @@ function processMovingState() {
 
 	debugWatch("playercoll", performance.now() - t1);
 
-	if (y <= 0) {
-		y = 0;
-		grounded = true;
+	if (y < -50) {
+		// * Die and respawn
+		[x, y, z] = respawnPoint;
+		vx = 0;
+		vy = 0;
+		vz = 0;
 	}
 
 	debugWatch("grounded", grounded ? 1 : 0);
