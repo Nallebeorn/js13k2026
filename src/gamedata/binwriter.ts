@@ -17,7 +17,6 @@ import {
   TRANSFORM_FLAGS_POP,
 	SHAPE_FLAGS_COLLISION,
 	SHAPE_FLAGS_VISIBLE,
-	NEXT_SECTION_MARKER,
 	quantizeBigPosition,
 } from "./binformatHelpers.ts";
 import { CLOUD } from "./levelSchema.ts";
@@ -26,13 +25,15 @@ import { COLOR_COUNT, palette } from "./colors.ts";
 export function serializeObjects(): {
 	buffer: ArrayBuffer,
 	names: string[],
-	slotNames: Record<string, Record<string, number>>
+	slotNames: Record<string, Record<string, number>>,
+	sections: Map<string, number>,
 } {
 	const objects = objectsData;
 
 	const buffer = new ArrayBuffer(13 * 1024);
 	const dv = new DataView(buffer);
 	let pos = 0;
+	const sections: Map<string, number> = new Map();
 
 	// * Write palette
 	for (let i = 0; i < COLOR_COUNT; i++) {
@@ -41,6 +42,8 @@ export function serializeObjects(): {
 			colorComponent => dv.setUint8(pos++, colorComponent)
 		);
 	}
+
+	sections.set("palette", pos);
 
 	// * Write objects
 	const objectNames: string[] = [];
@@ -125,8 +128,9 @@ export function serializeObjects(): {
 		obj.nodes.forEach(serializeNode);
 	}
 
+	sections.set("objectBank", pos);
+
 	// * Write clouds
-	dv.setUint8(pos++, NEXT_SECTION_MARKER);
 	for (const node of levelData) {
 		if (node[0] === CLOUD) {
 			const [, y, min, max] = node;
@@ -143,8 +147,9 @@ export function serializeObjects(): {
 		}
 	}
 
+	sections.set("clouds", pos);
+
 	// * Write level objects
-	dv.setUint8(pos++, NEXT_SECTION_MARKER);
 	for (const node of levelData) {
 		if (node[0] !== CLOUD) {
 			const [obj, translation, euler] = node;
@@ -161,10 +166,13 @@ export function serializeObjects(): {
 		}
 	}
 
+	sections.set("levelObjects", pos);
+
 
 	return {
 		buffer: buffer.slice(0, pos),
 		names: objectNames,
-		slotNames
+		slotNames,
+		sections
 	};
 }

@@ -20,8 +20,6 @@ export const SHAPE_FLAGS_VISIBLE = 1 << 2;
 
 export const COLOR_MASK = 0xf;
 
-export const NEXT_SECTION_MARKER = 0x3f;
-
 export function quantizePosition(float: number) {
 	const normalized = Math.min(Math.max(float / 16, -1), 1);
 	return Math.round(normalized * 127);

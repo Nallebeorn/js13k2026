@@ -5,3 +5,6 @@
 
 * Pre binary palette: 5KB 335B
 * Post binary palette: 5KB 299B
+
+* Pre hardcoded sections: 5KB 299B
+* Post hardcoded sections: 5KB 278B
