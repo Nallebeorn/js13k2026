@@ -42,8 +42,8 @@ export type Mat4 = [
 ]
 
 export interface Transform {
-	translation?: Vec3 | 0,
-	euler?: Vec3 | 0,
+	translation?: Vec3 | 0 | undefined,
+	euler?: Vec3 | 0 | undefined,
 	scale?: number,
 }
 

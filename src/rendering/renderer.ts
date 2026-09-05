@@ -1,6 +1,6 @@
 import { gl } from "./renderingGlobals.ts";
 import { GL_ARRAY_BUFFER, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_BUFFER_BIT, GL_DEPTH_ATTACHMENT, GL_DEPTH_BUFFER_BIT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT32F, GL_DEPTH_TEST, GL_DYNAMIC_DRAW, GL_FLOAT, GL_FRAMEBUFFER, GL_FRAMEBUFFER_COMPLETE, GL_NEAREST, GL_RGBA, GL_STATIC_DRAW, GL_TEXTURE0, GL_TEXTURE1, GL_TEXTURE2, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_TEXTURE_MIN_FILTER, GL_TEXTURE_WRAP_S, GL_TEXTURE_WRAP_T, GL_TRIANGLES, GL_UNSIGNED_BYTE } from "./glConstants.ts";
-import { createMatrix, getPos, IDENTITY, projectPerspective, type Transform } from "../core/math.ts";
+import { createMatrix, IDENTITY, projectPerspective, type Transform } from "../core/math.ts";
 import { DEBUG, debugWatch } from "../debug.ts";
 import { colorTextureUniform, depthTextureUniform, objectPaletteUniform, objectShader, postProcessShader, surfaceIndexTextureUniform, worldToClipUniform } from "./shaders/shaders.ts";
 import { deserializeObjects } from "../gamedata/binreader.ts";
@@ -8,7 +8,7 @@ import { colors, type Color } from "../gamedata/colors.ts";
 import type { RenderObjectHandle } from "../gamedata/objects.gen.ts";
 import { createPill, createRibbon } from "./shapes.ts";
 import { staticColliders } from "../physics/objectColliders.ts";
-import { transformCollider, translateCollider } from "../physics/collision.ts";
+import { transformCollider } from "../physics/collision.ts";
 
 export const ROOT_SLOT = "_";
 

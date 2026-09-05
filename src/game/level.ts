@@ -11,9 +11,11 @@ import {
 import { staticColliders } from "../physics/objectColliders.ts";
 import { drawMesh, drawObject, incrementObjectIndex, unitSphere } from "../rendering/renderer.ts";
 
-const levelGeometry: [RenderObjectHandle, Vec3][] = [
-	[obj_pillar10, [-5, 1, -12]],
+const levelGeometry: [RenderObjectHandle, Vec3, Vec3?][] = [
+	[obj_pillar10, [-10, 1, -8]],
 	[obj_pillar5, [-10, 1, -12]],
+	[obj_pillar10, [0, 1, -12], [90, 0, 0]],
+	[obj_pillar10, [-5, 1, -15], [-90, 0, 0]],
 	[obj_unitSphere, [0, 0, 0]],
 	[obj_cube2x2x1, [2, 0, 0]],
 	[obj_cube2x2x1, [2, 1, 0]],
@@ -27,11 +29,13 @@ const levelGeometry: [RenderObjectHandle, Vec3][] = [
 ];
 
 const clouds: [number, Vec2, Vec2][] = [
-	[0, [-100, -100], [100, 100]],
+	[0, [-15, -15], [5, 5]],
+	[0, [-10, 10], [0, 50]],
+	[0, [-10, -40], [0, -25]],
 ];
 
-for (const [object, pos] of levelGeometry) {
-	drawObject(object, { _: { translation: pos } }, undefined, true);
+for (const [object, translation, euler] of levelGeometry) {
+	drawObject(object, { _: { translation, euler } }, undefined, true);
 }
 
 let seed = 0;
