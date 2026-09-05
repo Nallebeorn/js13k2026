@@ -7,5 +7,11 @@ import { rainbowMesh } from "../rendering/vertexData.ts";
 export function processFrame() {
 	processPlayer();
 
-	drawMesh(rainbowMesh, COLOR_RAINBOW, IDENTITY.translate(5, 0, -12), 20, 1);
+	drawMesh(
+		rainbowMesh,
+		COLOR_RAINBOW,
+		IDENTITY.translate(5, 0, -12).rotate(-90, 90, 0),
+		7,
+		1,
+	);
 }

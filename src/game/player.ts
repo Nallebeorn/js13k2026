@@ -1,6 +1,6 @@
 import { rotateTowards, radtodeg, withLength, IDENTITY, add, type Vec3, normalize, length, sub, dot, clamp, spring, lerp } from "../core/math.ts";
 import { currentTime, delta as deltaTime } from "../core/time.ts";
-import { debugWatch } from "../debug.ts";
+import { DEBUG, debugWatch } from "../debug.ts";
 import { COLOR_RAINBOW } from "../gamedata/colors.ts";
 import {
 	obj_unicorn,
@@ -71,6 +71,25 @@ let state = PlayerState.MOVING;
 let isGrinding = false;
 let grindStart: Vec3;
 let grindLength: number;
+
+if (DEBUG) {
+	const data = JSON.parse(localStorage.getItem("UNIFROST_DEBUG_SAVE")!);
+	x = data?.x ?? x;
+	y = data?.y ?? y;
+	z = data?.z ?? z;
+	respawnPoint = data?.respawnPoint ?? respawnPoint;
+	cameraYaw = data?.cameraYaw ?? cameraYaw;
+	cameraPitch = data?.cameraPitch ?? cameraPitch;
+}
+
+export function saveDebugState() {
+	if (DEBUG) {
+		localStorage.setItem(
+			"UNIFROST_DEBUG_SAVE",
+			JSON.stringify({ x, y, z, respawnPoint, cameraYaw, cameraPitch }),
+		);
+	}
+}
 
 export function processPlayer() {
 	const t0 = performance.now();
@@ -271,6 +290,8 @@ function processMovingState() {
 	}
 
 	debugWatch("boost", boostCharge.toFixed(2));
+
+	saveDebugState();
 }
 
 function processWallLodgedState() {
@@ -560,20 +581,36 @@ function grindAnimation(): Partial<SlotTransforms> {
 			euler: [-15, Math.min(boostCharge * 2 * 360, 360), 0],
 		},
 		[obj_unicorn_neckSlot]: {
-			euler: [Math.sin(currentTime * 22) * 16, 0, Math.sin(currentTime * 8) * 16],
+			euler: [
+				Math.sin(currentTime * 22) * 16,
+				0,
+				Math.sin(currentTime * 8) * 16,
+			],
 		},
 		[obj_unicorn_headSlot]: {
 			euler: [Math.sin(currentTime * 22 - 1) * 16, 0, 0],
 		},
 
 		[obj_unicorn_tailSlot]: {
-			euler: [Math.sin(currentTime * 22) * 15 + 100, 0, Math.sin(currentTime * 22) * 15],
+			euler: [
+				Math.sin(currentTime * 22) * 15 + 100,
+				0,
+				Math.sin(currentTime * 22) * 15,
+			],
 		},
 		[obj_unicorn_tail2Slot]: {
-			euler: [Math.sin(currentTime * 22 - 1) * 45, 0, Math.sin(currentTime * 22) * 15],
+			euler: [
+				Math.sin(currentTime * 22 - 1) * 45,
+				0,
+				Math.sin(currentTime * 22) * 15,
+			],
 		},
 		[obj_unicorn_tail3Slot]: {
-			euler: [Math.sin(currentTime * 22 - 2) * 45, 0, Math.sin(currentTime * 22) * 15],
+			euler: [
+				Math.sin(currentTime * 22 - 2) * 45,
+				0,
+				Math.sin(currentTime * 22) * 15,
+			],
 		},
 
 		[obj_unicorn_hindLegLSlot]: {
@@ -588,6 +625,6 @@ function grindAnimation(): Partial<SlotTransforms> {
 		},
 		[obj_unicorn_foreLegRSlot]: {
 			euler: [15, 0, -5],
-		}
-	}
+		},
+	};
 }
