@@ -8,7 +8,7 @@ import { createBox, createPill } from "../rendering/shapes.ts";
 import { addVertexData, unitSphere } from "../rendering/vertexData.ts";
 import { NODE_TYPE_MASK, NODE_TYPE_NEW_OBJECT, NODE_TYPE_COLOR, NODE_TYPE_TRANSFORM, TRANSFORM_FLAGS_TRANSLATE, TRANSFORM_FLAGS_ROTATE, NODE_TYPE_SHAPE, SHAPE_TYPE_MASK, SHAPE_TYPE_BOX, SHAPE_FLAGS_NEW_INDEX, COLOR_MASK, TRANSFORM_FLAGS_POP, SHAPE_FLAGS_COLLISION, SHAPE_FLAGS_VISIBLE, NEXT_SECTION_MARKER, dequantizeBigPosition } from "./binformatHelpers.ts";
 import { dequantizePosition, dequantizeAngle, dequantizeSize } from "./binformatHelpers.ts";
-import { COLOR_WHITE, type Color } from "./colors.ts";
+import { COLOR_COUNT, COLOR_WHITE, colors, type Color } from "./colors.ts";
 import { objectsBank } from "./gamedata.ts";
 import type { RenderObjectHandle } from "./objects.gen.ts";
 
@@ -16,15 +16,17 @@ export function deserializeBinaryGameData(buffer: ArrayBuffer) {
 	const dv = new DataView(buffer);
 	let pos = 0;
 
-	let obj!: DrawCommand[];
-
-	const readInt16 = () => {
-		const v = dv.getInt16(pos++);
-		pos++;
-		return v;
+	// * Read palette
+	for (let i = 0; i < COLOR_COUNT; i++) {
+		colors.push(dv.getUint8(pos++) / 0xff);
+		colors.push(dv.getUint8(pos++) / 0xff);
+		colors.push(dv.getUint8(pos++) / 0xff);
+		colors.push(1);
 	}
 
+
 	// * Read objects
+	let obj!: DrawCommand[];
 	while (pos < dv.byteLength && dv.getUint8(pos) != NEXT_SECTION_MARKER) {
 		const header = dv.getUint8(pos++);
 

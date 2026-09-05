@@ -21,6 +21,7 @@ import {
 	quantizeBigPosition,
 } from "./binformatHelpers.ts";
 import { CLOUD } from "./levelSchema.ts";
+import { COLOR_COUNT, palette } from "./colors.ts";
 
 export function serializeObjects(): {
 	buffer: ArrayBuffer,
@@ -32,6 +33,14 @@ export function serializeObjects(): {
 	const buffer = new ArrayBuffer(13 * 1024);
 	const dv = new DataView(buffer);
 	let pos = 0;
+
+	// * Write palette
+	for (let i = 0; i < COLOR_COUNT; i++) {
+		const hex = palette[i]!;
+		[hex >> 16, (hex & 0x00ff00) >> 8, hex & 0xff].forEach(
+			colorComponent => dv.setUint8(pos++, colorComponent)
+		);
+	}
 
 	// * Write objects
 	const objectNames: string[] = [];

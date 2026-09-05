@@ -3,7 +3,7 @@ import { GL_ARRAY_BUFFER, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0, GL_COLOR_ATTAC
 import { createMatrix, IDENTITY, projectPerspective, type Transform } from "../core/math.ts";
 import { DEBUG, debugWatch } from "../debug.ts";
 import { colorTextureUniform, depthTextureUniform, objectPaletteUniform, objectShader, postProcessShader, surfaceIndexTextureUniform, worldToClipUniform } from "./shaders/shaders.ts";
-import { colors, type Color } from "../gamedata/colors.ts";
+import { colors as colorsData, type Color } from "../gamedata/colors.ts";
 import type { RenderObjectHandle } from "../gamedata/objects.gen.ts";
 import { staticColliders } from "../physics/objectColliders.ts";
 import { transformCollider } from "../physics/collision.ts";
@@ -202,7 +202,7 @@ export function setupFrame() {
 			.multiply(cameraTransform.inverse())
 			.toFloat32Array(),
 	);
-	gl.uniform4fv(objectPaletteUniform, colors.flat());
+	gl.uniform4fv(objectPaletteUniform, colorsData);
 	gl.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	transformStack = [IDENTITY];

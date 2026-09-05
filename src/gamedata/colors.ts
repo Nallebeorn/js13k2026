@@ -1,7 +1,8 @@
-import type { Vec4 } from "../core/math.ts";
 import { COLOR_MASK } from "./binformatHelpers.ts";
 
-export const colors = [
+export const colors: number[] = [];
+
+export const palette = [
 	0x000000, // COLOR_BLACK
 	0x5F574F, // COLOR_DARKGREY
 	0xC2C3C7, // COLOR_LIGHTGREY
@@ -25,7 +26,7 @@ export const colors = [
 	0x29ADFF, // COLOR_CYAN
 	0x294BE7, // COLOR_BLUE
 	0x9548FA, // COLOR_VIOLET
-].map(hex => [(hex>>16), (hex&0x00ff00)>>8, hex&0xff, 0xff].map(x=>x/0xff) as Vec4);
+];
 
 export const COLOR_BLACK = 0;
 export const COLOR_DARKGREY = 1;
@@ -41,6 +42,7 @@ export const COLOR_VIOLET = 10;
 export const COLOR_PINK = 11;
 export const COLOR_PEACH = 12;
 export const COLOR_OUTLINE = 13;
+export const COLOR_COUNT = 14;
 
 export const COLOR_RAINBOW = COLOR_MASK; // sentinel value for bindata
 
