@@ -1,5 +1,6 @@
 import type { ObjectNode } from "./objectsSchema.ts";
 import objectsData from "./objects.ts";
+import levelData from "./level.ts";
 import {
 	quantizePosition,
 	quantizeAngle,
@@ -16,7 +17,10 @@ import {
   TRANSFORM_FLAGS_POP,
 	SHAPE_FLAGS_COLLISION,
 	SHAPE_FLAGS_VISIBLE,
+	NEXT_SECTION_MARKER,
+	quantizeBigPosition,
 } from "./binformatHelpers.ts";
+import { CLOUD } from "./levelSchema.ts";
 
 export function serializeObjects(): {
 	buffer: ArrayBuffer,
@@ -25,11 +29,13 @@ export function serializeObjects(): {
 } {
 	const objects = objectsData;
 
-	const buffer = new ArrayBuffer(13312);
+	const buffer = new ArrayBuffer(13 * 1024);
 	const dv = new DataView(buffer);
-	const names: string[] = [];
-	const slotNames: Record<string, Record<string, number>> = {}
 	let pos = 0;
+
+	// * Write objects
+	const objectNames: string[] = [];
+	const slotNames: Record<string, Record<string, number>> = {}
 
 	for (const obj of objects) {
 		let transformSlotIndex = 0;
@@ -106,13 +112,50 @@ export function serializeObjects(): {
 		};
 
 		dv.setUint8(pos++, NODE_TYPE_NEW_OBJECT);
-		names.push(obj.name);
+		objectNames.push(obj.name);
 		obj.nodes.forEach(serializeNode);
 	}
 
+	// * Write clouds
+	dv.setUint8(pos++, NEXT_SECTION_MARKER);
+	for (const node of levelData) {
+		if (node[0] === CLOUD) {
+			const [, y, min, max] = node;
+			dv.setInt16(pos++, quantizeBigPosition(y));
+			pos++;
+			dv.setInt16(pos++, quantizeBigPosition(min[0]));
+			pos++;
+			dv.setInt16(pos++, quantizeBigPosition(min[1]));
+			pos++;
+			dv.setInt16(pos++, quantizeBigPosition(max[0]));
+			pos++;
+			dv.setInt16(pos++, quantizeBigPosition(max[1]));
+			pos++;
+		}
+	}
+
+	// * Write level objects
+	dv.setUint8(pos++, NEXT_SECTION_MARKER);
+	for (const node of levelData) {
+		if (node[0] !== CLOUD) {
+			const [obj, translation, euler] = node;
+			dv.setUint8(pos++, obj);
+			dv.setInt16(pos++, quantizeBigPosition(translation[0]));
+			pos++;
+			dv.setInt16(pos++, quantizeBigPosition(translation[1]));
+			pos++;
+			dv.setInt16(pos++, quantizeBigPosition(translation[2]));
+			pos++;
+			dv.setUint8(pos++, quantizeAngle(euler?.[0] ?? 0));
+			dv.setUint8(pos++, quantizeAngle(euler?.[1] ?? 0));
+			dv.setUint8(pos++, quantizeAngle(euler?.[2] ?? 0));
+		}
+	}
+
+
 	return {
 		buffer: buffer.slice(0, pos),
-		names,
+		names: objectNames,
 		slotNames
 	};
 }

@@ -1,6 +1,6 @@
 import { DEBUG } from "../../debug.ts";
 import { GL_COMPILE_STATUS, GL_FRAGMENT_SHADER, GL_LINK_STATUS, GL_VERTEX_SHADER } from "../glConstants.ts";
-import { gl } from "../renderingGlobals.ts";
+import { gl } from "../glContext.ts";
 import objectVertSource from "./object.vert.glsl";
 import objectFragSource from "./object.frag.glsl";
 import postProcessVertSource from "./postProcess.vert.glsl"

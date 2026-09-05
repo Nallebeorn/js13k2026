@@ -20,7 +20,7 @@ export const SHAPE_FLAGS_VISIBLE = 1 << 2;
 
 export const COLOR_MASK = 0xf;
 
-export const NEXT_SECTION = 0x3f;
+export const NEXT_SECTION_MARKER = 0x3f;
 
 export function quantizePosition(float: number) {
 	const normalized = Math.min(Math.max(float / 16, -1), 1);
@@ -56,4 +56,14 @@ export function quantizeAngle(float: number) {
 
 export function dequantizeAngle(byte: number) {
 	return (byte / 256) * 360;
+}
+
+export function quantizeBigPosition(float: number) {
+	const fixedPoint = Math.round(float * 16);
+	console.assert(fixedPoint >= -0xffff && fixedPoint <= 0xffff);
+	return fixedPoint;
+}
+
+export function dequantizeBigPosition(sint16: number) {
+	return sint16 / 16;
 }

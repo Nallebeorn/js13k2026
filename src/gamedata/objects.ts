@@ -16,7 +16,7 @@ import {
 	COLOR_WHITE,
 	COLOR_YELLOW,
 } from "./colors.ts";
-import type { ObjectDescriptor, ObjectNode } from "./objectsSchema.ts";
+import type { ObjectDescriptor, ObjectNode } from "./objectsSchema.d.ts";
 
 const side = (s: number) => (s < 0 ? "R" : "L");
 

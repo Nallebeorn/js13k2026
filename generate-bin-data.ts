@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from "fs/promises";
+import { mkdir, readFile, writeFile } from "fs/promises";
 import { serializeObjects } from "./src/gamedata/binwriter.ts";
 
 const t0 = performance.now();
@@ -19,7 +19,7 @@ const slotNameConstants = Object.entries(slotNames)
 const typescriptOutput = `${nameConstants}\nexport type RenderObjectHandle = ${nameConstantsUnion};\n\n${slotNameConstants}`;
 
 writeFile("public/b", Buffer.from(buffer));
-writeFile("src/gamedata/objects.gen.ts", typescriptOutput);
+writeFileIfChanged("src/gamedata/objects.gen.ts", typescriptOutput);
 const t1 = performance.now();
 console.log(`[${getTimestamp()}] Regenerated binary data file: ${buffer.byteLength}B (${names.length} objects)`);
 console.log(`Time: ${(t1 - t0).toFixed(2)}ms`);
@@ -34,4 +34,11 @@ function getTimestamp(): string {
 			fractionalSecondDigits: 2,
 		}
 	);
+}
+
+async function writeFileIfChanged(file: string, contents: string) {
+	const old = await readFile(file, "utf8");
+	if (contents !== old) {
+		return writeFile(file, contents);
+	}
 }

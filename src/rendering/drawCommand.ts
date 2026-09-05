@@ -1,7 +1,7 @@
 import type { Transform } from "../core/math.ts";
 import type { Color } from "../gamedata/colors.ts";
 import type { Collider } from "../physics/collision.ts";
-import type { MeshInfo } from "./renderer.ts";
+import type { MeshInfo } from "./vertexData.ts";
 
 export interface DrawCommand {
 	pushTransform?: Transform;

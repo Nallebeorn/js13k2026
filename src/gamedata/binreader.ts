@@ -1,24 +1,37 @@
-import type { BoxCollider, CapsuleCollider, Collider } from "../physics/collision.ts";
+import { createMatrix, add } from "../core/math.ts";
+import { srandf } from "../core/random.ts";
+import type { BoxCollider, CapsuleCollider } from "../physics/collision.ts";
+import { staticColliders } from "../physics/objectColliders.ts";
 import type { DrawCommand } from "../rendering/drawCommand.ts";
-import { addVertexData } from "../rendering/renderer.ts";
+import { drawMesh, drawObject, incrementObjectIndex } from "../rendering/renderer.ts";
 import { createBox, createPill } from "../rendering/shapes.ts";
-import { NODE_TYPE_MASK, NODE_TYPE_NEW_OBJECT, NODE_TYPE_COLOR, NODE_TYPE_TRANSFORM, TRANSFORM_FLAGS_TRANSLATE, TRANSFORM_FLAGS_ROTATE, NODE_TYPE_SHAPE, SHAPE_TYPE_MASK, SHAPE_TYPE_BOX, SHAPE_FLAGS_NEW_INDEX, COLOR_MASK, TRANSFORM_FLAGS_POP, SHAPE_FLAGS_COLLISION, SHAPE_FLAGS_VISIBLE } from "./binformatHelpers.ts";
+import { addVertexData, unitSphere } from "../rendering/vertexData.ts";
+import { NODE_TYPE_MASK, NODE_TYPE_NEW_OBJECT, NODE_TYPE_COLOR, NODE_TYPE_TRANSFORM, TRANSFORM_FLAGS_TRANSLATE, TRANSFORM_FLAGS_ROTATE, NODE_TYPE_SHAPE, SHAPE_TYPE_MASK, SHAPE_TYPE_BOX, SHAPE_FLAGS_NEW_INDEX, COLOR_MASK, TRANSFORM_FLAGS_POP, SHAPE_FLAGS_COLLISION, SHAPE_FLAGS_VISIBLE, NEXT_SECTION_MARKER, dequantizeBigPosition } from "./binformatHelpers.ts";
 import { dequantizePosition, dequantizeAngle, dequantizeSize } from "./binformatHelpers.ts";
-import type { Color } from "./colors.ts";
+import { COLOR_WHITE, type Color } from "./colors.ts";
+import { objectsBank } from "./gamedata.ts";
+import type { RenderObjectHandle } from "./objects.gen.ts";
 
-
-export function deserializeObjects(buffer: ArrayBuffer): DrawCommand[][] {
-	const objects: DrawCommand[][] = [];
+export function deserializeBinaryGameData(buffer: ArrayBuffer) {
 	const dv = new DataView(buffer);
-	let obj!: DrawCommand[];
-	let colliders!: Collider[];
+	let pos = 0;
 
-	for (let pos = 0; pos < dv.byteLength;) {
+	let obj!: DrawCommand[];
+
+	const readInt16 = () => {
+		const v = dv.getInt16(pos++);
+		pos++;
+		return v;
+	}
+
+	// * Read objects
+	while (pos < dv.byteLength && dv.getUint8(pos) != NEXT_SECTION_MARKER) {
 		const header = dv.getUint8(pos++);
+
 		const type = header & NODE_TYPE_MASK;
 
 		if (type == NODE_TYPE_NEW_OBJECT) {
-			objects.push(obj = []);
+			objectsBank.push(obj = []);
 		}
 
 		if (type == NODE_TYPE_COLOR) {
@@ -80,5 +93,64 @@ export function deserializeObjects(buffer: ArrayBuffer): DrawCommand[][] {
 		}
 	}
 
-	return objects;
+	// * Read clouds
+	pos++;
+	let seed = 0;
+	while (pos < dv.byteLength && dv.getUint8(pos) != NEXT_SECTION_MARKER) {
+		const y = dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1)));
+		const xmin = dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1)));
+		const zmin = dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1)));
+		const xmax = dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1)));
+		const zmax = dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1)));
+
+		for (let z = zmin; z <= zmax; z += 0.75) {
+			for (let x = xmin; x <= xmax; x += 0.75) {
+				drawMesh(
+					unitSphere,
+					COLOR_WHITE,
+					createMatrix({
+						translation: add(
+							[x, y, z],
+							[0.2 * srandf(seed++), 0.2 * srandf(seed++), 0.2 * srandf(seed++)],
+						),
+						scale: 0.75 + srandf(seed++) * .25
+					}),
+					1,
+					0,
+					true,
+				);
+			}
+		}
+
+		staticColliders.push({
+			min: [xmin, y - 1, zmin],
+			max: [xmax, y, zmax],
+			safePoint: [xmin * 0.5 + xmax * 0.5, y+1.5, zmin * 0.5 + zmax * 0.5],
+		});
+		incrementObjectIndex();
+	}
+
+	// * Read level objects
+	pos++;
+	while (pos < dv.byteLength && dv.getUint8(pos) != NEXT_SECTION_MARKER) {
+		drawObject(
+			dv.getUint8(pos++) as RenderObjectHandle,
+			{
+				_: {
+					translation: [
+						dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1))),
+						dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1))),
+						dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1))),
+					],
+					euler: [
+						dequantizeAngle(dv.getUint8(pos++)),
+						dequantizeAngle(dv.getUint8(pos++)),
+						dequantizeAngle(dv.getUint8(pos++)),
+					]
+				}
+			},
+			undefined,
+			true
+		);
+	}
 }

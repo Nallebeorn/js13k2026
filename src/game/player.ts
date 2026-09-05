@@ -25,7 +25,8 @@ import {
 import { isKeyHeld, mouseDeltaX, mouseDeltaY, wasKeyJustPressed } from "../input/input.ts";
 import { penetrateSphereGeneric, type Collision, type ConfirmedCollision } from "../physics/collision.ts";
 import { staticColliders } from "../physics/objectColliders.ts";
-import { cameraTransform, drawMesh, drawObject, rainbowMesh, ROOT_SLOT, updateCameraTransform, type SlotTransforms } from "../rendering/renderer.ts";
+import { cameraTransform, drawMesh, drawObject, ROOT_SLOT, updateCameraTransform, type SlotTransforms } from "../rendering/renderer.ts";
+import { rainbowMesh } from "../rendering/vertexData.ts";
 
 const SPEED = 20;
 const BOOST_SPEED = 25;

@@ -9,7 +9,7 @@ export interface ObjectDescriptor {
 
 export type ObjectNode = (BaseObjectNode & {shape?: undefined}) | BoxDescriptor | PillDescriptor;
 
-export interface BaseObjectNode {
+interface BaseObjectNode {
 	color?: Color | typeof COLOR_RAINBOW,
 	newObjectIndex?: boolean;
 	translate?: Vec3;

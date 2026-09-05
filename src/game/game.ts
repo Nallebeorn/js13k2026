@@ -1,8 +1,8 @@
 import { IDENTITY } from "../core/math.ts";
 import { COLOR_RAINBOW } from "../gamedata/colors.ts";
-import { drawMesh, rainbowMesh } from "../rendering/renderer.ts";
+import { drawMesh } from "../rendering/renderer.ts";
 import { processPlayer } from "./player.ts";
-import  "./level.ts";
+import { rainbowMesh } from "../rendering/vertexData.ts";
 
 export function processFrame() {
 	processPlayer();

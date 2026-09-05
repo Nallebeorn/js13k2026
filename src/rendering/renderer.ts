@@ -1,14 +1,14 @@
-import { gl } from "./renderingGlobals.ts";
+import { gl } from "./glContext.ts";
 import { GL_ARRAY_BUFFER, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_BUFFER_BIT, GL_DEPTH_ATTACHMENT, GL_DEPTH_BUFFER_BIT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT32F, GL_DEPTH_TEST, GL_DYNAMIC_DRAW, GL_FLOAT, GL_FRAMEBUFFER, GL_FRAMEBUFFER_COMPLETE, GL_NEAREST, GL_RGBA, GL_STATIC_DRAW, GL_TEXTURE0, GL_TEXTURE1, GL_TEXTURE2, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_TEXTURE_MIN_FILTER, GL_TEXTURE_WRAP_S, GL_TEXTURE_WRAP_T, GL_TRIANGLES, GL_UNSIGNED_BYTE } from "./glConstants.ts";
 import { createMatrix, IDENTITY, projectPerspective, type Transform } from "../core/math.ts";
 import { DEBUG, debugWatch } from "../debug.ts";
 import { colorTextureUniform, depthTextureUniform, objectPaletteUniform, objectShader, postProcessShader, surfaceIndexTextureUniform, worldToClipUniform } from "./shaders/shaders.ts";
-import { deserializeObjects } from "../gamedata/binreader.ts";
 import { colors, type Color } from "../gamedata/colors.ts";
 import type { RenderObjectHandle } from "../gamedata/objects.gen.ts";
-import { createPill, createRibbon } from "./shapes.ts";
 import { staticColliders } from "../physics/objectColliders.ts";
 import { transformCollider } from "../physics/collision.ts";
+import { vertexData, type MeshInfo } from "./vertexData.ts";
+import { objectsBank } from "../gamedata/gamedata.ts";
 
 export const ROOT_SLOT = "_";
 
@@ -70,34 +70,20 @@ const fov = 2.4; // ≈ TAU/8 radians = 45°
 const aspect = CANVAS_WIDTH / CANVAS_HEIGHT;
 
 // * Set up vertex array buffer
-export interface MeshInfo {
-	offset: number,
-	size: number,
-}
-
-export function addVertexData(vertices: number[]): MeshInfo {
-	return {
-		size: vertices.length,
-		offset: vertexData.push(...vertices) - vertices.length,
-	}
-};
-
 const arrayBuffer = gl.createBuffer();
-gl.bindBuffer(GL_ARRAY_BUFFER, arrayBuffer);
-const vertexData: number[] = [];
 
-const objectsBank = deserializeObjects(await (await fetch("b?" + +new Date)).arrayBuffer());
+// Must be called after vertexData has initialized
+export function initializeVertexArrayBuffer() {
+	gl.bindBuffer(GL_ARRAY_BUFFER, arrayBuffer);
 
-export const rainbowMesh = addVertexData(createRibbon());
-export const unitSphere = addVertexData(createPill(1, 1, 0));
-
-gl.bufferData(
-		GL_ARRAY_BUFFER,
-		new Float32Array(vertexData),
-		GL_STATIC_DRAW
-	);
-gl.vertexAttribPointer(5, 4, GL_FLOAT, false, 0, 0);
-gl.enableVertexAttribArray(5);
+	gl.bufferData(
+			GL_ARRAY_BUFFER,
+			new Float32Array(vertexData),
+			GL_STATIC_DRAW
+		);
+	gl.vertexAttribPointer(5, 4, GL_FLOAT, false, 0, 0);
+	gl.enableVertexAttribArray(5);
+}
 
 // * Instance buffer
 const instanceBuffer = gl.createBuffer();

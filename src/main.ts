@@ -3,8 +3,9 @@ import { average, ringPush } from "./core/util.ts";
 import { DEBUG, debugWatch } from "./debug.ts";
 import { say } from "./game/dialogue.ts";
 import { processFrame } from "./game/game.ts";
+import { deserializeBinaryGameData } from "./gamedata/binreader.ts";
 import { clearFrameInputs } from "./input/input.ts";
-import { finishFrame, setupFrame } from "./rendering/renderer.ts";
+import { finishFrame, initializeVertexArrayBuffer, setupFrame } from "./rendering/renderer.ts";
 
 if (DEBUG) {
 	console.log("ℹ️ DEBUG BUILD");
@@ -18,6 +19,9 @@ let timerAccumulator = 0;
 const fpsValues: number[] = [];
 const frameTimeValues: number[] = [];
 let framesRendered = 0;
+
+deserializeBinaryGameData(await (await fetch("b?" + +new Date)).arrayBuffer());
+initializeVertexArrayBuffer();
 
 requestAnimationFrame(onAnimationFrame);
 
