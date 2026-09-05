@@ -1,3 +1,1 @@
-* Optimization: Instanced rendering
-* Invisible objects?
-* Remove sphere-sphere collision, use sphere-capsule
+* Pre-binary level format: 5KB 339B

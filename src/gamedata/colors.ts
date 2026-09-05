@@ -16,6 +16,15 @@ export const colors = [
 	0xFF77A8, // COLOR_PINK
 	0xFFCCAA, // COLOR_PEACH
 	0x773311, // COLOR_OUTLINE
+
+	// Rainbow colors
+	0xFF004D, // COLOR_RED,
+	0xFFA300, // COLOR_ORANGE
+	0xFFEC27, // COLOR_YELLOW
+	0x00E436, // COLOR_GREEN
+	0x29ADFF, // COLOR_CYAN
+	0x294BE7, // COLOR_BLUE
+	0x9548FA, // COLOR_VIOLET
 ].map(hex => [(hex>>16), (hex&0x00ff00)>>8, hex&0xff, 0xff].map(x=>x/0xff) as Vec4);
 
 export const COLOR_BLACK = 0;
