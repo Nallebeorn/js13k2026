@@ -8,7 +8,7 @@ import { colors, type Color } from "../gamedata/colors.ts";
 import type { RenderObjectHandle } from "../gamedata/objects.gen.ts";
 import { createPill, createRibbon } from "./shapes.ts";
 import { staticColliders } from "../physics/objectColliders.ts";
-import { translateCollider } from "../physics/collision.ts";
+import { transformCollider, translateCollider } from "../physics/collision.ts";
 
 export const ROOT_SLOT = "_";
 
@@ -68,8 +68,6 @@ gl.enable(GL_DEPTH_TEST);
 
 const fov = 2.4; // ≈ TAU/8 radians = 45°
 const aspect = CANVAS_WIDTH / CANVAS_HEIGHT;
-
-// finishFrame(); // required to avoid test harness timing out waiting for FCP
 
 // * Set up vertex array buffer
 export interface MeshInfo {
@@ -187,9 +185,9 @@ export function drawObject(
 
 		if (command.collider && isStatic) {
 			staticColliders.push(
-				translateCollider(
+				transformCollider(
 					command.collider,
-					getPos(transformStack.at(-1)!)
+					transformStack.at(-1)!
 				),
 			);
 		}

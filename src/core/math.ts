@@ -87,6 +87,14 @@ export function getPos(transform: DOMMatrix): Vec3 {
 	];
 }
 
+export function transformVec3(transform: DOMMatrix, vec: Vec3, w: number): Vec3 {
+	return pointAsVec3(transform.transformPoint(new DOMPoint(...vec, w)));
+}
+
+export function pointAsVec3(point: DOMPoint): Vec3 {
+	return [point.x, point.y, point.z];
+}
+
 export function normalize<T extends AnyVec>(vec: T): T {
 	return vec.map(a => a / length(vec)) as T;
 }

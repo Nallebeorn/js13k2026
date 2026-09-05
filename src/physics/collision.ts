@@ -1,4 +1,4 @@
-import { add, clamp, dot, length, scale, sub, withLength, type Vec3 } from "../core/math.ts";
+import { add, clamp, dot, length, scale, sub, transformVec3, withLength, type Vec3 } from "../core/math.ts";
 
 export interface SphereCollider {
 	pos: Vec3,
@@ -21,6 +21,22 @@ export function translateCollider<T extends Collider>(collider: T, pos: Vec3): T
 	return "r" in collider
 		? ({ pos: add(collider.pos, pos), r: collider.r, vector: collider.vector } as T)
 		: ({ min: add(collider.min, pos), max: add(collider.max, pos) } as T);
+}
+
+export function transformCollider<T extends Collider>(
+	collider: T,
+	transform: DOMMatrix,
+): T {
+	return "r" in collider
+		? ({
+				pos: transformVec3(transform, collider.pos, 1),
+				r: collider.r,
+				vector: transformVec3(transform, collider.vector, 0),
+			} as T)
+		: ({
+				min: transformVec3(transform, collider.min, 1),
+				max: transformVec3(transform, collider.max, 1),
+			} as T);
 }
 
 export type Collider = BoxCollider | CapsuleCollider;

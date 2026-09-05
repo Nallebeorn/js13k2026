@@ -130,9 +130,7 @@ function processMovingState() {
 		vz += move.z;
 
 		if (movex || movey) {
-			// if (!wasKeyJustPressed("Space")) {
-				[dirx, , diry] = normalize([move.x, , move.z] as unknown as Vec3);
-			// }
+			[dirx, , diry] = normalize([move.x, , move.z] as unknown as Vec3);
 			const turnBoost = -dot([dirx, 0, diry], normalize([vx, 0, vz])) * .5 + .5;
 			[vx,, vz] = add([vx, 0, vz], withLength([dirx, 0, diry], DECELERATION * turnBoost * deltaTime));
 		} else {
