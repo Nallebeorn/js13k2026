@@ -33,7 +33,7 @@ const BOOST_SPEED = 25;
 const BOOST_DELAY = 1;
 const ACCELERATION = 45;
 const DECELERATION = 90;
-const JUMP_SPEED = 30;
+const JUMP_SPEED = 35;
 const WALL_JUMP_SPEED = 60;
 const GRAVITY = 100;
 const FALL_SPEED = 30;
@@ -61,7 +61,7 @@ let springRot = 0;
 let cameraYaw = 180;
 let cameraPitch = 0;
 
-enum PlayerState {
+const enum PlayerState {
 	MOVING,
 	WALL_LODGE,
 }
@@ -546,7 +546,6 @@ function wallLodgedAnimation(): Partial<SlotTransforms> {
 	}
 }
 
-
 function wallJumpAnimation(): Partial<SlotTransforms> {
 	return {
 		[obj_unicorn_bodySlot]: {
@@ -555,17 +554,16 @@ function wallJumpAnimation(): Partial<SlotTransforms> {
 	}
 }
 
-
 function grindAnimation(): Partial<SlotTransforms> {
 	return {
 		[obj_unicorn_bodySlot]: {
 			euler: [-15, Math.min(boostCharge * 2 * 360, 360), 0],
 		},
 		[obj_unicorn_neckSlot]: {
-			euler: [Math.sin(currentTime * 16) * 16, 0, Math.sin(currentTime * 4) * 16],
+			euler: [Math.sin(currentTime * 22) * 16, 0, Math.sin(currentTime * 8) * 16],
 		},
 		[obj_unicorn_headSlot]: {
-			euler: [Math.sin(currentTime * 16 - 1) * 16, 0, 0],
+			euler: [Math.sin(currentTime * 22 - 1) * 16, 0, 0],
 		},
 
 		[obj_unicorn_tailSlot]: {
