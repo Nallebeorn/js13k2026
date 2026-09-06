@@ -1,10 +1,12 @@
-import { CLOUD, type LevelDescriptor } from "./levelSchema.ts";
-import { obj_pillar10, obj_pillar5, obj_unitSphere, obj_cube2x2x1 } from "./objects.gen.ts";
+import { CLOUD, NPC, type LevelDescriptor } from "./levelSchema.ts";
+import { obj_pillar10, obj_pillar5, obj_unitSphere, obj_cube2x2x1, obj_npc1 } from "./objects.gen.ts";
 
 export default [
 	[CLOUD, 0, [-15, -15], [5, 5]],
 	[CLOUD, 0, [-10, 10], [0, 50]],
 	[CLOUD, 0, [-10, -40], [0, -25]],
+
+	[NPC, obj_npc1, [-6, 0, 20], 0, "Hello there!"],
 
 	[obj_pillar10, [-10, 1, -8]],
 	[obj_pillar5, [-10, 1, -12]],

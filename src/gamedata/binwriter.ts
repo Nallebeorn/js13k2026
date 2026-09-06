@@ -19,7 +19,7 @@ import {
 	SHAPE_FLAGS_VISIBLE,
 	quantizeBigPosition,
 } from "./binformatHelpers.ts";
-import { CLOUD } from "./levelSchema.ts";
+import { CLOUD, NPC } from "./levelSchema.ts";
 import { COLOR_COUNT, palette } from "./colors.ts";
 
 export function serializeObjects(): {
@@ -27,6 +27,7 @@ export function serializeObjects(): {
 	names: string[],
 	slotNames: Record<string, Record<string, number>>,
 	sections: Map<string, number>,
+	dialogue: string[],
 } {
 	const objects = objectsData;
 
@@ -149,9 +150,28 @@ export function serializeObjects(): {
 
 	sections.set("clouds", pos);
 
+	// * Write NPCs
+	const dialogue: string[] = [];
+	for (const node of levelData) {
+		if (node[0] === NPC) {
+			const [, obj, translation, angle, say] = node;
+			dv.setUint8(pos++, obj);
+			dv.setInt16(pos++, quantizeBigPosition(translation[0]));
+			pos++;
+			dv.setInt16(pos++, quantizeBigPosition(translation[1]));
+			pos++;
+			dv.setInt16(pos++, quantizeBigPosition(translation[2]));
+			pos++
+			dv.setUint8(pos++, quantizeAngle(angle));
+
+			dialogue.push(say);
+		}
+	}
+	sections.set("npcs", pos);
+
 	// * Write level objects
 	for (const node of levelData) {
-		if (node[0] !== CLOUD) {
+		if (typeof node[0] === "number") {
 			const [obj, translation, euler] = node;
 			dv.setUint8(pos++, obj);
 			dv.setInt16(pos++, quantizeBigPosition(translation[0]));
@@ -173,6 +193,7 @@ export function serializeObjects(): {
 		buffer: buffer.slice(0, pos),
 		names: objectNames,
 		slotNames,
-		sections
+		sections,
+		dialogue
 	};
 }

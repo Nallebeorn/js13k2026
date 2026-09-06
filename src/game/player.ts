@@ -1,5 +1,5 @@
-import { rotateTowards, radtodeg, withLength, IDENTITY, add, type Vec3, normalize, length, sub, dot, clamp, spring, lerp } from "../core/math.ts";
-import { currentTime, delta as deltaTime } from "../core/time.ts";
+import { rotateTowards, withLength, IDENTITY, add, type Vec3, normalize, length, sub, dot, clamp, spring, lerp, angleFromDirection } from "../core/math.ts";
+import { currentTime, deltaTime } from "../core/time.ts";
 import { DEBUG, debugWatch } from "../debug.ts";
 import { COLOR_RAINBOW } from "../gamedata/colors.ts";
 import {
@@ -36,7 +36,7 @@ const DECELERATION = 90;
 const JUMP_SPEED = 35;
 const WALL_JUMP_SPEED = 60;
 const GRAVITY = 100;
-const FALL_SPEED = 30;
+const FALL_SPEED = 40;
 const GRIND_LENGTH = 20;
 
 let x = 0;
@@ -72,6 +72,10 @@ let isGrinding = false;
 let grindStart: Vec3;
 let grindLength: number;
 
+export function getPlayerPos(): Vec3 {
+	return [x, y, z];
+}
+
 if (DEBUG) {
 	const data = JSON.parse(localStorage.getItem("UNIFROST_DEBUG_SAVE")!);
 	x = data?.x ?? x;
@@ -82,7 +86,7 @@ if (DEBUG) {
 	cameraPitch = data?.cameraPitch ?? cameraPitch;
 }
 
-export function saveDebugState() {
+function saveDebugState() {
 	if (DEBUG) {
 		localStorage.setItem(
 			"UNIFROST_DEBUG_SAVE",
@@ -117,7 +121,7 @@ export function processPlayer() {
 			COLOR_RAINBOW,
 			IDENTITY
 				.translate(...grindStart)
-				.rotate(0, -radtodeg(Math.atan2(diry, dirx)) + 90, 0),
+				.rotate(0, -angleFromDirection(diry, dirx) + 90, 0),
 			grindLength * 2,
 			GRIND_LENGTH - 5
 		);
@@ -170,7 +174,7 @@ function processMovingState() {
 	const speed = length([vx, 0, vz]);
 	[vx, , vz] = withLength([vx, 0, vz], Math.min(boostCharge > BOOST_DELAY || isGrinding ? BOOST_SPEED : SPEED, speed));
 	debugWatch("speed", speed.toFixed(3));
-	rotation = rotateTowards(rotation, -radtodeg(Math.atan2(diry, dirx)) + 90, deltaTime * 720)
+	rotation = rotateTowards(rotation, angleFromDirection(dirx, diry), deltaTime * 720)
 
 	if (isGrinding) {
 		grindLength = grindLength + speed * deltaTime;

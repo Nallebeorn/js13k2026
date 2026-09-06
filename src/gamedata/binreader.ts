@@ -1,5 +1,6 @@
 import { createMatrix, add } from "../core/math.ts";
 import { srandf } from "../core/random.ts";
+import { npcs } from "../game/npcs.ts";
 import type { BoxCollider, CapsuleCollider } from "../physics/collision.ts";
 import { staticColliders } from "../physics/objectColliders.ts";
 import type { DrawCommand } from "../rendering/drawCommand.ts";
@@ -25,9 +26,10 @@ import {
 } from "./binformatHelpers.ts";
 import { dequantizePosition, dequantizeAngle, dequantizeSize } from "./binformatHelpers.ts";
 import { COLOR_WHITE, colors, type Color } from "./colors.ts";
+import { dialogue } from "./dialogue.gen.ts";
 import { objectsBank } from "./gamedata.ts";
 import type { RenderObjectHandle } from "./objects.gen.ts";
-import { section_cloudsEnd, section_levelObjectsEnd, section_objectBankEnd, section_paletteEnd } from "./sections.gen.ts";
+import { section_cloudsEnd, section_levelObjectsEnd, section_npcsEnd, section_objectBankEnd, section_paletteEnd } from "./sections.gen.ts";
 
 export function deserializeBinaryGameData(buffer: ArrayBuffer) {
 	const dv = new DataView(buffer);
@@ -145,6 +147,21 @@ export function deserializeBinaryGameData(buffer: ArrayBuffer) {
 			safePoint: [xmin * 0.5 + xmax * 0.5, y+1.5, zmin * 0.5 + zmax * 0.5],
 		});
 		incrementObjectIndex();
+	}
+
+	// * Read NPCs
+	let npcIndex = 0;
+	while (pos < section_npcsEnd) {
+		npcs.push({
+			obj: dv.getUint8(pos++) as RenderObjectHandle,
+			pos: [
+				dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1))),
+				dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1))),
+				dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1))),
+			],
+			angle: dequantizeAngle(dv.getUint8(pos++)),
+			dialogue: dialogue[npcIndex++]!,
+		})
 	}
 
 	// * Read level objects

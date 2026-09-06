@@ -321,7 +321,7 @@ export default [
 				a2: 3.5,
 				collision: true,
 			},
-			...Array.from({ length: 16 }, (_, i): ObjectNode => ({
+			...repeat(16).map((i): ObjectNode => ({
 				euler: [0, (360 * i) / 16, 0],
 				children: [
 					{
@@ -333,6 +333,75 @@ export default [
 					},
 				],
 			})),
+		],
+	},
+	{
+		name: "npc1", // * NPC 1
+		nodes: [
+			{
+				slotName: "body",
+				translate: [0, 1, 0],
+				shape: "pill",
+				bottomRadius: 0.5,
+				topRadius: 0.4,
+				height: 0.5,
+				color: COLOR_GREEN,
+				collision: true,
+			},
+			{
+				slotName: "head",
+				translate: [0, 2.25, 0],
+				shape: "pill",
+				bottomRadius: 0.6,
+				topRadius: 0.75,
+				height: 0.25,
+				collision: true,
+				children: [
+					...[-1, 1].map((s) => ({ // ears
+						shape: "pill",
+						translate: [s * .5, 0.75, 0],
+						euler: [0, 0, s * -20],
+						bottomRadius: 0.4,
+						topRadius: 0.2,
+						height: 0.3,
+					} satisfies ObjectNode)),
+					{ // nose
+						translate: [0, 0.125, -.75],
+						euler: [-90, 0, 0],
+						shape: "pill",
+						bottomRadius: 0.2,
+						topRadius: 0.125,
+						height: 0.25,
+						newObjectIndex: true,
+					},
+					...[-1, 1].map((s) => ({ // eyes
+						shape: "pill",
+						translate: [s * .4, .25, -.75],
+						bottomRadius: 0.05,
+						height: 0.05,
+						color: COLOR_OUTLINE,
+					} satisfies ObjectNode)),
+				]
+			},
+			...[-1, 1].flatMap((s) => [
+				{
+					// legs
+					shape: "pill",
+					translate: [s * 0.4, 0, 0],
+					bottomRadius: 0.075,
+					height: 1,
+					color: COLOR_OUTLINE,
+				} satisfies ObjectNode,
+				{
+					// arms
+					shape: "pill",
+					translate: [s * 0.4, 1.5, 0],
+					euler: [0, 0, s * -45],
+					bottomRadius: 0.075,
+					height: 1,
+					color: COLOR_OUTLINE,
+				} satisfies ObjectNode
+			]),
 		],
 	},
 ] satisfies ObjectDescriptor[];

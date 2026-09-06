@@ -1,6 +1,6 @@
-export const delta = 1 / 60;
+export const deltaTime = 1 / 60;
 export let currentTime = 0;
 
 export function advanceTime() {
-	currentTime += delta;
+	currentTime += deltaTime;
 }

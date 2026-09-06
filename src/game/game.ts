@@ -3,8 +3,10 @@ import { COLOR_RAINBOW } from "../gamedata/colors.ts";
 import { drawMesh } from "../rendering/renderer.ts";
 import { processPlayer } from "./player.ts";
 import { rainbowMesh } from "../rendering/vertexData.ts";
+import { processNpcs } from "./npcs.ts";
 
 export function processFrame() {
+	processNpcs();
 	processPlayer();
 
 	drawMesh(
