@@ -179,10 +179,10 @@ export function deserializeBinaryGameData(buffer: ArrayBuffer) {
 						dequantizeAngle(dv.getUint8(pos++)),
 						dequantizeAngle(dv.getUint8(pos++)),
 						dequantizeAngle(dv.getUint8(pos++)),
-					]
+					],
 				}
 			},
-			undefined,
+			dv.getUint8(pos++) || undefined,
 			true
 		);
 	}

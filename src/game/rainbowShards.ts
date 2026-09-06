@@ -5,9 +5,11 @@ import { drawMesh } from "../rendering/renderer.ts";
 import { rainbowMesh } from "../rendering/vertexData.ts";
 import { getPlayerPos } from "./player.ts";
 
-const shards: [pos: Vec3, color: Color][] = [
+export const shards: [pos: Vec3, color: Color][] = [
 	[[-8, 4, 8], COLOR_GREEN]
 ]
+
+export let shardsCollected = 0;
 
 export function processRainbowShards() {
 	for (let i = shards.length - 1; i >= 0; i--) {
@@ -24,6 +26,7 @@ export function processRainbowShards() {
 
 		if (length(sub(shards[i]![0], getPlayerPos())) < 3) {
 			unlockColor(shards[i]![1]);
+			shardsCollected++;
 			shards.splice(i, 1);
 		}
 	}

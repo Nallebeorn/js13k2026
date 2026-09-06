@@ -27,6 +27,7 @@ import { penetrateSphereGeneric, type Collision, type ConfirmedCollision } from 
 import { staticColliders } from "../physics/objectColliders.ts";
 import { cameraTransform, drawMesh, drawObject, ROOT_SLOT, updateCameraTransform, type SlotTransforms } from "../rendering/renderer.ts";
 import { rainbowMesh } from "../rendering/vertexData.ts";
+import { shardsCollected } from "./rainbowShards.ts";
 
 const SPEED = 20;
 const BOOST_SPEED = 25;
@@ -71,6 +72,7 @@ let state = PlayerState.MOVING;
 let isGrinding = false;
 let grindStart: Vec3;
 let grindLength: number;
+let grindUses = 0;
 
 export function getPlayerPos(): Vec3 {
 	return [x, y, z];
@@ -257,6 +259,7 @@ function processMovingState() {
 		if (Math.abs(normalize(depenetration)[1]) > 0.5) {
 			vy += depenetration[1] / deltaTime;
 			grounded = true;
+			grindUses = 0;
 		}
 	}
 
@@ -287,7 +290,7 @@ function processMovingState() {
 		if (grounded || isGrinding) {
 			vy = JUMP_SPEED;
 			isGrinding = false;
-		} else if (!grounded) {
+		} else if (!grounded && grindUses < shardsCollected) {
 			// ? activate grinding
 			isGrinding = true;
 			boostCharge = 0;
@@ -297,6 +300,7 @@ function processMovingState() {
 			grindStart = [x, y - 1.4, z];
 			grindLength = 0;
 			wallJumping = false;
+			grindUses++;
 		}
 	}
 

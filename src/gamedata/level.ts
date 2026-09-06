@@ -1,4 +1,5 @@
 import { repeat } from "../core/util.ts";
+import { COLOR_RED } from "./colors.ts";
 import { CLOUD, NPC, offset, type LevelDescriptor } from "./levelSchema.ts";
 import { obj_pillar10, obj_pillar5, obj_unitSphere, obj_cube2x2x1, obj_npc1, obj_pillar16 } from "./objects.gen.ts";
 
@@ -14,6 +15,8 @@ export default [
 						0,
 						Math.sin((i / 7) * Math.PI * 2) * 17,
 					],
+					[0, 0, 0],
+					COLOR_RED + i
 				],
 			] satisfies LevelDescriptor,
 	),

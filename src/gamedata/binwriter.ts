@@ -172,7 +172,7 @@ export function serializeObjects(): {
 	// * Write level objects
 	for (const node of levelData) {
 		if (typeof node[0] === "number") {
-			const [obj, translation, euler] = node;
+			const [obj, translation, euler, color] = node;
 			dv.setUint8(pos++, obj);
 			dv.setInt16(pos++, quantizeBigPosition(translation[0]));
 			pos++;
@@ -183,6 +183,7 @@ export function serializeObjects(): {
 			dv.setUint8(pos++, quantizeAngle(euler?.[0] ?? 0));
 			dv.setUint8(pos++, quantizeAngle(euler?.[1] ?? 0));
 			dv.setUint8(pos++, quantizeAngle(euler?.[2] ?? 0));
+			dv.setUint8(pos++, color ?? 0)
 		}
 	}
 
