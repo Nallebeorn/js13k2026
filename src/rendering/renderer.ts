@@ -1,5 +1,5 @@
 import { gl } from "./glContext.ts";
-import { GL_ARRAY_BUFFER, GL_BACK, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_BUFFER_BIT, GL_CULL_FACE, GL_DEPTH_ATTACHMENT, GL_DEPTH_BUFFER_BIT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT32F, GL_DEPTH_TEST, GL_DYNAMIC_DRAW, GL_FLOAT, GL_FRAMEBUFFER, GL_FRAMEBUFFER_COMPLETE, GL_FRONT, GL_NEAREST, GL_RGBA, GL_STATIC_DRAW, GL_TEXTURE0, GL_TEXTURE1, GL_TEXTURE2, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_TEXTURE_MIN_FILTER, GL_TEXTURE_WRAP_S, GL_TEXTURE_WRAP_T, GL_TRIANGLES, GL_UNSIGNED_BYTE } from "./glConstants.ts";
+import { GL_ARRAY_BUFFER, GL_BACK, GL_CLAMP_TO_EDGE, GL_COLOR, GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_BUFFER_BIT, GL_CULL_FACE, GL_DEPTH_ATTACHMENT, GL_DEPTH_BUFFER_BIT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT32F, GL_DEPTH_TEST, GL_DYNAMIC_DRAW, GL_FLOAT, GL_FRAMEBUFFER, GL_FRAMEBUFFER_COMPLETE, GL_FRONT, GL_HALF_FLOAT, GL_NEAREST, GL_RG, GL_RG16F, GL_RG16UI, GL_RG32F, GL_RG32UI, GL_RG_INTEGER, GL_RGBA, GL_STATIC_DRAW, GL_TEXTURE0, GL_TEXTURE1, GL_TEXTURE2, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_TEXTURE_MIN_FILTER, GL_TEXTURE_WRAP_S, GL_TEXTURE_WRAP_T, GL_TRIANGLES, GL_UNSIGNED_BYTE, GL_UNSIGNED_INT, GL_UNSIGNED_SHORT } from "./glConstants.ts";
 import { createMatrix, IDENTITY, projectPerspective, type Transform } from "../core/math.ts";
 import { DEBUG, debugWatch } from "../debug.ts";
 import { colorTextureUniform, depthTextureUniform, objectPaletteUniform, objectShader, postProcessShader, surfaceIndexTextureUniform, worldToClipUniform } from "./shaders/shaders.ts";
@@ -36,7 +36,7 @@ const createRenderTexture = (attachment: GLenum, internalFormat: GLenum, format:
 }
 
 const colorTexture = createRenderTexture(GL_COLOR_ATTACHMENT0, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
-const surfaceIndexTexture = createRenderTexture(GL_COLOR_ATTACHMENT1, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
+const surfaceIndexTexture = createRenderTexture(GL_COLOR_ATTACHMENT1, GL_RG16UI, GL_RG_INTEGER, GL_UNSIGNED_SHORT);
 const depthTexture = createRenderTexture(GL_DEPTH_ATTACHMENT, GL_DEPTH_COMPONENT32F, GL_DEPTH_COMPONENT, GL_FLOAT);
 gl.drawBuffers([GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1]);
 
@@ -63,7 +63,6 @@ gl.activeTexture(GL_TEXTURE2);
 gl.bindTexture(GL_TEXTURE_2D, depthTexture);
 
 // * Set up configuration
-gl.clearColor(0, 0, 0, 0);
 gl.enable(GL_DEPTH_TEST);
 
 const fov = 2.4; // ≈ TAU/8 radians = 45°
@@ -203,7 +202,9 @@ export function setupFrame() {
 			.toFloat32Array(),
 	);
 	gl.uniform4fv(objectPaletteUniform, colorsData);
-	gl.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	gl.clearBufferfv(GL_COLOR, 0, [0, 0, 0, 0]);
+	gl.clearBufferuiv(GL_COLOR, 1, [0, 0, 0, 0]);
+	gl.clear(GL_DEPTH_BUFFER_BIT);
 
 	transformStack = [IDENTITY];
 	if (!startingObjectIndex) startingObjectIndex = objectIndex;
