@@ -28,16 +28,21 @@ export function transformCollider<T extends Collider>(
 	collider: T,
 	transform: DOMMatrix,
 ): T {
-	return "r" in collider
-		? ({
-				pos: transformVec3(transform, collider.pos, 1),
-				r: collider.r,
-				vector: transformVec3(transform, collider.vector, 0),
-			} as T)
-		: ({
-				min: transformVec3(transform, collider.min, 1),
-				max: transformVec3(transform, collider.max, 1),
-			} as T);
+	if ("r" in collider) {
+		return {
+			pos: transformVec3(transform, collider.pos, 1),
+			r: collider.r,
+			vector: transformVec3(transform, collider.vector, 0),
+		} as T;
+	}
+
+	const cornerA = transformVec3(transform, collider.min, 1);
+	const cornerB = transformVec3(transform, collider.max, 1);
+
+	return {
+		min: cornerA.map((a, idx) => Math.min(a, cornerB[idx]!)),
+		max: cornerA.map((a, idx) => Math.max(a, cornerB[idx]!)),
+	} as T;
 }
 
 export type Collider = BoxCollider | CapsuleCollider;
