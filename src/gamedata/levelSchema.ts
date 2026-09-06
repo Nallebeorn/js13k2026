@@ -24,6 +24,8 @@ export function offset(ofs: Vec3, nodes: LevelNode[]) {
 			node[3][1] += ofs[2];
 		} else if (node[0] == NPC) {
 			node[2] = add(node[2], ofs);
+		} else if (node[0] == CLOOD) {
+			throw "Not implemented";
 		} else {
 			node[1] = add(node[1], ofs);
 		}

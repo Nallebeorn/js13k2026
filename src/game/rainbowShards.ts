@@ -6,7 +6,7 @@ import { rainbowMesh } from "../rendering/vertexData.ts";
 import { getPlayerPos } from "./player.ts";
 
 export const shards: [pos: Vec3, color: Color][] = [
-	[[-8, 4, 8], COLOR_GREEN]
+	[[-30, 21, -16], COLOR_GREEN]
 ]
 
 export let shardsCollected = 0;

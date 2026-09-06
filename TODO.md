@@ -4,7 +4,7 @@
   and surface outlines at a distance
 * More precise horn collision
 * Coyote jump
-* I think we're out of object indices...
+* ~I think we're out of object indices...~
 
 # Stats
 * Pre-binary level format: 5KB 339B

@@ -37,8 +37,11 @@ export default [
 	[NPC, obj_npc1, [-49, 16, 15], -135, "You'll need a long gallop-up to make this jump"],
 	[obj_pillar16, [-45, 8, -10]],
 	[obj_pillar16, [-45, 20, -13]],
-	[obj_pillar16, [-49, 20, -13]],
-	[obj_pillar16, [-41, 20, -13]],
+	[obj_pillar16, [-49, 12, -13]],
+	[obj_pillar16, [-41, 12, -13]],
+	// [CLOOD, 16, [-45, -15], [10, 10]],
+	[CLOOD, 20, [-30, -16], [8, 8]], // shard is on this cloud
+	[NPC, obj_npc1, [-28, 20, -19], 135, "See that wasn't so hard, you found the first shard!"], // shard is on this cloud
 
 	// * Old test level
 	/* ...offset(
