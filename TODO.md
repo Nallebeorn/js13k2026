@@ -1,3 +1,7 @@
+# TODO
+* Handle high velocity collisions (especially vertical) by stepping
+
+# Stats
 * Pre-binary level format: 5KB 339B
 * Src-format level data: 97B
 * Bin-format level data: 28B

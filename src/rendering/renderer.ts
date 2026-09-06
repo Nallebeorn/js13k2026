@@ -65,7 +65,6 @@ gl.bindTexture(GL_TEXTURE_2D, depthTexture);
 // * Set up configuration
 gl.clearColor(0, 0, 0, 0);
 gl.enable(GL_DEPTH_TEST);
-gl.enable(GL_CULL_FACE);
 
 const fov = 2.4; // ≈ TAU/8 radians = 45°
 const aspect = CANVAS_WIDTH / CANVAS_HEIGHT;

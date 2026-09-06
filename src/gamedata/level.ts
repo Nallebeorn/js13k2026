@@ -18,7 +18,7 @@ export default [
 			] satisfies LevelDescriptor,
 	),
 	[NPC, obj_npc1, [-8, 0, -8], 225, "The bifrost has shattered and scattered!"],
-	[NPC, obj_npc1, [10, 0, 10], 45, "Please great Neighdall! Find the lost rainbow pieces all!"],
+	[NPC, obj_npc1, [10, 0, 10], 45, "Please great Neighdall! Find the lost rainbow shards all!"],
 	...offset(
 		[-50, 0, 0],
 		[

@@ -5,7 +5,7 @@ layout(location = 5) in vec4 p; // .xyz = local vertex pos, .w = surface ID
 uniform mat4 w; //  worldToClip
 
 out vec4 v; // .xyz = local vertex pos, .w = surface ID
-flat out float c, i; // object color, object index
+flat out vec4 D;
 
 void main() {
 	vec3 P = p.xyz;
@@ -17,6 +17,5 @@ void main() {
 	}
 	gl_Position = w * o * vec4(P, 1);
 	v = p;
-	i = d.y;
-	c = d.x;
+	D = d;
 }

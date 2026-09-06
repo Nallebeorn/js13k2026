@@ -29,13 +29,13 @@ export function processNpcs() {
 						euler: [-70 + Math.sin(currentTime * 20) * 10, 0, Math.sin(currentTime * 10) * 30]
 					},
 					[obj_npc1_lowerArmLSlot]: {
-						euler: [-5 + Math.sin(currentTime * 20) * 5, 0, Math.sin(currentTime * 10) * 5 + 5]
+						euler: [Math.sin(currentTime * 22) * 10 - 10, 0, Math.sin(currentTime * 12) * 10 + 5]
 					},
 					[obj_npc1_upperArmRSlot]: {
 						euler: [-70 + Math.sin(currentTime * 20) * 10, 0, -Math.sin(currentTime * 10 + 1) * 30]
 					},
 					[obj_npc1_lowerArmRSlot]: {
-						euler: [-5 + Math.sin(currentTime * 20) * 5, 0, -Math.sin(currentTime * 10 + 1) * 5 - 5]
+						euler: [Math.sin(currentTime * 22) * 10, 0 - 10, -Math.sin(currentTime * 12 + 1) * 10 - 5]
 					},
 					[obj_npc1_headSlot]: {
 						euler: [Math.sin(currentTime * 10) * 5, 0, 0],

@@ -26,11 +26,11 @@ export default [
 		name: "unicorn",
 		nodes: [
 			{
-				translate: [0, 0, 1.5],
+				translate: [0, 0, 2],
 				slotName: "hornPivot",
 				children: [
 					{
-						translate: [0, 0, -2.5],
+						translate: [0, 0, -3],
 						slotName: "body",
 						children: [
 							...[-1, 1].flatMap((s): ObjectNode[] => [

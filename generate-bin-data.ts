@@ -37,6 +37,7 @@ function getSetionConstants(sections: Map<string, number>) {
 }
 
 function getDialogueConstants(dialogue: string[]) {
+	// return `export const dialogue = "${dialogue.join("|")}".split("|");`;
 	return `export const dialogue = [${dialogue.map(d => `"${d}"`).join(", ")}];`;
 }
 

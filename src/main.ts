@@ -4,6 +4,7 @@ import { DEBUG, debugWatch } from "./debug.ts";
 import { say } from "./game/dialogue.ts";
 import { processFrame } from "./game/game.ts";
 import { deserializeBinaryGameData } from "./gamedata/binreader.ts";
+import { COLOR_GREEN, colors, unlockColor } from "./gamedata/colors.ts";
 import { clearFrameInputs } from "./input/input.ts";
 import { finishFrame, initializeVertexArrayBuffer, setupFrame } from "./rendering/renderer.ts";
 
@@ -25,10 +26,6 @@ initializeVertexArrayBuffer();
 
 requestAnimationFrame(onAnimationFrame);
 
-say("");
-
-let seed = 0;
-
 function onAnimationFrame(timestamp: number) {
 	requestAnimationFrame(onAnimationFrame);
 
@@ -38,9 +35,7 @@ function onAnimationFrame(timestamp: number) {
 
 	if (timerAccumulator >= 1000 / 60) {
 		const t0 = (DEBUG && performance.now()) as number;
-		while (timerAccumulator >= 1000 / 60) {
-			timerAccumulator -= 1000 / 60;
-		}
+		timerAccumulator = timerAccumulator % (1000 / 60);
 		// console.log("random number", srandf(seed++));
 
 		setupFrame();

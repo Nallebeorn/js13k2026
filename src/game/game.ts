@@ -4,9 +4,11 @@ import { drawMesh } from "../rendering/renderer.ts";
 import { processPlayer } from "./player.ts";
 import { rainbowMesh } from "../rendering/vertexData.ts";
 import { processNpcs } from "./npcs.ts";
+import { processRainbowShards } from "./rainbowShards.ts";
 
 export function processFrame() {
 	processNpcs();
+	processRainbowShards();
 	processPlayer();
 
 	/* drawMesh(
