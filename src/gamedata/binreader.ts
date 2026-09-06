@@ -129,7 +129,7 @@ export function deserializeBinaryGameData(buffer: ArrayBuffer) {
 					COLOR_WHITE,
 					createMatrix({
 						translation: add(
-							[x, y, z],
+							[x, y - .5, z],
 							[0.2 * srandf(seed++), 0.2 * srandf(seed++), 0.2 * srandf(seed++)],
 						),
 						scale: 0.75 + srandf(seed++) * .25

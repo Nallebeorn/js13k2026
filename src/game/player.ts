@@ -40,8 +40,8 @@ const FALL_SPEED = 40;
 const GRIND_LENGTH = 20;
 
 let x = 0;
-let y = 2;
-let z = -6;
+let y = 1.5;
+let z = 0;
 
 let respawnPoint: Vec3 = [x, y, z];
 
@@ -58,7 +58,7 @@ let grounded = false;
 let springSpd = 0;
 let springRot = 0;
 
-let cameraYaw = 180;
+let cameraYaw = 60;
 let cameraPitch = 0;
 
 const enum PlayerState {
@@ -92,10 +92,17 @@ function saveDebugState() {
 			"UNIFROST_DEBUG_SAVE",
 			JSON.stringify({ x, y, z, respawnPoint, cameraYaw, cameraPitch }),
 		);
+
+		if (wasKeyJustPressed("KeyR")) {
+			localStorage.removeItem("UNIFROST_DEBUG_SAVE");
+			location.reload();
+		}
 	}
 }
 
 export function processPlayer() {
+	debugWatch("pos", [x, y, z].map(n => n.toFixed(1)));
+
 	const t0 = performance.now();
 	if (state == PlayerState.MOVING) processMovingState();
 	if (state == PlayerState.WALL_LODGE) processWallLodgedState();

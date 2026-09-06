@@ -252,6 +252,48 @@ export default [
 		],
 	},
 	{
+		name: "pillar16", // ? pillar16
+		nodes: [
+			{
+				translate: [0, 1.25, 0],
+				shape: "pill",
+				bottomRadius: 1.5,
+				height: 16  - 1.125 * 2,
+				collision: true,
+				visible: false,
+			},
+			{
+				color: COLOR_WHITE,
+				translate: [0, -.5, 0],
+				shape: "box",
+				a1: 3.5,
+				height: .75,
+				a2: 3,
+				collision: true,
+			},
+			{
+				translate: [0, 16, 0],
+				shape: "box",
+				a1: 3,
+				height: .75,
+				a2: 3.5,
+				collision: true,
+			},
+			...repeat(16).map((i): ObjectNode => ({
+				euler: [0, (360 * i) / 16, 0],
+				children: [
+					{
+						shape: "pill",
+						newObjectIndex: true,
+						bottomRadius: 0.25,
+						height: 16,
+						translate: [0, 0, 1],
+					},
+				],
+			})),
+		],
+	},
+	{
 		name: "pillar10", // ? pillar10
 		nodes: [
 			{
@@ -345,7 +387,7 @@ export default [
 				bottomRadius: 0.5,
 				topRadius: 0.4,
 				height: 0.5,
-				color: COLOR_GREEN,
+				color: COLOR_PEACH,
 				collision: true,
 			},
 			{

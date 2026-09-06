@@ -1,5 +1,5 @@
 import { gl } from "./glContext.ts";
-import { GL_ARRAY_BUFFER, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_BUFFER_BIT, GL_DEPTH_ATTACHMENT, GL_DEPTH_BUFFER_BIT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT32F, GL_DEPTH_TEST, GL_DYNAMIC_DRAW, GL_FLOAT, GL_FRAMEBUFFER, GL_FRAMEBUFFER_COMPLETE, GL_NEAREST, GL_RGBA, GL_STATIC_DRAW, GL_TEXTURE0, GL_TEXTURE1, GL_TEXTURE2, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_TEXTURE_MIN_FILTER, GL_TEXTURE_WRAP_S, GL_TEXTURE_WRAP_T, GL_TRIANGLES, GL_UNSIGNED_BYTE } from "./glConstants.ts";
+import { GL_ARRAY_BUFFER, GL_BACK, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_BUFFER_BIT, GL_CULL_FACE, GL_DEPTH_ATTACHMENT, GL_DEPTH_BUFFER_BIT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT32F, GL_DEPTH_TEST, GL_DYNAMIC_DRAW, GL_FLOAT, GL_FRAMEBUFFER, GL_FRAMEBUFFER_COMPLETE, GL_FRONT, GL_NEAREST, GL_RGBA, GL_STATIC_DRAW, GL_TEXTURE0, GL_TEXTURE1, GL_TEXTURE2, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_TEXTURE_MIN_FILTER, GL_TEXTURE_WRAP_S, GL_TEXTURE_WRAP_T, GL_TRIANGLES, GL_UNSIGNED_BYTE } from "./glConstants.ts";
 import { createMatrix, IDENTITY, projectPerspective, type Transform } from "../core/math.ts";
 import { DEBUG, debugWatch } from "../debug.ts";
 import { colorTextureUniform, depthTextureUniform, objectPaletteUniform, objectShader, postProcessShader, surfaceIndexTextureUniform, worldToClipUniform } from "./shaders/shaders.ts";
@@ -65,6 +65,7 @@ gl.bindTexture(GL_TEXTURE_2D, depthTexture);
 // * Set up configuration
 gl.clearColor(0, 0, 0, 0);
 gl.enable(GL_DEPTH_TEST);
+gl.enable(GL_CULL_FACE);
 
 const fov = 2.4; // ≈ TAU/8 radians = 45°
 const aspect = CANVAS_WIDTH / CANVAS_HEIGHT;
@@ -198,7 +199,7 @@ export function setupFrame() {
 	gl.uniformMatrix4fv(
   	worldToClipUniform,
   	false,
-		projectPerspective(fov, aspect, 0.1)
+		projectPerspective(fov, aspect, 0.5)
 			.multiply(cameraTransform.inverse())
 			.toFloat32Array(),
 	);

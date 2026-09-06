@@ -1,4 +1,4 @@
-import type { Vec2, Vec3 } from "../core/math.ts";
+import type { AnyVec, Vec2, Vec3 } from "../core/math.ts";
 import type { RenderObjectHandle } from "./objects.gen.ts";
 
 export const CLOUD = "cloud";
@@ -10,3 +10,25 @@ type LevelObject = [type: RenderObjectHandle, pos: Vec3, euler?: Vec3];
 type LevelNode = Cloud | Npc | LevelObject;
 
 export type LevelDescriptor = LevelNode[];
+
+export function offset(ofs: Vec3, nodes: LevelNode[]) {
+	return nodes.map(node => {
+		if (node[0] == CLOUD) {
+			node[1] += ofs[1];
+			node[2][0] += ofs[0];
+			node[2][1] += ofs[2];
+			node[3][0] += ofs[0];
+			node[3][1] += ofs[2];
+		} else if (node[0] == NPC) {
+			node[2] = add(node[2], ofs);
+		} else {
+			node[1] = add(node[1], ofs);
+		}
+
+		return node;
+	});
+}
+
+export function add<T extends AnyVec>(lhs: T, rhs: NoInfer<T>): T {
+	return lhs.map((a, i) => a + rhs[i]!) as T;
+}

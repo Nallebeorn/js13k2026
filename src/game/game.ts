@@ -9,11 +9,11 @@ export function processFrame() {
 	processNpcs();
 	processPlayer();
 
-	drawMesh(
+	/* drawMesh(
 		rainbowMesh,
 		COLOR_RAINBOW,
 		IDENTITY.translate(5, 0, -12).rotate(-90, 90, 0),
 		7,
 		1,
-	);
+	) */;
 }

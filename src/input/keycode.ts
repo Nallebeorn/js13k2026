@@ -7,4 +7,6 @@ export type KeyCode =
 	| "KeyA"
 	| "KeyW"
 	| "KeyS"
-	| "KeyD";
+	| "KeyD"
+	| "KeyR"
+	;
