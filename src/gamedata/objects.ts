@@ -486,7 +486,7 @@ export default [
 									({
 										// eyes
 										shape: "pill",
-										translate: [s * 0.4, 0.25, -0.75],
+										translate: [s * 0.4, 0.25, -0.6],
 										bottomRadius: 0.05,
 										height: 0.05,
 									}) satisfies ObjectNode,
