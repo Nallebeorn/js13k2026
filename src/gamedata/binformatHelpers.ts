@@ -18,7 +18,7 @@ export const SHAPE_FLAGS_NEW_INDEX = 1 << 4;
 export const SHAPE_FLAGS_COLLISION = 1 << 3;
 export const SHAPE_FLAGS_VISIBLE = 1 << 2;
 
-export const COLOR_MASK = 0xf;
+export const COLOR_MASK = 0x3f;
 
 export function quantizePosition(float: number) {
 	const normalized = Math.min(Math.max(float / 16, -1), 1);

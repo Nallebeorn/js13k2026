@@ -4,6 +4,9 @@ import {
 	COLOR_BLUE,
 	COLOR_CYAN,
 	COLOR_DARKGREY,
+	COLOR_FIXED_BLUE,
+	COLOR_FIXED_GREEN,
+	COLOR_FIXED_RED,
 	COLOR_GREEN,
 	COLOR_LIGHTGREY,
 	COLOR_ORANGE,
@@ -21,6 +24,59 @@ import type { ObjectDescriptor, ObjectNode } from "./objectsSchema.d.ts";
 const side = (s: number) => (s < 0 ? "R" : "L");
 
 export default [
+	{
+		name: "gizmo",
+		nodes: [
+			{
+				shape: "pill",
+				color: COLOR_FIXED_RED,
+				euler: [0, 0, -90],
+				bottomRadius: 0.05,
+				height: 2.0,
+				children: [
+					{
+						shape: "pill",
+						translate: [0, 2, 0],
+						height: 0.5,
+						bottomRadius: 0.125,
+						topRadius: 0,
+					}
+				]
+			},
+			{
+				shape: "pill",
+				color: COLOR_FIXED_GREEN,
+				euler: [0, 0, 0],
+				bottomRadius: 0.05,
+				height: 2.0,
+				children: [
+					{
+						shape: "pill",
+						translate: [0, 2, 0],
+						height: 0.5,
+						bottomRadius: 0.125,
+						topRadius: 0,
+					}
+				]
+			},
+			{
+				shape: "pill",
+				color: COLOR_FIXED_BLUE,
+				euler: [90, 0, 0],
+				bottomRadius: 0.05,
+				height: 2.0,
+				children: [
+					{
+						shape: "pill",
+						translate: [0, 2, 0],
+						height: 0.5,
+						bottomRadius: 0.125,
+						topRadius: 0,
+					}
+				]
+			}
+		]
+	},
 	{
 		// ? unicorn
 		name: "unicorn",

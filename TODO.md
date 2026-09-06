@@ -2,6 +2,8 @@
 * Handle high velocity collisions (especially vertical) by stepping
 * Separate meta-object and intra-object indices. Use to discard depth outlines
   and surface outlines at a distance
+* More precise horn collision
+* Coyote jump
 
 # Stats
 * Pre-binary level format: 5KB 339B

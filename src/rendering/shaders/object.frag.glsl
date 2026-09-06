@@ -11,7 +11,7 @@ layout(location=1) out vec4 s; // surface index
 
 void main() {
 	s = vec4(v.w, D.y, 0, 0) / 255.;
-	o = D.x == 15. ? p[int((4. + (-v.w) * 7.))] : p[int(D.x)];// + v * vec4(-.5, 1, .5, 0) * .1;
+	o = D.x > 60. ? p[int((4. + (-v.w) * 7.))] : p[int(D.x)];// + v * vec4(-.5, 1, .5, 0) * .1;
 	if (D.w > 0. && length(o.rgb) == 0.) {
 		discard;
 	}

@@ -21,6 +21,7 @@ import {
 	obj_unicorn_tail2Slot,
 	obj_unicorn_tail3Slot,
 	obj_unicorn_hornPivotSlot,
+	obj_gizmo,
 } from "../gamedata/objects.gen.ts";
 import { isKeyHeld, mouseDeltaX, mouseDeltaY, wasKeyJustPressed } from "../input/input.ts";
 import { penetrateSphereGeneric, type Collision, type ConfirmedCollision } from "../physics/collision.ts";
@@ -104,6 +105,9 @@ function saveDebugState() {
 
 export function processPlayer() {
 	debugWatch("pos", [x, y, z].map(n => n.toFixed(1)));
+	if (DEBUG) {
+		drawObject(obj_gizmo, { _: { translation: [x, y, z] } });
+	}
 
 	const t0 = performance.now();
 	if (state == PlayerState.MOVING) processMovingState();
