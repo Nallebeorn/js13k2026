@@ -19,7 +19,7 @@ import {
 	SHAPE_FLAGS_VISIBLE,
 	quantizeBigPosition,
 } from "./binformatHelpers.ts";
-import { CLOUD, NPC } from "./levelSchema.ts";
+import { CLOOD, CLOUD, NPC } from "./levelSchema.ts";
 import { COLOR_COUNT, palette } from "./colors.ts";
 
 export function serializeObjects(): {
@@ -144,6 +144,18 @@ export function serializeObjects(): {
 			dv.setInt16(pos++, quantizeBigPosition(max[0]));
 			pos++;
 			dv.setInt16(pos++, quantizeBigPosition(max[1]));
+			pos++;
+		} else if (node[0] == CLOOD) {
+			const [, y, p, s] = node;
+			dv.setInt16(pos++, quantizeBigPosition(y));
+			pos++;
+			dv.setInt16(pos++, quantizeBigPosition(p[0] - s[0] * .5));
+			pos++;
+			dv.setInt16(pos++, quantizeBigPosition(p[1] - s[1] * .5));
+			pos++;
+			dv.setInt16(pos++, quantizeBigPosition(p[0] + s[0] * .5));
+			pos++;
+			dv.setInt16(pos++, quantizeBigPosition(p[1] + s[1] * .5));
 			pos++;
 		}
 	}
