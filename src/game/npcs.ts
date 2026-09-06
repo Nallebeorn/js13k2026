@@ -1,7 +1,7 @@
 import { angleFromDirection, length, rotateTowards, sub, type Vec3 } from "../core/math.ts";
-import { deltaTime } from "../core/time.ts";
-import type { RenderObjectHandle } from "../gamedata/objects.gen.ts";
-import { drawObject } from "../rendering/renderer.ts";
+import { currentTime, deltaTime } from "../core/time.ts";
+import { obj_npc1_bodySlot, obj_npc1_headSlot, obj_npc1_lowerArmLSlot, obj_npc1_lowerArmRSlot, obj_npc1_lowerLegLSlot, obj_npc1_lowerLegRSlot, obj_npc1_upperArmLSlot, obj_npc1_upperArmRSlot, obj_npc1_upperLegLSlot, obj_npc1_upperLegRSlot, type RenderObjectHandle } from "../gamedata/objects.gen.ts";
+import { drawObject, type SlotTransforms } from "../rendering/renderer.ts";
 import { say } from "./dialogue.ts";
 import { getPlayerPos } from "./player.ts";
 
@@ -22,8 +22,48 @@ export function processNpcs() {
 			npc.angle = rotateTowards(npc.angle, angleFromDirection(toPlayer[0], toPlayer[2]), deltaTime * 720)
 		}
 
+		const getAnimation = (): Partial<SlotTransforms> =>
+			length(toPlayer) < 7
+				? {
+					[obj_npc1_upperArmLSlot]: {
+						euler: [-70 + Math.sin(currentTime * 20) * 10, 0, Math.sin(currentTime * 10) * 30]
+					},
+					[obj_npc1_lowerArmLSlot]: {
+						euler: [-5 + Math.sin(currentTime * 20) * 5, 0, Math.sin(currentTime * 10) * 5 + 5]
+					},
+					[obj_npc1_upperArmRSlot]: {
+						euler: [-70 + Math.sin(currentTime * 20) * 10, 0, -Math.sin(currentTime * 10 + 1) * 30]
+					},
+					[obj_npc1_lowerArmRSlot]: {
+						euler: [-5 + Math.sin(currentTime * 20) * 5, 0, -Math.sin(currentTime * 10 + 1) * 5 - 5]
+					},
+					[obj_npc1_headSlot]: {
+						euler: [Math.sin(currentTime * 10) * 5, 0, 0],
+					}
+				}
+				: {
+						[obj_npc1_upperArmLSlot]: {
+							euler: [0, 0, Math.sin(currentTime * 10) * 20 + 20],
+						},
+						[obj_npc1_lowerArmLSlot]: {
+							euler: [0, 0, Math.sin(currentTime * 10) * 20 + 20],
+						},
+						[obj_npc1_upperArmRSlot]: {
+							euler: [0, 0, Math.sin(currentTime * 3) * 5 + 50],
+						},
+						[obj_npc1_lowerArmRSlot]: {
+							euler: [0, 0, Math.sin(currentTime * 3) * 10 + 10],
+						},
+					};
+
 		drawObject(npc.obj, {
 			_: { translation: npc.pos, euler: [0, npc.angle, 0] },
+			[obj_npc1_bodySlot]: { translation: [0, Math.sin(currentTime * 3) * 0.1, 0] },
+			[obj_npc1_lowerLegLSlot]: {euler: [Math.sin(currentTime * 3) * 15 - 15, 0, 0]},
+			[obj_npc1_upperLegLSlot]: {euler: [-Math.sin(currentTime * 3) * 30 + 30, 0, 0]},
+			[obj_npc1_lowerLegRSlot]: {euler: [Math.sin(currentTime * 3) * 15 - 15, 0, 0]},
+			[obj_npc1_upperLegRSlot]: {euler: [-Math.sin(currentTime * 3) * 30 + 30, 0, 0]},
+			...getAnimation(),
 		});
 
 	}
