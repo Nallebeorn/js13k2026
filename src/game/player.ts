@@ -40,6 +40,7 @@ const WALL_JUMP_SPEED = 60;
 const GRAVITY = 100;
 const FALL_SPEED = 40;
 const GRIND_LENGTH = 20;
+const MAX_STEP = 0.5;
 
 let x = 0;
 let y = 1.5;
@@ -105,9 +106,6 @@ function saveDebugState() {
 
 export function processPlayer() {
 	debugWatch("pos", [x, y, z].map(n => n.toFixed(1)));
-	if (DEBUG) {
-		drawObject(obj_gizmo, { _: { translation: [x, y, z] } });
-	}
 
 	const t0 = performance.now();
 	if (state == PlayerState.MOVING) processMovingState();
@@ -138,6 +136,10 @@ export function processPlayer() {
 			grindLength * 2,
 			GRIND_LENGTH - 5
 		);
+	}
+
+	if (DEBUG) {
+		drawObject(obj_gizmo, { _: { translation: [x, y, z] } });
 	}
 
 	// ? Camera controls
@@ -223,6 +225,8 @@ function processMovingState() {
 	z += vz * deltaTime;
 
 	const t1 = performance.now();
+
+	// * Horizontal collisions
 	for (const {depenetration} of enumerateCollisions()) {
 		x += depenetration[0];
 		if (vx) {
@@ -252,18 +256,23 @@ function processMovingState() {
 		}
 	}
 
-	y += vy * deltaTime;
-
+	// * Vertical movement
 	grounded = false;
-	for (const { depenetration, safePoint } of enumerateCollisions()) {
-		if (safePoint) {
-			respawnPoint = safePoint;
-		}
-		y += depenetration[1];
-		if (Math.abs(normalize(depenetration)[1]) > 0.5) {
-			vy += depenetration[1] / deltaTime;
-			grounded = true;
-			grindUses = 0;
+	let yMovement = Math.abs(vy * deltaTime);
+	while (yMovement > 0) {
+		y += Math.min(yMovement, MAX_STEP) * Math.sign(vy);
+		yMovement -= MAX_STEP;
+
+		for (const { depenetration, safePoint } of enumerateCollisions()) {
+			if (safePoint) {
+				respawnPoint = safePoint;
+			}
+			y += depenetration[1];
+			if (Math.abs(normalize(depenetration)[1]) > 0.5) {
+				vy += depenetration[1] / deltaTime;
+				grounded = true;
+				grindUses = 0;
+			}
 		}
 	}
 
