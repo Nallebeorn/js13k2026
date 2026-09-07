@@ -161,6 +161,7 @@ export function deserializeBinaryGameData(buffer: ArrayBuffer) {
 			],
 			angle: dequantizeAngle(dv.getUint8(pos++)),
 			dialogue: dialogue[npcIndex++]!,
+			minShards: dv.getInt8(pos++),
 		})
 	}
 

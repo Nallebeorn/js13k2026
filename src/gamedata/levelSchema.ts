@@ -7,7 +7,7 @@ export const CLOOD = "cloudCentred";
 export const NPC = "npc";
 type Cloud = [type: typeof CLOUD, y: number, min: Vec2, max: Vec2];
 type CloudCentred = [type: typeof CLOOD, y: number, pos: Vec2, size: Vec2];
-type Npc = [type: typeof NPC, obj: RenderObjectHandle, pos: Vec3, angle: number, say: string];
+type Npc = [type: typeof NPC, obj: RenderObjectHandle, pos: Vec3, angle: number, say: string, minShards?: number];
 type LevelObject = [type: RenderObjectHandle, pos: Vec3, euler?: Vec3, color?: Color];
 
 type LevelNode = Cloud | CloudCentred | Npc | LevelObject;

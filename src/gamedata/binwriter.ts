@@ -166,7 +166,7 @@ export function serializeObjects(): {
 	const dialogue: string[] = [];
 	for (const node of levelData) {
 		if (node[0] === NPC) {
-			const [, obj, translation, angle, say] = node;
+			const [, obj, translation, angle, say, minShards] = node;
 			dv.setUint8(pos++, obj);
 			dv.setInt16(pos++, quantizeBigPosition(translation[0]));
 			pos++;
@@ -175,6 +175,7 @@ export function serializeObjects(): {
 			dv.setInt16(pos++, quantizeBigPosition(translation[2]));
 			pos++
 			dv.setUint8(pos++, quantizeAngle(angle));
+			dv.setInt8(pos++, minShards ?? 0);
 
 			dialogue.push(say);
 		}

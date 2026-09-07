@@ -1,4 +1,4 @@
-import { repeat } from "../core/util.ts";
+	import { repeat } from "../core/util.ts";
 import { COLOR_RED } from "./colors.ts";
 import { CLOOD, CLOUD, NPC, offset, type LevelDescriptor } from "./levelSchema.ts";
 import { obj_pillar10, obj_pillar5, obj_unitSphere, obj_cube2x2x1, obj_npc1, obj_pillar16 } from "./objects.gen.ts";
@@ -22,7 +22,8 @@ export default [
 			] satisfies LevelDescriptor,
 	),
 	[NPC, obj_npc1, [-8, 0, -8], 225, "The bifrost has shattered and scattered!"],
-	[NPC, obj_npc1, [10, 0, 10], 45, "Please great Neighdall! Find the lost rainbow shards all!"],
+	[NPC, obj_npc1, [10, 0, 10], 45, "Please great Neighdall! Find the lost rainbow shards all!", -7],
+	[NPC, obj_npc1, [15, 0, -12], 135, "Every shard collected increases your flair.\\nTry pressing JUMP in mid-air!", 1],
 
 	// * First shard
 	[CLOOD, 0, [0, 32], [5, 8]],
@@ -36,9 +37,13 @@ export default [
 	[CLOOD, 16, [-45, 30], [10, 45]],
 	[NPC, obj_npc1, [-49, 16, 15], -135, "You'll need a long gallop-up to make this jump"],
 	[obj_pillar16, [-45, 8, -10]],
+	[CLOOD, 8, [-45, -10], [3, 3]],
 	[obj_pillar16, [-45, 20, -13]],
+	[CLOOD, 20, [-45, -13], [3, 3]],
 	[obj_pillar16, [-49, 12, -13]],
+	[CLOOD, 12, [-49, -13], [3, 3]],
 	[obj_pillar16, [-41, 12, -13]],
+	[CLOOD, 12, [-41, -13], [3, 3]],
 	// [CLOOD, 16, [-45, -15], [10, 10]],
 	[CLOOD, 20, [-30, -16], [8, 8]], // shard is on this cloud
 	[NPC, obj_npc1, [-28, 20, -19], 135, "See that wasn't so hard, you found the first shard!"], // shard is on this cloud

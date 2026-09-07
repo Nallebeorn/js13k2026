@@ -40,7 +40,7 @@ const WALL_JUMP_SPEED = 60;
 const GRAVITY = 100;
 const FALL_SPEED = 40;
 const GRIND_LENGTH = 20;
-const MAX_STEP = 0.5;
+const MAX_STEP = 0.25;
 
 let x = 0;
 let y = 1.5;
