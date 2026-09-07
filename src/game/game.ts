@@ -5,8 +5,10 @@ import { processPlayer } from "./player.ts";
 import { rainbowMesh } from "../rendering/vertexData.ts";
 import { processNpcs } from "./npcs.ts";
 import { processRainbowShards } from "./rainbowShards.ts";
+import { processScreenTransition } from "../rendering/screenTransition.ts";
 
 export function processFrame() {
+	processScreenTransition();
 	processNpcs();
 	processRainbowShards();
 	processPlayer();

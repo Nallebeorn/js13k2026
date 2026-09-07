@@ -5,6 +5,7 @@ import { COLOR_GREEN, COLOR_YELLOW, unlockColor, type Color } from "../gamedata/
 import { wasKeyJustPressed } from "../input/input.ts";
 import type { KeyCode } from "../input/keycode.ts";
 import { drawMesh } from "../rendering/renderer.ts";
+import { doScreenWipe, transitionProgress } from "../rendering/screenTransition.ts";
 import { rainbowMesh } from "../rendering/vertexData.ts";
 import { getPlayerPos } from "./player.ts";
 
@@ -29,12 +30,15 @@ export function processRainbowShards() {
 		);
 
 		if (
-			length(sub(shards[i]![0], getPlayerPos())) < 3 ||
-			(DEBUG && wasKeyJustPressed(`Digit${i + 1}` as KeyCode))
+			(length(sub(shards[i]![0], getPlayerPos())) < 3 ||
+				(DEBUG && wasKeyJustPressed(`Digit${i + 1}` as KeyCode))) &&
+			!transitionProgress
 		) {
-			unlockColor(shards[i]![1]);
-			shardsCollected++;
-			shards.splice(i, 1);
+			doScreenWipe(shards[i]![1]+10, () => {
+				unlockColor(shards[i]![1]);
+				shardsCollected++;
+				shards.splice(i, 1);
+			});
 		}
 	}
 }

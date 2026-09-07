@@ -2,13 +2,14 @@ import { gl } from "./glContext.ts";
 import { GL_ARRAY_BUFFER, GL_BACK, GL_CLAMP_TO_EDGE, GL_COLOR, GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_BUFFER_BIT, GL_CULL_FACE, GL_DEPTH_ATTACHMENT, GL_DEPTH_BUFFER_BIT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT32F, GL_DEPTH_TEST, GL_DYNAMIC_DRAW, GL_FLOAT, GL_FRAMEBUFFER, GL_FRAMEBUFFER_COMPLETE, GL_FRONT, GL_HALF_FLOAT, GL_NEAREST, GL_RG, GL_RG16F, GL_RG16UI, GL_RG32F, GL_RG32UI, GL_RG_INTEGER, GL_RGBA, GL_STATIC_DRAW, GL_TEXTURE0, GL_TEXTURE1, GL_TEXTURE2, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_TEXTURE_MIN_FILTER, GL_TEXTURE_WRAP_S, GL_TEXTURE_WRAP_T, GL_TRIANGLES, GL_UNSIGNED_BYTE, GL_UNSIGNED_INT, GL_UNSIGNED_SHORT } from "./glConstants.ts";
 import { createMatrix, IDENTITY, projectPerspective, type Transform } from "../core/math.ts";
 import { DEBUG, debugWatch } from "../debug.ts";
-import { colorTextureUniform, depthTextureUniform, objectPaletteUniform, objectShader, postProcessShader, surfaceIndexTextureUniform, worldToClipUniform } from "./shaders/shaders.ts";
+import { colorTextureUniform, depthTextureUniform, objectPaletteUniform, objectShader, postProcessPaletteUniform, postProcessShader, surfaceIndexTextureUniform, transitionUniform, worldToClipUniform } from "./shaders/shaders.ts";
 import { colors as colorsData, type Color } from "../gamedata/colors.ts";
 import type { RenderObjectHandle } from "../gamedata/objects.gen.ts";
 import { staticColliders } from "../physics/objectColliders.ts";
 import { transformCollider } from "../physics/collision.ts";
 import { vertexData, type MeshInfo } from "./vertexData.ts";
 import { objectsBank } from "../gamedata/gamedata.ts";
+import { transitionColor, transitionProgress } from "./screenTransition.ts";
 
 export const ROOT_SLOT = "_";
 
@@ -266,6 +267,8 @@ export function finishFrame() {
 	// * Draw post processing (and blit to canvas)
 	gl.bindFramebuffer(GL_FRAMEBUFFER, null);
 	gl.useProgram(postProcessShader);
+	gl.uniform2f(transitionUniform, transitionProgress, transitionColor);
+	gl.uniform4fv(postProcessPaletteUniform, colorsData);
 	gl.drawArrays(GL_TRIANGLES, 0, 3);
 }
 

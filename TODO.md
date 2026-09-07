@@ -1,7 +1,8 @@
 # TODO
 * Allow selectively marking clouds as safe/unsafe (or remove unsafe clouds from level)
-* Screen wipes (for respawn and shard collection)
 * Remove colors from unicorn when using up grinds
+* Don't freeze player during death wipe
+* Make boost state clear when grinding
 * Delayed rainbow grinder creation
 * Shard collection effect
 * Separate meta-object and intra-object indices. Use to discard depth outlines
@@ -10,6 +11,7 @@
 * Drop shadow or equivalent
 * Coyote jump
 * NPC collision? (dynamic solid colliders)
+* ~Screen wipes (for respawn and shard collection)~
 * ~Handle high velocity collisions (especially vertical) by stepping~
 * ~I think we're out of object indices...~
 * ~NPC *max* shrds (in addition to min)~

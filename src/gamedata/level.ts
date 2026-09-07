@@ -69,6 +69,7 @@ export default [
 	[NPC, obj_npc1, [30, 16, 135], 0, "We used to kiss every day.\\nNow the rainbow is gone, we're all out of gay!"], // gays
 	[NPC, obj_npc1, [32, 16, 135], 0, "We used to kiss every day.\\nNow the rainbow is gone, we're all out of gay!"], // gays
 
+
 	// * Old test level
 	/* ...offset(
 		[-50, 0, 0],

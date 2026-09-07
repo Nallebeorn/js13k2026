@@ -1,7 +1,7 @@
 import { rotateTowards, withLength, IDENTITY, add, type Vec3, normalize, length, sub, dot, clamp, spring, lerp, angleFromDirection } from "../core/math.ts";
 import { currentTime, deltaTime } from "../core/time.ts";
 import { DEBUG, debugWatch } from "../debug.ts";
-import { COLOR_RAINBOW } from "../gamedata/colors.ts";
+import { COLOR_OUTLINE, COLOR_RAINBOW } from "../gamedata/colors.ts";
 import {
 	obj_unicorn,
 	obj_unicorn_neckSlot,
@@ -27,6 +27,7 @@ import { isKeyHeld, mouseDeltaX, mouseDeltaY, wasKeyJustPressed } from "../input
 import { penetrateSphereGeneric, type Collision, type ConfirmedCollision } from "../physics/collision.ts";
 import { staticColliders } from "../physics/objectColliders.ts";
 import { cameraTransform, drawMesh, drawObject, ROOT_SLOT, updateCameraTransform, type SlotTransforms } from "../rendering/renderer.ts";
+import { doScreenWipe, transitionProgress } from "../rendering/screenTransition.ts";
 import { rainbowMesh } from "../rendering/vertexData.ts";
 import { shardsCollected } from "./rainbowShards.ts";
 
@@ -278,12 +279,15 @@ function processMovingState() {
 
 	debugWatch("playercoll", performance.now() - t1);
 
-	if (y < -50) {
+	if (y < -50 && !transitionProgress) {
 		// * Die and respawn
-		[x, y, z] = respawnPoint;
-		vx = 0;
-		vy = 0;
-		vz = 0;
+		doScreenWipe(COLOR_OUTLINE, () => {
+			[x, y, z] = respawnPoint;
+			vx = 0;
+			vy = 0;
+			vz = 0;
+			cameraPitch = 0;
+		});
 	}
 
 	debugWatch("grounded", grounded ? 1 : 0);
@@ -348,7 +352,7 @@ function getAnimation(): Partial<SlotTransforms> {
 	if (!grounded && boostCharge > BOOST_DELAY) return boostJumpAnimation();
 	if (vy > 0) return jumpAnimation();
 	if (vy < 0) return fallAnimation();
-	if (vx || vz) return runAnimation();
+	if ((vx || vz) && !transitionProgress) return runAnimation();
 	return idleAnimation();
 }
 
