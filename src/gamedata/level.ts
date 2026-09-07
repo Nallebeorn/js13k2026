@@ -1,7 +1,7 @@
 	import { repeat } from "../core/util.ts";
-import { COLOR_RED } from "./colors.ts";
+import { COLOR_GREEN, COLOR_RED } from "./colors.ts";
 import { CLOOD, CLOUD, NPC, offset, type LevelDescriptor } from "./levelSchema.ts";
-import { obj_pillar10, obj_pillar5, obj_unitSphere, obj_cube2x2x1, obj_npc1, obj_pillar16 } from "./objects.gen.ts";
+import { obj_pillar10, obj_pillar5, obj_unitSphere, obj_cube2x2x1, obj_npc1, obj_pillar16, obj_box3x3 } from "./objects.gen.ts";
 
 export default [
 	// * Starting area
@@ -23,7 +23,8 @@ export default [
 	),
 	[NPC, obj_npc1, [-8, 0, -8], 225, "The bifrost has shattered and scattered!"],
 	[NPC, obj_npc1, [10, 0, 10], 45, "Please great Neighdall! Find the lost rainbow shards all!", -7],
-	[NPC, obj_npc1, [15, 0, -12], 135, "Every shard collected increases your flair.\\nTry pressing JUMP in mid-air!", 1],
+	[obj_box3x3, [15, 0, -12]],
+	[NPC, obj_npc1, [15, 3, -12], 135, "Every shard collected increases your flair.\\nTry pressing JUMP in mid-air!", 1],
 
 	// * First shard
 	[CLOOD, 0, [0, 32], [5, 8]],
@@ -35,6 +36,9 @@ export default [
 	[obj_pillar10, [-33, 8.5, 41], [-90, 0, 0]],
 	[obj_pillar5, [-33, 8.5, 28]],
 	[CLOOD, 16, [-45, 30], [10, 45]],
+	[obj_box3x3, [-43, 16, 50]],
+	[obj_box3x3, [-46.5, 16, 49.5], , COLOR_GREEN],
+	[obj_box3x3, [-45, 19, 50], , COLOR_GREEN],
 	[NPC, obj_npc1, [-49, 16, 15], -135, "You'll need a long gallop-up to make this jump"],
 	[obj_pillar16, [-45, 8, -10]],
 	[CLOOD, 8, [-45, -10], [3, 3]],
