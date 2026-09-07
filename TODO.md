@@ -7,6 +7,7 @@
 * Separate meta-object and intra-object indices. Use to discard depth outlines
   and surface outlines at a distance
 * More precise horn collision
+* Drop shadow or equivalent
 * Coyote jump
 * NPC collision? (dynamic solid colliders)
 * ~Handle high velocity collisions (especially vertical) by stepping~

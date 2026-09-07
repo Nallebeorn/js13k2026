@@ -1,7 +1,7 @@
 import { IDENTITY, length, sub, type Vec3 } from "../core/math.ts";
 import { currentTime } from "../core/time.ts";
 import { DEBUG } from "../debug.ts";
-import { COLOR_GREEN, unlockColor, type Color } from "../gamedata/colors.ts";
+import { COLOR_GREEN, COLOR_YELLOW, unlockColor, type Color } from "../gamedata/colors.ts";
 import { wasKeyJustPressed } from "../input/input.ts";
 import type { KeyCode } from "../input/keycode.ts";
 import { drawMesh } from "../rendering/renderer.ts";
@@ -9,7 +9,8 @@ import { rainbowMesh } from "../rendering/vertexData.ts";
 import { getPlayerPos } from "./player.ts";
 
 export const shards: [pos: Vec3, color: Color][] = [
-	[[-30, 21, -16], COLOR_GREEN]
+	[[-30, 21, -16], COLOR_GREEN],
+	[[30, 21, 120], COLOR_YELLOW],
 ]
 
 export let shardsCollected = 0;
