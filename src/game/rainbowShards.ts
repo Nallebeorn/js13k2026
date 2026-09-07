@@ -1,6 +1,9 @@
 import { IDENTITY, length, sub, type Vec3 } from "../core/math.ts";
 import { currentTime } from "../core/time.ts";
+import { DEBUG } from "../debug.ts";
 import { COLOR_GREEN, unlockColor, type Color } from "../gamedata/colors.ts";
+import { wasKeyJustPressed } from "../input/input.ts";
+import type { KeyCode } from "../input/keycode.ts";
 import { drawMesh } from "../rendering/renderer.ts";
 import { rainbowMesh } from "../rendering/vertexData.ts";
 import { getPlayerPos } from "./player.ts";
@@ -24,7 +27,10 @@ export function processRainbowShards() {
 			1,
 		);
 
-		if (length(sub(shards[i]![0], getPlayerPos())) < 3) {
+		if (
+			length(sub(shards[i]![0], getPlayerPos())) < 3 ||
+			(DEBUG && wasKeyJustPressed(`Digit${i + 1}` as KeyCode))
+		) {
 			unlockColor(shards[i]![1]);
 			shardsCollected++;
 			shards.splice(i, 1);

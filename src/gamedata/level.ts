@@ -26,7 +26,7 @@ export default [
 	[obj_box3x3, [15, 0, -12]],
 	[NPC, obj_npc1, [15, 3, -12], 135, "Every shard collected increases your flair.\\nTry pressing JUMP in mid-air!", 1],
 
-	// * First shard
+	// * First shard (0)
 	[CLOOD, 0, [0, 32], [5, 8]],
 	[CLOOD, 4, [11, 32], [8, 5]],
 	[CLOOD, 8, [5, 42], [15, 5]],
@@ -48,9 +48,26 @@ export default [
 	[CLOOD, 12, [-49, -13], [3, 3]],
 	[obj_pillar16, [-41, 12, -13]],
 	[CLOOD, 12, [-41, -13], [3, 3]],
-	// [CLOOD, 16, [-45, -15], [10, 10]],
 	[CLOOD, 20, [-30, -16], [8, 8]], // shard is on this cloud
-	[NPC, obj_npc1, [-28, 20, -19], 135, "See that wasn't so hard, you found the first shard!"], // shard is on this cloud
+	[NPC, obj_npc1, [-28, 20, -19], 135, "See that wasn't so hard, you found the first shard!"],
+
+	// * Path to 1A
+	[CLOUD, 0, [40, -10], [60, 0]],
+	[obj_box3x3, [55, 0, -8], , COLOR_GREEN],
+	[obj_box3x3, [55.2, 3, -7.5], , COLOR_GREEN],
+
+	[CLOOD, 6, [80, 30], [8, 8]],
+	[obj_box3x3, [82, 6, 32], , COLOR_GREEN],
+
+	[CLOOD, 0, [80, 80], [3, 3]],
+	[obj_pillar16, [80, 0, 80], , COLOR_GREEN],
+
+	[CLOUD, 16, [5, 100], [45, 140]],
+	[obj_pillar10, [30, 16, 105], , COLOR_GREEN],
+	[obj_pillar10, [40, 16, 115], , COLOR_GREEN],
+	[NPC, obj_npc1, [28, 16, 118], -45, "It's a work in progress! Try coming back later!"],
+	[NPC, obj_npc1, [30, 16, 135], 0, "We used to kiss every day.\\nNow the rainbow is gone, we're all out of gay!"], // gays
+	[NPC, obj_npc1, [32, 16, 135], 0, "We used to kiss every day.\\nNow the rainbow is gone, we're all out of gay!"], // gays
 
 	// * Old test level
 	/* ...offset(

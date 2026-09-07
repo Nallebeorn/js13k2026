@@ -1,6 +1,7 @@
 # TODO
 * Allow selectively marking clouds as safe/unsafe (or remove unsafe clouds from level)
 * Screen wipes (for respawn and shard collection)
+* Remove colors from unicorn when using up grinds
 * Delayed rainbow grinder creation
 * Shard collection effect
 * Separate meta-object and intra-object indices. Use to discard depth outlines
