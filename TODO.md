@@ -8,6 +8,7 @@
   and surface outlines at a distance
 * More precise horn collision
 * Coyote jump
+* NPC collision? (dynamic solid colliders)
 * ~Handle high velocity collisions (especially vertical) by stepping~
 * ~I think we're out of object indices...~
 * ~NPC *max* shrds (in addition to min)~
