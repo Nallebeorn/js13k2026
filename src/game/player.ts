@@ -29,7 +29,7 @@ import { staticColliders } from "../physics/objectColliders.ts";
 import { cameraTransform, drawMesh, drawObject, ROOT_SLOT, updateCameraTransform, type SlotTransforms } from "../rendering/renderer.ts";
 import { doScreenWipe, transitionProgress } from "../rendering/screenTransition.ts";
 import { rainbowMesh } from "../rendering/vertexData.ts";
-import { shardsCollected } from "./rainbowShards.ts";
+import { shardCollectTimer, shardsCollected } from "./rainbowShards.ts";
 
 const SPEED = 20;
 const BOOST_SPEED = 25;
@@ -110,8 +110,8 @@ export function processPlayer() {
 	debugWatch("pos", [x, y, z].map(n => n.toFixed(1)));
 
 	const t0 = performance.now();
-	if (state == PlayerState.MOVING) processMovingState();
-	if (state == PlayerState.WALL_LODGE) processWallLodgedState();
+	if (state == PlayerState.MOVING && !shardCollectTimer) processMovingState();
+	if (state == PlayerState.WALL_LODGE && !shardCollectTimer) processWallLodgedState();
 
 	if (!isGrinding) {
 		completedGrindUses = grindUses;

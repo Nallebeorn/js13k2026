@@ -16,8 +16,8 @@ export const shards: [pos: Vec3, color: Color][] = [
 
 export let shardsCollected = 0;
 
-let collectingShard = -1;
-let shardCollectTimer = 0;
+let collectingShard: number;
+export let shardCollectTimer = 0;
 
 export function processRainbowShards() {
 	for (let i = 0; i < shards.length; i++) {
@@ -38,12 +38,15 @@ export function processRainbowShards() {
 			1,
 		);
 
-		if (
-			(length(sub(shards[i]![0], getPlayerPos())) < 3 ||
-				(DEBUG && wasKeyJustPressed(`Digit${i + 1}` as KeyCode))) &&
-			collectingShard < 0
-		) {
+		if (length(sub(shards[i]![0], getPlayerPos())) < 3 && !shardCollectTimer) {
 			collectingShard = i;
+		}
+
+		if (DEBUG && wasKeyJustPressed(`Digit${i + 1}` as KeyCode)) {
+			unlockColor(shards[i]![1]);
+			shardsCollected++;
+			setTimeout(() => shards.splice(i, 1), 0);
+			;
 		}
 	}
 
@@ -56,4 +59,5 @@ export function processRainbowShards() {
 			shardCollectTimer = 0;
 		});
 	}
+
 }
