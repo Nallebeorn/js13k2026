@@ -39,7 +39,7 @@ export default [
 	[obj_box3x3, [-43, 16, 50]],
 	[obj_box3x3, [-46.5, 16, 49.5], , COLOR_GREEN],
 	[obj_box3x3, [-45, 19, 50], , COLOR_GREEN],
-	[NPC, obj_npc1, [-49, 16, 15], -135, "You'll need a long gallop-up to make this jump"],
+	[NPC, obj_npc1, [-49, 16, 15], -135, "If you want to make this jump, you'll need a long gallop-up"],
 	[obj_pillar16, [-45, 8, -10]],
 	[CLOOD, 8, [-45, -10], [3, 3]],
 	[obj_pillar16, [-45, 20, -13]],
@@ -55,6 +55,7 @@ export default [
 	[CLOUD, 0, [40, -10], [60, 0]],
 	[obj_box3x3, [55, 0, -8], , COLOR_GREEN],
 	[obj_box3x3, [55.2, 3, -7.5], , COLOR_GREEN],
+	[NPC, obj_npc1, [55, 6, -8], 90, "You know what's really exciting?\\nPressing JUMP while rainbow-riding!"],
 
 	[CLOOD, 6, [80, 30], [8, 8], true],
 	[obj_box3x3, [82, 6, 32], , COLOR_GREEN],
@@ -62,6 +63,7 @@ export default [
 	[CLOOD, 0, [80, 80], [3, 3]],
 	[obj_pillar16, [80, 0, 80], , COLOR_GREEN],
 
+	// * 1A
 	[CLOUD, 16, [5, 100], [45, 140], true],
 	[obj_pillar5, [35, 16, 102], , COLOR_GREEN], // R
 	[obj_pillar5, [43, 16, 110], , COLOR_GREEN], // L

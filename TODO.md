@@ -1,7 +1,11 @@
 # TODO
-* Make boost state clear when grinding
 * Delayed rainbow grinder creation
-* Speedrun timerssd
+* Make boost state clear when grinding
+* Add momentum preservation to first shard level
+* Replace first drill jump pillars with wall
+* Spikes or similar to make top of walls unwalkable?
+	* Could perhaps be merged with the bounce balloons?
+* Speedrun timers
 * Grinding particle FX
 * Boost gallop VFX
 * Shard collection particle FX

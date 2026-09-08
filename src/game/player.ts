@@ -159,8 +159,8 @@ export function processPlayer() {
 	// ? Camera controls
 	const moveYaw = mouseDeltaX * .1;
 	const movePitch = mouseDeltaY * .1;
-	cameraYaw += -moveYaw * 180 * deltaTime;
-	cameraPitch = clamp(cameraPitch - movePitch * 180 * deltaTime, -80, 30)
+	cameraYaw += -moveYaw * 100 * deltaTime;
+	cameraPitch = clamp(cameraPitch - movePitch * 100 * deltaTime, -80, 30)
 	updateCameraTransform(
 		IDENTITY
 			.translate(x, y, z)
