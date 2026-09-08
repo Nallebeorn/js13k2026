@@ -22,11 +22,11 @@ export const COLOR_MASK = 0x3f;
 
 export function quantizePosition(float: number) {
 	const normalized = Math.min(Math.max(float / 16, -1), 1);
-	return Math.round(normalized * 127);
+	return Math.round(normalized * 127) & 0xff;
 }
 
-export function dequantizePosition(sbyte: number) {
-	return (sbyte / 127) * 16;
+export function dequantizePosition(byte: number) {
+	return 16 * (((byte << 24) >> 24) / 127);
 }
 
 export function quantizeSize(float: number) {
@@ -62,6 +62,6 @@ export function quantizeBigPosition(float: number) {
 	return fixedPoint;
 }
 
-export function dequantizeBigPosition(sint16: number) {
-	return sint16 / 16;
+export function dequantizeBigPosition(hi: number, lo: number) {
+	return ((hi << 24) >> 16) & lo;
 }

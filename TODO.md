@@ -27,3 +27,6 @@
 
 * Pre hardcoded sections: 5KB 299B
 * Post hardcoded sections: 5KB 278B
+
+* ArrayBuffer+DataView:: 6KB 702B
+* Uint8Array refactor: 6KB 682B
