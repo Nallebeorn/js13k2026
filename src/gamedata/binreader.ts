@@ -29,7 +29,7 @@ import { COLOR_WHITE, colors, type Color } from "./colors.ts";
 import { dialogue } from "./dialogue.gen.ts";
 import { objectsBank } from "./gamedata.ts";
 import type { RenderObjectHandle } from "./objects.gen.ts";
-import { section_cloudsEnd, section_levelObjectsEnd, section_npcsEnd, section_objectBankEnd, section_paletteEnd } from "./sections.gen.ts";
+import { section_cloudsEnd, section_levelObjectsEnd, section_npcsEnd, section_objectBankEnd, section_paletteEnd, section_safeCloudsEnd } from "./sections.gen.ts";
 
 export function deserializeBinaryGameData(buffer: ArrayBuffer) {
 	const dv = new DataView(buffer);
@@ -144,7 +144,7 @@ export function deserializeBinaryGameData(buffer: ArrayBuffer) {
 		staticColliders.push({
 			min: [xmin, y - 1, zmin],
 			max: [xmax, y, zmax],
-			safePoint: [xmin * 0.5 + xmax * 0.5, y+1.5, zmin * 0.5 + zmax * 0.5],
+			safePoint: pos < section_safeCloudsEnd && [xmin * 0.5 + xmax * 0.5, y+1.5, zmin * 0.5 + zmax * 0.5],
 		});
 		incrementObjectIndex();
 	}

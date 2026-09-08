@@ -5,7 +5,7 @@ import { obj_pillar10, obj_pillar5, obj_unitSphere, obj_cube2x2x1, obj_npc1, obj
 
 export default [
 	// * Starting area
-	[CLOUD, 0, [-20, -20], [20, 20]],
+	[CLOUD, 0, [-20, -20], [20, 20], true],
 	...repeat(7).flatMap(
 		(i) =>
 			[
@@ -29,13 +29,13 @@ export default [
 	// * First shard (0)
 	[CLOOD, 0, [0, 32], [5, 8]],
 	[CLOOD, 4, [11, 32], [8, 5]],
-	[CLOOD, 8, [5, 42], [15, 5]],
+	[CLOOD, 8, [5, 42], [15, 5], true],
 	[obj_pillar16, [0, 8.5, 42], [0, 0, 90]],
-	[CLOUD, 8, [-35, 25], [-15, 45]],
+	[CLOUD, 8, [-35, 25], [-15, 45], true],
 	[obj_pillar16, [-19, 8.5, 28]],
 	[obj_pillar10, [-33, 8.5, 41], [-90, 0, 0]],
 	[obj_pillar5, [-33, 8.5, 28]],
-	[CLOOD, 16, [-45, 30], [10, 45]],
+	[CLOOD, 16, [-45, 30], [10, 45], true],
 	[obj_box3x3, [-43, 16, 50]],
 	[obj_box3x3, [-46.5, 16, 49.5], , COLOR_GREEN],
 	[obj_box3x3, [-45, 19, 50], , COLOR_GREEN],
@@ -48,7 +48,7 @@ export default [
 	[CLOOD, 12, [-49, -13], [3, 3]],
 	[obj_pillar16, [-41, 12, -13]],
 	[CLOOD, 12, [-41, -13], [3, 3]],
-	[CLOOD, 20, [-30, -16], [8, 8]], // shard is on this cloud
+	[CLOOD, 20, [-30, -16], [8, 8], true], // shard is on this cloud
 	[NPC, obj_npc1, [-28, 20, -19], 135, "See that wasn't so hard, you found the first shard!"],
 
 	// * Path to 1A
@@ -62,7 +62,7 @@ export default [
 	[CLOOD, 0, [80, 80], [3, 3]],
 	[obj_pillar16, [80, 0, 80], , COLOR_GREEN],
 
-	[CLOUD, 16, [5, 100], [45, 140]],
+	[CLOUD, 16, [5, 100], [45, 140], true],
 	[obj_pillar10, [30, 16, 105], , COLOR_GREEN],
 	[obj_pillar10, [40, 16, 115], , COLOR_GREEN],
 	[NPC, obj_npc1, [28, 16, 118], -45, "It's a work in progress! Try coming back later!"],

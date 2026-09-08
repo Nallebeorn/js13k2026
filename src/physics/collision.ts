@@ -15,7 +15,7 @@ export interface CapsuleCollider {
 export interface BoxCollider {
 	min: Vec3,
 	max: Vec3,
-	safePoint?: Vec3,
+	safePoint?: Vec3 | false,
 }
 
 export function translateCollider<T extends Collider>(collider: T, pos: Vec3): T {

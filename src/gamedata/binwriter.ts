@@ -132,34 +132,43 @@ export function serializeObjects(): {
 	sections.set("objectBank", pos);
 
 	// * Write clouds
-	for (const node of levelData) {
-		if (node[0] === CLOUD) {
-			const [, y, min, max] = node;
-			dv.setInt16(pos++, quantizeBigPosition(y));
-			pos++;
-			dv.setInt16(pos++, quantizeBigPosition(min[0]));
-			pos++;
-			dv.setInt16(pos++, quantizeBigPosition(min[1]));
-			pos++;
-			dv.setInt16(pos++, quantizeBigPosition(max[0]));
-			pos++;
-			dv.setInt16(pos++, quantizeBigPosition(max[1]));
-			pos++;
-		} else if (node[0] == CLOOD) {
-			const [, y, p, s] = node;
-			dv.setInt16(pos++, quantizeBigPosition(y));
-			pos++;
-			dv.setInt16(pos++, quantizeBigPosition(p[0] - s[0] * .5));
-			pos++;
-			dv.setInt16(pos++, quantizeBigPosition(p[1] - s[1] * .5));
-			pos++;
-			dv.setInt16(pos++, quantizeBigPosition(p[0] + s[0] * .5));
-			pos++;
-			dv.setInt16(pos++, quantizeBigPosition(p[1] + s[1] * .5));
-			pos++;
+	const writeClouds = (safe: boolean) => {
+		for (const node of levelData) {
+			if (node[0] === CLOUD) {
+				const [, y, min, max, isSafe] = node;
+				if ((isSafe ?? false) != safe) continue;
+
+				dv.setInt16(pos++, quantizeBigPosition(y));
+				pos++;
+				dv.setInt16(pos++, quantizeBigPosition(min[0]));
+				pos++;
+				dv.setInt16(pos++, quantizeBigPosition(min[1]));
+				pos++;
+				dv.setInt16(pos++, quantizeBigPosition(max[0]));
+				pos++;
+				dv.setInt16(pos++, quantizeBigPosition(max[1]));
+				pos++;
+			} else if (node[0] == CLOOD) {
+				const [, y, p, s, isSafe] = node;
+				if ((isSafe ?? false) != safe) continue;
+
+				dv.setInt16(pos++, quantizeBigPosition(y));
+				pos++;
+				dv.setInt16(pos++, quantizeBigPosition(p[0] - s[0] * .5));
+				pos++;
+				dv.setInt16(pos++, quantizeBigPosition(p[1] - s[1] * .5));
+				pos++;
+				dv.setInt16(pos++, quantizeBigPosition(p[0] + s[0] * .5));
+				pos++;
+				dv.setInt16(pos++, quantizeBigPosition(p[1] + s[1] * .5));
+				pos++;
+			}
 		}
 	}
 
+	writeClouds(true);
+	sections.set("safeClouds", pos);
+	writeClouds(false);
 	sections.set("clouds", pos);
 
 	// * Write NPCs
