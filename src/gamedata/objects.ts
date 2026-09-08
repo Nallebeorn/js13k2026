@@ -434,6 +434,90 @@ export default [
 		],
 	},
 	{
+		name: "wall",
+		nodes: [
+			{
+				shape: "box",
+				collision: true,
+				translate: [0, 0, 0.1],
+				height: 2,
+				a1: 3,
+				b1: 1.5,
+				a2: 3,
+				b2: 1.5,
+				color: COLOR_PEACH,
+			},
+			{
+				shape: "box",
+				collision: true,
+				translate: [3, 0, 0],
+				height: 2,
+				a1: 3,
+				b1: 1.5,
+				a2: 3,
+				b2: 1.5,
+				newObjectIndex: true
+			},
+			{
+				shape: "box",
+				collision: true,
+				translate: [-3, 0, -0.1],
+				height: 2,
+				a1: 3,
+				b1: 1.5,
+				a2: 3,
+				b2: 1.5,
+				newObjectIndex: true
+			},
+			{
+				shape: "box",
+				collision: true,
+				translate: [-1.5, 2, 0.1],
+				height: 2,
+				a1: 3,
+				b1: 1.5,
+				a2: 3,
+				b2: 1.5,
+				newObjectIndex: true
+			},
+			{
+				shape: "box",
+				collision: true,
+				translate: [1.5, 2, 0],
+				height: 2,
+				a1: 3,
+				b1: 1.5,
+				a2: 3,
+				b2: 1.5,
+				newObjectIndex: true
+			}
+		]
+	},
+	{
+		name: "wallEdge",
+		nodes: [
+			{
+				shape: "box",
+				translate: [-1.5/2, 0, -0.1],
+				height: 2,
+				a1: 1.5,
+				color: COLOR_PEACH,
+				collision: true,
+			},
+			{
+				shape: "box",
+				translate: [-1.5, 2, 0.1],
+				height: 2,
+				a1: 3,
+				b1: 1.5,
+				a2: 3,
+				b2: 1.5,
+				collision: true,
+				newObjectIndex: true,
+			}
+		]
+	},
+	{
 		name: "npc1", // * NPC 1
 		nodes: [
 			{

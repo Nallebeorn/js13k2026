@@ -175,7 +175,7 @@ function processMovingState() {
 	if (isGrinding) {
 		vx += dirx * ACCELERATION * deltaTime;
 		vz += diry * ACCELERATION * deltaTime;
-		boostCharge += deltaTime * 2;
+		boostCharge += deltaTime * 4;
 	} else {
 		const [movex, movey] = withLength(
 			[isKeyHeld("KeyD") - isKeyHeld("KeyA"), isKeyHeld("KeyS") - isKeyHeld("KeyW")],
@@ -365,7 +365,7 @@ function getAnimation(): Partial<SlotTransforms> {
 	if (!grounded && boostCharge > BOOST_DELAY) return boostJumpAnimation();
 	if (vy > 0) return jumpAnimation();
 	if (vy < 0) return fallAnimation();
-	if ((vx || vz) && !transitionProgress) return runAnimation();
+	if ((vx || vz) && !shardCollectTimer) return runAnimation();
 	return idleAnimation();
 }
 

@@ -11,7 +11,7 @@ import { getPlayerPos } from "./player.ts";
 
 export const shards: [pos: Vec3, color: Color][] = [
 	[[-30, 21, -16], COLOR_GREEN],
-	[[30, 21, 120], COLOR_YELLOW],
+	[[23, 55, 100], COLOR_YELLOW],
 ]
 
 export let shardsCollected = 0;

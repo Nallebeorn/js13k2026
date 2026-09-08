@@ -167,7 +167,7 @@ export function serializeObjects(): {
 	}
 
 	writeClouds(true);
-	sections.set("safeClouds", pos);
+	sections.set("safeClouds", pos+1);
 	writeClouds(false);
 	sections.set("clouds", pos);
 

@@ -1,7 +1,7 @@
 	import { repeat } from "../core/util.ts";
 import { COLOR_GREEN, COLOR_RED } from "./colors.ts";
 import { CLOOD, CLOUD, NPC, offset, type LevelDescriptor } from "./levelSchema.ts";
-import { obj_pillar10, obj_pillar5, obj_unitSphere, obj_cube2x2x1, obj_npc1, obj_pillar16, obj_box3x3 } from "./objects.gen.ts";
+import { obj_pillar10, obj_pillar5, obj_unitSphere, obj_cube2x2x1, obj_npc1, obj_pillar16, obj_box3x3, obj_wall, obj_wallEdge } from "./objects.gen.ts";
 
 export default [
 	// * Starting area
@@ -48,7 +48,7 @@ export default [
 	[CLOOD, 12, [-49, -13], [3, 3]],
 	[obj_pillar16, [-41, 12, -13]],
 	[CLOOD, 12, [-41, -13], [3, 3]],
-	[CLOOD, 20, [-30, -16], [8, 8], true], // shard is on this cloud
+	[CLOOD, 20, [-30, -16], [8, 8], true], // green shard
 	[NPC, obj_npc1, [-28, 20, -19], 135, "See that wasn't so hard, you found the first shard!"],
 
 	// * Path to 1A
@@ -56,18 +56,28 @@ export default [
 	[obj_box3x3, [55, 0, -8], , COLOR_GREEN],
 	[obj_box3x3, [55.2, 3, -7.5], , COLOR_GREEN],
 
-	[CLOOD, 6, [80, 30], [8, 8]],
+	[CLOOD, 6, [80, 30], [8, 8], true],
 	[obj_box3x3, [82, 6, 32], , COLOR_GREEN],
 
 	[CLOOD, 0, [80, 80], [3, 3]],
 	[obj_pillar16, [80, 0, 80], , COLOR_GREEN],
 
 	[CLOUD, 16, [5, 100], [45, 140], true],
-	[obj_pillar10, [30, 16, 105], , COLOR_GREEN],
-	[obj_pillar10, [40, 16, 115], , COLOR_GREEN],
+	[obj_pillar5, [35, 16, 102], , COLOR_GREEN], // R
+	[obj_pillar5, [43, 16, 110], , COLOR_GREEN], // L
 	[NPC, obj_npc1, [28, 16, 118], -45, "It's a work in progress! Try coming back later!"],
-	[NPC, obj_npc1, [30, 16, 135], 0, "We used to kiss every day.\\nNow the rainbow is gone, we're all out of gay!"], // gays
-	[NPC, obj_npc1, [32, 16, 135], 0, "We used to kiss every day.\\nNow the rainbow is gone, we're all out of gay!"], // gays
+	[NPC, obj_npc1, [10, 16, 120], -45, "We used to kiss every day.\\nNow the rainbow is gone, we're all out of gay!"], // gays
+	[NPC, obj_npc1, [10.5, 16, 122], -45, "We used to kiss every day.\\nNow the rainbow is gone, we're all out of gay!"], // gays
+	...repeat(8).flatMap(y => [
+		[obj_wall, [20, 16 + y * 4, 140]],
+		[obj_wall, [26, 16 + y * 4, 140]],
+		[obj_wallEdge, [32, 16 + y * 4, 140],],
+		[obj_wallEdge, [14, 16 + y * 4, 140], [0, 180, 0]],
+	] satisfies LevelDescriptor),
+	[CLOOD, 35, [23, 126], [9, 9], true],
+	[CLOOD, 35, [23, 100], [9, 15], true],
+	[CLOOD, 35, [23, 70], [9, 25], true],
+	[CLOOD, 55, [23, 100], [9, 9], true], // yellow shard
 
 
 	// * Old test level
