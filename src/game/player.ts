@@ -1,7 +1,7 @@
 import { rotateTowards, withLength, IDENTITY, add, type Vec3, normalize, length, sub, dot, clamp, spring, lerp, angleFromDirection } from "../core/math.ts";
 import { currentTime, deltaTime } from "../core/time.ts";
 import { DEBUG, debugWatch } from "../debug.ts";
-import { COLOR_OUTLINE, COLOR_RAINBOW } from "../gamedata/colors.ts";
+import { COLOR_CONSUMABLE_BLUE, COLOR_CONSUMABLE_CYAN, COLOR_CONSUMABLE_GREEN, COLOR_CONSUMABLE_ORANGE, COLOR_CONSUMABLE_RED, COLOR_CONSUMABLE_VIOLET, COLOR_CONSUMABLE_YELLOW, COLOR_OUTLINE, COLOR_RAINBOW, COLOR_RED, COLOR_VIOLET, colors, unlockedColors } from "../gamedata/colors.ts";
 import {
 	obj_unicorn,
 	obj_unicorn_neckSlot,
@@ -76,6 +76,7 @@ let isGrinding = false;
 let grindStart: Vec3;
 let grindLength: number;
 let grindUses = 0;
+let completedGrindUses = 0;
 
 export function getPlayerPos(): Vec3 {
 	return [x, y, z];
@@ -111,6 +112,18 @@ export function processPlayer() {
 	const t0 = performance.now();
 	if (state == PlayerState.MOVING) processMovingState();
 	if (state == PlayerState.WALL_LODGE) processWallLodgedState();
+
+	if (!isGrinding) {
+		completedGrindUses = grindUses;
+	}
+
+	let spentColors = 0;
+	for (let c = COLOR_RED; c <= COLOR_VIOLET; c++) {
+		const available = !!unlockedColors[c] && ++spentColors > completedGrindUses;
+		for (let i = 0; i < 3; i++) {
+			colors[c * 4 + 17 * 4 + i] = +available && colors[c * 4 + i]!;
+		}
+	}
 
 	// debugWatch("vx", vx.toFixed(3));
 	// debugWatch("vz", vz.toFixed(3));
