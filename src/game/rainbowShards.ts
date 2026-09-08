@@ -1,5 +1,5 @@
-import { IDENTITY, length, sub, type Vec3 } from "../core/math.ts";
-import { currentTime } from "../core/time.ts";
+import { clamp, easeInBack, IDENTITY, length, sub, type Vec3 } from "../core/math.ts";
+import { currentTime, deltaTime } from "../core/time.ts";
 import { DEBUG } from "../debug.ts";
 import { COLOR_GREEN, COLOR_YELLOW, unlockColor, type Color } from "../gamedata/colors.ts";
 import { wasKeyJustPressed } from "../input/input.ts";
@@ -16,15 +16,24 @@ export const shards: [pos: Vec3, color: Color][] = [
 
 export let shardsCollected = 0;
 
+let collectingShard = -1;
+let shardCollectTimer = 0;
+
 export function processRainbowShards() {
-	for (let i = shards.length - 1; i >= 0; i--) {
+	for (let i = 0; i < shards.length; i++) {
+		const scale = 0.75 * (1 - (+(collectingShard == i) && easeInBack(Math.min(1, shardCollectTimer += deltaTime * .8))));
 		drawMesh(
 			rainbowMesh,
 			shards[i]![1] + 10,
-			IDENTITY
-				.translate(...shards[i]![0])
-				.rotate(-90, currentTime * 360, 0)
-				.translate(0, 3, Math.sin(currentTime * 3)),
+			IDENTITY.translate(...shards[i]![0])
+				.scale(scale, scale, scale)
+				.rotate(-90, currentTime * (collectingShard == i ? 1200 : 360), 0)
+				.translate(
+					0,
+					3,
+					Math.sin(currentTime * 3)
+					+ shardCollectTimer * 7,
+				),
 			7,
 			1,
 		);
@@ -32,13 +41,19 @@ export function processRainbowShards() {
 		if (
 			(length(sub(shards[i]![0], getPlayerPos())) < 3 ||
 				(DEBUG && wasKeyJustPressed(`Digit${i + 1}` as KeyCode))) &&
-			!transitionProgress
+			collectingShard < 0
 		) {
-			doScreenWipe(shards[i]![1]+10, () => {
-				unlockColor(shards[i]![1]);
-				shardsCollected++;
-				shards.splice(i, 1);
-			});
+			collectingShard = i;
 		}
+	}
+
+	if (shardCollectTimer > 1 && !transitionProgress) {
+		doScreenWipe(shards[collectingShard]![1] + 10, () => {
+			unlockColor(shards[collectingShard]![1]);
+			shardsCollected++;
+			shards.splice(collectingShard, 1);
+			collectingShard = -1;
+			shardCollectTimer = 0;
+		});
 	}
 }

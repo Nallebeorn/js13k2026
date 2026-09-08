@@ -31,6 +31,13 @@ export function spring(current: number, currentSpeed: number): number {
 	return lerp(currentSpeed, -current * 5, 0.2);
 }
 
+export function easeInBack(x: number): number {
+	const c1 = 1.8;
+	const c3 = c1 + 1;
+
+	return c3 * x * x * x - c1 * x * x;
+}
+
 export type Vec2 = [number, number];
 export type Vec3 = [number, number, number];
 export type Vec4 = [number, number, number, number];

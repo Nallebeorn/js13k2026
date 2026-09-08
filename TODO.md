@@ -1,13 +1,17 @@
 # TODO
 * Make boost state clear when grinding
 * Delayed rainbow grinder creation
-* Shard collection effect
+* Speedrun timerssd
+* Grinding particle FX
+* Boost gallop VFX
+* Shard collection particle FX
 * Separate meta-object and intra-object indices. Use to discard depth outlines
   and surface outlines at a distance
 * More precise horn collision
 * Drop shadow or equivalent
 * Coyote jump
 * NPC collision? (dynamic solid colliders)
+* ~Shard collection effect~
 * ~Remove colors from unicorn when using up grinds~
 * ~Don't freeze player during death wipe~
 * ~Allow selectively marking clouds as safe/unsafe (or remove unsafe clouds from level)~
