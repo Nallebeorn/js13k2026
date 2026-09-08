@@ -21,7 +21,7 @@ const fpsValues: number[] = [];
 const frameTimeValues: number[] = [];
 let framesRendered = 0;
 
-deserializeBinaryGameData(await (await fetch("b?" + +new Date)).bytes());
+deserializeBinaryGameData(await (await fetch("b?" + +new Date)).arrayBuffer());
 initializeVertexArrayBuffer();
 
 requestAnimationFrame(onAnimationFrame);

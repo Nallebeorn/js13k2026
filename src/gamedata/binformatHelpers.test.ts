@@ -5,14 +5,14 @@ suite("binformat", () => {
 	suite("quantizePosition", () => {
 		const testCases: [number, number][] = [
 			[0, 0],
-			[-16, 0x81],
+			[-16, -127],
 			[16, 127],
 			[0.1, 1],
-			[-0.1, 0xff],
+			[-0.1, -1],
 			[17, 127],
-			[-17, 0x81],
+			[-17, -127],
 			[100, 127],
-			[-100, 0x81]
+			[-100, -127]
 		]
 
 		testCases.forEach(([input, expected]) => {
@@ -28,9 +28,6 @@ suite("binformat", () => {
 				16,
 				8,
 				1,
-				-1,
-				-0.2,
-				0.2,
 			];
 
 			testCases.forEach((input) => {

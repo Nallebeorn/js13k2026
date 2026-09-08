@@ -31,21 +31,22 @@ import { objectsBank } from "./gamedata.ts";
 import type { RenderObjectHandle } from "./objects.gen.ts";
 import { section_cloudsEnd, section_levelObjectsEnd, section_npcsEnd, section_objectBankEnd, section_paletteEnd } from "./sections.gen.ts";
 
-export function deserializeBinaryGameData(bytes: Uint8Array) {
+export function deserializeBinaryGameData(buffer: ArrayBuffer) {
+	const dv = new DataView(buffer);
 	let pos = 0;
 
 	// * Read palette
 	while (pos < section_paletteEnd) {
-		colors.push(bytes[pos++]! / 0xff);
-		colors.push(bytes[pos++]! / 0xff);
-		colors.push(bytes[pos++]! / 0xff);
+		colors.push(dv.getUint8(pos++) / 0xff);
+		colors.push(dv.getUint8(pos++) / 0xff);
+		colors.push(dv.getUint8(pos++) / 0xff);
 		colors.push(1);
 	}
 
 	// * Read objects
 	let obj!: DrawCommand[];
 	while (pos < section_objectBankEnd) {
-		const header = bytes[pos++]!;
+		const header = dv.getUint8(pos++);
 
 		const type = header & NODE_TYPE_MASK;
 
@@ -64,14 +65,14 @@ export function deserializeBinaryGameData(bytes: Uint8Array) {
 				obj.push({
 					pushTransform: {
 						translation: (header & TRANSFORM_FLAGS_TRANSLATE) && [
-							dequantizePosition(bytes[pos++]!),
-							dequantizePosition(bytes[pos++]!),
-							dequantizePosition(bytes[pos++]!)
+							dequantizePosition(dv.getInt8(pos++)),
+							dequantizePosition(dv.getInt8(pos++)),
+							dequantizePosition(dv.getInt8(pos++))
 						],
 						euler: (header & TRANSFORM_FLAGS_ROTATE) && [
-							dequantizeAngle(bytes[pos++]!),
-							dequantizeAngle(bytes[pos++]!),
-							dequantizeAngle(bytes[pos++]!),
+							dequantizeAngle(dv.getUint8(pos++)),
+							dequantizeAngle(dv.getUint8(pos++)),
+							dequantizeAngle(dv.getUint8(pos++)),
 						]
 					}
 				});
@@ -80,11 +81,11 @@ export function deserializeBinaryGameData(bytes: Uint8Array) {
 
 		if (type == NODE_TYPE_SHAPE) {
 			if ((header & SHAPE_TYPE_MASK) == SHAPE_TYPE_BOX) {
-				const a1 = dequantizeSize(bytes[pos++]!)
-				const b1 = dequantizeSize(bytes[pos++]!)
-				const h = dequantizeSize(bytes[pos++]!)
-				const a2 = dequantizeSize(bytes[pos++]!)
-				const b2 = dequantizeSize(bytes[pos++]!)
+				const a1 = dequantizeSize(dv.getUint8(pos++))
+				const b1 = dequantizeSize(dv.getUint8(pos++))
+				const h = dequantizeSize(dv.getUint8(pos++))
+				const a2 = dequantizeSize(dv.getUint8(pos++))
+				const b2 = dequantizeSize(dv.getUint8(pos++))
 
 				obj.push({
 					drawShape: (header & SHAPE_FLAGS_VISIBLE) && addVertexData(createBox(a1, b1, h, a2, b2)),
@@ -95,9 +96,9 @@ export function deserializeBinaryGameData(bytes: Uint8Array) {
 					} satisfies BoxCollider
 				});
 			} else { // SHAPE_TYPE_PILL
-				const r1 = dequantizeSize(bytes[pos++]!);
-				const r2 = dequantizeSize(bytes[pos++]!);
-				const h = dequantizeSize(bytes[pos++]!);
+				const r1 = dequantizeSize(dv.getUint8(pos++));
+				const r2 = dequantizeSize(dv.getUint8(pos++));
+				const h = dequantizeSize(dv.getUint8(pos++));
 
 				obj.push({
 					drawShape: (header & SHAPE_FLAGS_VISIBLE) && addVertexData(createPill(r1, r2, h)),
@@ -115,11 +116,11 @@ export function deserializeBinaryGameData(bytes: Uint8Array) {
 	// * Read clouds
 	let seed = 0;
 	while (pos < section_cloudsEnd) {
-		const y = dequantizeBigPosition(bytes[pos++]!, bytes[pos++]!);
-		const xmin = dequantizeBigPosition(bytes[pos++]!, bytes[pos++]!);
-		const zmin = dequantizeBigPosition(bytes[pos++]!, bytes[pos++]!);
-		const xmax = dequantizeBigPosition(bytes[pos++]!, bytes[pos++]!);
-		const zmax = dequantizeBigPosition(bytes[pos++]!, bytes[pos++]!);
+		const y = dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1)));
+		const xmin = dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1)));
+		const zmin = dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1)));
+		const xmax = dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1)));
+		const zmax = dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1)));
 
 		for (let z = zmin; z <= zmax; z += 0.75) {
 			for (let x = xmin; x <= xmax; x += 0.75) {
@@ -152,37 +153,37 @@ export function deserializeBinaryGameData(bytes: Uint8Array) {
 	let npcIndex = 0;
 	while (pos < section_npcsEnd) {
 		npcs.push({
-			obj: bytes[pos++]! as RenderObjectHandle,
+			obj: dv.getUint8(pos++) as RenderObjectHandle,
 			pos: [
-				dequantizeBigPosition(bytes[pos++]!, bytes[pos++]!),
-				dequantizeBigPosition(bytes[pos++]!, bytes[pos++]!),
-				dequantizeBigPosition(bytes[pos++]!, bytes[pos++]!),
+				dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1))),
+				dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1))),
+				dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1))),
 			],
-			angle: dequantizeAngle(bytes[pos++]!),
+			angle: dequantizeAngle(dv.getUint8(pos++)),
 			dialogue: dialogue[npcIndex++]!,
-			minShards: (bytes[pos++]! << 24) >> 24,
+			minShards: dv.getInt8(pos++),
 		})
 	}
 
 	// * Read level objects
 	while (pos < section_levelObjectsEnd) {
 		drawObject(
-			bytes[pos++]! as RenderObjectHandle,
+			dv.getUint8(pos++) as RenderObjectHandle,
 			{
 				_: {
 					translation: [
-						dequantizeBigPosition(bytes[pos++]!, bytes[pos++]!),
-						dequantizeBigPosition(bytes[pos++]!, bytes[pos++]!),
-						dequantizeBigPosition(bytes[pos++]!, bytes[pos++]!),
+						dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1))),
+						dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1))),
+						dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1))),
 					],
 					euler: [
-						dequantizeAngle(bytes[pos++]!),
-						dequantizeAngle(bytes[pos++]!),
-						dequantizeAngle(bytes[pos++]!),
+						dequantizeAngle(dv.getUint8(pos++)),
+						dequantizeAngle(dv.getUint8(pos++)),
+						dequantizeAngle(dv.getUint8(pos++)),
 					],
 				}
 			},
-			bytes[pos++]! || undefined,
+			dv.getUint8(pos++) || undefined,
 			true
 		);
 	}
