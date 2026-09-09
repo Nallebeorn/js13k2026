@@ -1,7 +1,7 @@
 	import { repeat } from "../core/util.ts";
-import { COLOR_GREEN, COLOR_RED } from "./colors.ts";
-import { CLOOD, CLOUD, NPC, offset, type LevelDescriptor } from "./levelSchema.ts";
-import { obj_pillar10, obj_pillar5, obj_unitSphere, obj_cube2x2x1, obj_npc1, obj_pillar16, obj_box3x3, obj_wall, obj_wallEdge } from "./objects.gen.ts";
+import { COLOR_CYAN, COLOR_GREEN, COLOR_RED, COLOR_YELLOW } from "./colors.ts";
+import { CLOOD, CLOUD, NPC, offset, SHARD, type LevelDescriptor } from "./levelSchema.ts";
+import { obj_pillar10, obj_pillar5, obj_unitSphere, obj_cube2x2x1, obj_npc1, obj_pillar16, obj_box3x3, obj_wall, obj_wallEdge, obj_balloon } from "./objects.gen.ts";
 
 export default [
 	// * Starting area
@@ -26,7 +26,7 @@ export default [
 	[obj_box3x3, [15, 0, -12]],
 	[NPC, obj_npc1, [15, 3, -12], 135, "Every shard collected increases your flair.\\nTry pressing JUMP in mid-air!", 1],
 
-	// * First shard (0)
+	// * Shard 1
 	[CLOOD, 0, [0, 32], [5, 8]],
 	[CLOOD, 4, [11, 32], [8, 5]],
 	[CLOOD, 8, [5, 42], [15, 5], true],
@@ -48,10 +48,12 @@ export default [
 	[CLOOD, 12, [-49, -13], [3, 3]],
 	[obj_pillar16, [-41, 12, -13]],
 	[CLOOD, 12, [-41, -13], [3, 3]],
-	[CLOOD, 20, [-30, -16], [8, 8], true], // green shard
+
+	[CLOOD, 20, [-30, -16], [8, 8], true],
+	[SHARD, COLOR_GREEN, [-30, 21, -16]],
 	[NPC, obj_npc1, [-28, 20, -19], 135, "See that wasn't so hard, you found the first shard!"],
 
-	// * Path to 1A
+	// * Path to shard 2
 	[CLOUD, 0, [40, -10], [60, 0]],
 	[obj_box3x3, [55, 0, -8], , COLOR_GREEN],
 	[obj_box3x3, [55.2, 3, -7.5], , COLOR_GREEN],
@@ -63,7 +65,7 @@ export default [
 	[CLOOD, 0, [80, 80], [3, 3]],
 	[obj_pillar16, [80, 0, 80], , COLOR_GREEN],
 
-	// * 1A
+	// * Shard 2
 	[CLOUD, 16, [5, 100], [45, 140], true],
 	[obj_pillar5, [35, 16, 102], , COLOR_GREEN], // R
 	[obj_pillar5, [43, 16, 110], , COLOR_GREEN], // L
@@ -79,32 +81,30 @@ export default [
 	[CLOOD, 35, [23, 126], [9, 9], true],
 	[CLOOD, 35, [23, 100], [9, 15], true],
 	[CLOOD, 35, [23, 70], [9, 25], true],
-	[CLOOD, 55, [23, 100], [9, 9], true], // yellow shard
 
+	[CLOOD, 55, [23, 100], [9, 9], true],
+	[SHARD, COLOR_YELLOW, [23, 55, 100]],
 
-	// * Old test level
-	/* ...offset(
-		[-50, 0, 0],
-		[
-			[CLOUD, 0, [-15, -15], [5, 5]],
-			[CLOUD, 0, [-10, 10], [0, 50]],
-			[CLOUD, 0, [-10, -40], [0, -25]],
+	// * Path to shard 3
+	[CLOOD, 35, [20, -15], [12, 6], true],
+	[obj_box3x3, [22, 35, -17], , COLOR_YELLOW],
 
-			[NPC, obj_npc1, [-6, 0, 20], 0, "Hello there!"],
-			[obj_pillar10, [-10, 0, -8]],
-			[obj_pillar5, [-10, 0, -12]],
-			[obj_pillar10, [0, 0, -12], [90, 0, 0]],
-			[obj_pillar10, [-5, 0, -15], [-90, 0, 0]],
-			[obj_unitSphere, [0, 0, 0]],
-			[obj_cube2x2x1, [2, 0, 0]],
-			[obj_cube2x2x1, [2, 1, 0]],
-			[obj_cube2x2x1, [2, 2, 0]],
-			[obj_cube2x2x1, [2, 3, 0]],
-			[obj_cube2x2x1, [2, 4, 0]],
-			[obj_cube2x2x1, [-1, 0, 0]],
-			[obj_cube2x2x1, [-1, 1, 0]],
-			[obj_cube2x2x1, [2, 5, 0]],
-			[obj_cube2x2x1, [2, 6, 0]],
-		],
-	),*/
+	// * Shard 3
+	...repeat(7).flatMap(y => [
+		[obj_wall, [16, 40 + y * 4, -50]],
+		[obj_wall, [22, 40 + y * 4, -50]],
+		[obj_wallEdge, [28, 40 + y * 4, -50],],
+		[obj_wallEdge, [10, 40 + y * 4, -50], [0, 180, 0]],
+	] satisfies LevelDescriptor),
+
+	[CLOOD, 60, [60, -45], [10, 10], true],
+
+	[obj_pillar10, [60, 70, -10], , COLOR_YELLOW],
+	[obj_pillar16, [60, 80, 30], , COLOR_CYAN],
+	[CLOOD, 100, [60, 50], [7, 7], true],
+	[SHARD, COLOR_CYAN, [60, 100, 50]],
+
+	// * Test
+	[obj_balloon, [10, 40, 125]],
+
 ] satisfies LevelDescriptor;

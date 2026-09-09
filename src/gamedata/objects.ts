@@ -438,7 +438,16 @@ export default [
 		nodes: [
 			{
 				shape: "box",
+				height: 4,
+				a1: 6,
+				b1: 2,
+				a2: 6,
+				b2: 2,
 				collision: true,
+				visible: false,
+			},
+			{
+				shape: "box",
 				translate: [0, 0, 0.1],
 				height: 2,
 				a1: 3,
@@ -449,7 +458,6 @@ export default [
 			},
 			{
 				shape: "box",
-				collision: true,
 				translate: [3, 0, 0],
 				height: 2,
 				a1: 3,
@@ -460,7 +468,6 @@ export default [
 			},
 			{
 				shape: "box",
-				collision: true,
 				translate: [-3, 0, -0.1],
 				height: 2,
 				a1: 3,
@@ -471,7 +478,6 @@ export default [
 			},
 			{
 				shape: "box",
-				collision: true,
 				translate: [-1.5, 2, 0.1],
 				height: 2,
 				a1: 3,
@@ -482,7 +488,6 @@ export default [
 			},
 			{
 				shape: "box",
-				collision: true,
 				translate: [1.5, 2, 0],
 				height: 2,
 				a1: 3,
@@ -619,6 +624,74 @@ export default [
 				} satisfies ObjectNode,
 			]),
 		],
+	},
+	{
+		name: "balloon",
+		nodes: [
+			{
+				shape: "pill",
+				slotName: "balloon",
+				color: COLOR_PINK,
+				bottomRadius: 1.75,
+				topRadius: 2.5,
+				height: 1.0,
+			},
+			{
+				shape: "box",
+				translate: [0, -3, 0],
+				a1: 0.75,
+				color: COLOR_PEACH,
+			},
+			{
+				shape: "pill",
+				translate: [0, -2.25, 0],
+				bottomRadius: 0.1,
+				height: 0.1,
+			},
+			{
+				shape: "pill",
+			translate: [0, -2, -0.1],
+				bottomRadius: 0.05,
+			},
+			{
+				shape: "pill",
+				translate: [0, -2, 0.1],
+				bottomRadius: 0.05,
+			},
+			{
+				shape: "pill",
+				translate: [0.1, -2.125, 0],
+				bottomRadius: 0.05,
+				color: COLOR_PINK,
+			},
+			{
+				color: COLOR_OUTLINE,
+			},
+			{
+				shape: "pill",
+				translate: [-.75/2, -2.25, -.75/2],
+				bottomRadius: 0.05,
+				height: 3,
+			},
+			{
+				shape: "pill",
+				translate: [-.75/2, -2.25, .75/2],
+				bottomRadius: 0.05,
+				height: 3,
+			},
+			{
+				shape: "pill",
+				translate: [.75/2, -2.25, -.75/2],
+				bottomRadius: 0.05,
+				height: 3,
+			},
+			{
+				shape: "pill",
+				translate: [.75/2, -2.25, .75/2],
+				bottomRadius: 0.05,
+				height: 3,
+			},
+		]
 	},
 	{ // * box
 		name: "box3x3",

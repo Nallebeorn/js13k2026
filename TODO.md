@@ -5,7 +5,10 @@
 * Replace first drill jump pillars with wall
 * Spikes or similar to make top of walls unwalkable?
 	* Could perhaps be merged with the bounce balloons?
+* Shards that run away
 * Speedrun timers
+* Bend rainbow sideways (for visibility)
+* Don't save when touching clouds when not standing on them
 * Grinding particle FX
 * Boost gallop VFX
 * Shard collection particle FX
@@ -14,7 +17,13 @@
 * More precise horn collision
 * Drop shadow or equivalent
 * Coyote jump
+* Gamepad input
+* Arrow keys as alternative to WASD
+* Put shard positions in level data
 * NPC collision? (dynamic solid colliders)
+* New color for boxes and walls
+* Sun
+* 
 * ~Shard collection effect~
 * ~Remove colors from unicorn when using up grinds~
 * ~Don't freeze player during death wipe~
@@ -35,3 +44,6 @@
 
 * Pre hardcoded sections: 5KB 299B
 * Post hardcoded sections: 5KB 278B
+
+* Pre-shards in level data: 7KB 28B
+* Post-shards in level data: 7KB 28B :D

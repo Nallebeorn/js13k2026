@@ -5,12 +5,14 @@ import type { RenderObjectHandle } from "./objects.gen.ts";
 export const CLOUD = "cloud";
 export const CLOOD = "cloudCentred";
 export const NPC = "npc";
+export const SHARD = "shard";
 type Cloud = [type: typeof CLOUD, y: number, min: Vec2, max: Vec2, safe?: boolean];
 type CloudCentred = [type: typeof CLOOD, y: number, pos: Vec2, size: Vec2, safe?: boolean];
 type Npc = [type: typeof NPC, obj: RenderObjectHandle, pos: Vec3, angle: number, say: string, minShards?: number];
+type Shard = [type: typeof SHARD, color: Color, pos: Vec3];
 type LevelObject = [type: RenderObjectHandle, pos: Vec3, euler?: Vec3, color?: Color];
 
-type LevelNode = Cloud | CloudCentred | Npc | LevelObject;
+type LevelNode = Cloud | CloudCentred | Npc | Shard | LevelObject;
 
 export type LevelDescriptor = LevelNode[];
 
@@ -24,7 +26,7 @@ export function offset(ofs: Vec3, nodes: LevelNode[]) {
 			node[3][1] += ofs[2];
 		} else if (node[0] == NPC) {
 			node[2] = add(node[2], ofs);
-		} else if (node[0] == CLOOD) {
+		} else if (node[0] == CLOOD || node[0] == SHARD) {
 			throw "Not implemented";
 		} else {
 			node[1] = add(node[1], ofs);

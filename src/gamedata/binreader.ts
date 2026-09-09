@@ -1,6 +1,7 @@
 import { createMatrix, add } from "../core/math.ts";
 import { srandf } from "../core/random.ts";
 import { npcs } from "../game/npcs.ts";
+import { shards } from "../game/rainbowShards.ts";
 import type { BoxCollider, CapsuleCollider } from "../physics/collision.ts";
 import { staticColliders } from "../physics/objectColliders.ts";
 import type { DrawCommand } from "../rendering/drawCommand.ts";
@@ -29,7 +30,7 @@ import { COLOR_WHITE, colors, type Color } from "./colors.ts";
 import { dialogue } from "./dialogue.gen.ts";
 import { objectsBank } from "./gamedata.ts";
 import type { RenderObjectHandle } from "./objects.gen.ts";
-import { section_cloudsEnd, section_levelObjectsEnd, section_npcsEnd, section_objectBankEnd, section_paletteEnd, section_safeCloudsEnd } from "./sections.gen.ts";
+import { section_cloudsEnd, section_levelObjectsEnd, section_npcsEnd, section_objectBankEnd, section_paletteEnd, section_safeCloudsEnd, section_shardsEnd } from "./sections.gen.ts";
 
 export function deserializeBinaryGameData(buffer: ArrayBuffer) {
 	const dv = new DataView(buffer);
@@ -163,6 +164,18 @@ export function deserializeBinaryGameData(buffer: ArrayBuffer) {
 			dialogue: dialogue[npcIndex++]!,
 			minShards: dv.getInt8(pos++),
 		})
+	}
+
+	// * Read shards
+	while (pos < section_shardsEnd) {
+		shards.push([
+			dv.getUint8(pos++),
+			[
+				dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1))),
+				dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1))),
+				dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1))),
+			],
+		]);
 	}
 
 	// * Read level objects

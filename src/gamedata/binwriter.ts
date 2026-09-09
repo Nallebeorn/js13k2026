@@ -19,7 +19,7 @@ import {
 	SHAPE_FLAGS_VISIBLE,
 	quantizeBigPosition,
 } from "./binformatHelpers.ts";
-import { CLOOD, CLOUD, NPC } from "./levelSchema.ts";
+import { CLOOD, CLOUD, NPC, SHARD } from "./levelSchema.ts";
 import { COLOR_COUNT, palette } from "./colors.ts";
 
 export function serializeObjects(): {
@@ -191,6 +191,22 @@ export function serializeObjects(): {
 	}
 	sections.set("npcs", pos);
 
+	// * Write shards
+	for (const node of levelData) {
+		if (node[0] === SHARD) {
+			const [, color, translation] = node;
+			dv.setUint8(pos++, color);
+			dv.setInt16(pos++, quantizeBigPosition(translation[0]));
+			pos++;
+			dv.setInt16(pos++, quantizeBigPosition(translation[1]));
+			pos++;
+			dv.setInt16(pos++, quantizeBigPosition(translation[2]));
+			pos++
+		}
+	}
+
+	sections.set("shards", pos);
+
 	// * Write level objects
 	for (const node of levelData) {
 		if (typeof node[0] === "number") {
@@ -210,6 +226,7 @@ export function serializeObjects(): {
 	}
 
 	sections.set("levelObjects", pos);
+
 
 
 	return {
