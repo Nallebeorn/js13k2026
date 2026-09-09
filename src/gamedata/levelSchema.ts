@@ -6,13 +6,15 @@ export const CLOUD = "cloud";
 export const CLOOD = "cloudCentred";
 export const NPC = "npc";
 export const SHARD = "shard";
+export const BALLOON = "balloon";
 type Cloud = [type: typeof CLOUD, y: number, min: Vec2, max: Vec2, safe?: boolean];
 type CloudCentred = [type: typeof CLOOD, y: number, pos: Vec2, size: Vec2, safe?: boolean];
 type Npc = [type: typeof NPC, obj: RenderObjectHandle, pos: Vec3, angle: number, say: string, minShards?: number];
 type Shard = [type: typeof SHARD, color: Color, pos: Vec3];
+type Balloon = [type: typeof BALLOON, pos: Vec3];
 type LevelObject = [type: RenderObjectHandle, pos: Vec3, euler?: Vec3, color?: Color];
 
-type LevelNode = Cloud | CloudCentred | Npc | Shard | LevelObject;
+type LevelNode = Cloud | CloudCentred | Npc | Shard | Balloon | LevelObject;
 
 export type LevelDescriptor = LevelNode[];
 

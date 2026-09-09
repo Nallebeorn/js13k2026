@@ -1,5 +1,6 @@
 import { createMatrix, add } from "../core/math.ts";
 import { srandf } from "../core/random.ts";
+import { createBalloon } from "../game/balloon.ts";
 import { npcs } from "../game/npcs.ts";
 import { shards } from "../game/rainbowShards.ts";
 import type { BoxCollider, CapsuleCollider } from "../physics/collision.ts";
@@ -30,7 +31,7 @@ import { COLOR_WHITE, colors, type Color } from "./colors.ts";
 import { dialogue } from "./dialogue.gen.ts";
 import { objectsBank } from "./gamedata.ts";
 import type { RenderObjectHandle } from "./objects.gen.ts";
-import { section_cloudsEnd, section_levelObjectsEnd, section_npcsEnd, section_objectBankEnd, section_paletteEnd, section_safeCloudsEnd, section_shardsEnd } from "./sections.gen.ts";
+import { section_balloonsEnd, section_cloudsEnd, section_levelObjectsEnd, section_npcsEnd, section_objectBankEnd, section_paletteEnd, section_safeCloudsEnd, section_shardsEnd } from "./sections.gen.ts";
 
 export function deserializeBinaryGameData(buffer: ArrayBuffer) {
 	const dv = new DataView(buffer);
@@ -175,6 +176,15 @@ export function deserializeBinaryGameData(buffer: ArrayBuffer) {
 				dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1))),
 				dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1))),
 			],
+		]);
+	}
+
+	// * Read balloons
+	while (pos < section_balloonsEnd) {
+		createBalloon([
+			dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1))),
+			dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1))),
+			dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1))),
 		]);
 	}
 

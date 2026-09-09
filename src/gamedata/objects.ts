@@ -625,7 +625,7 @@ export default [
 			]),
 		],
 	},
-	{
+	{ // * balloon
 		name: "balloon",
 		nodes: [
 			{
@@ -635,6 +635,7 @@ export default [
 				bottomRadius: 1.75,
 				topRadius: 2.5,
 				height: 1.0,
+				collision: true,
 			},
 			{
 				shape: "box",

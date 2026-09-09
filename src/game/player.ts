@@ -29,6 +29,7 @@ import { staticColliders } from "../physics/objectColliders.ts";
 import { cameraTransform, drawMesh, drawObject, ROOT_SLOT, updateCameraTransform, type SlotTransforms } from "../rendering/renderer.ts";
 import { doScreenWipe, transitionProgress } from "../rendering/screenTransition.ts";
 import { rainbowMesh } from "../rendering/vertexData.ts";
+import { bounce } from "./balloon.ts";
 import { shardCollectTimer, shardsCollected } from "./rainbowShards.ts";
 
 const SPEED = 20;
@@ -277,15 +278,22 @@ function processMovingState() {
 		y += Math.min(yMovement, MAX_STEP) * Math.sign(vy);
 		yMovement -= MAX_STEP;
 
-		for (const { depenetration, safePoint } of enumerateCollisions()) {
-			if (safePoint) {
-				respawnPoint = safePoint;
-			}
+		for (const { depenetration, safePoint, balloon } of enumerateCollisions()) {
 			y += depenetration[1];
 			if (Math.abs(normalize(depenetration)[1]) > 0.5) {
 				vy += depenetration[1] / deltaTime;
-				grounded = true;
-				grindUses = 0;
+				if (depenetration[1] > 0) {
+					grounded = true;
+					grindUses = 0;
+					if (safePoint) {
+						respawnPoint = safePoint;
+					}
+					if (balloon) {
+						vy = JUMP_SPEED;
+						grounded = false;
+						bounce(balloon);
+					}
+				}
 			}
 		}
 	}

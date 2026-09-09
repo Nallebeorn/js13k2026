@@ -6,11 +6,13 @@ import { rainbowMesh } from "../rendering/vertexData.ts";
 import { processNpcs } from "./npcs.ts";
 import { processRainbowShards } from "./rainbowShards.ts";
 import { processScreenTransition } from "../rendering/screenTransition.ts";
+import { processBalloons } from "./balloon.ts";
 
 export function processFrame() {
 	processScreenTransition();
 	processNpcs();
 	processRainbowShards();
+	processBalloons();
 	processPlayer();
 
 	/* drawMesh(

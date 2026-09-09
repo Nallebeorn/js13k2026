@@ -10,6 +10,7 @@ export interface CapsuleCollider {
 	pos: Vec3,
 	vector: Vec3,
 	r: number,
+	balloon?: number,
 }
 
 export interface BoxCollider {
@@ -20,7 +21,7 @@ export interface BoxCollider {
 
 export function translateCollider<T extends Collider>(collider: T, pos: Vec3): T {
 	return "r" in collider
-		? ({ pos: add(collider.pos, pos), r: collider.r, vector: collider.vector } as T)
+		? ({ pos: add(collider.pos, pos), ...collider } as T)
 		: ({ min: add(collider.min, pos), max: add(collider.max, pos) } as T);
 }
 
@@ -51,12 +52,14 @@ export interface Collision {
 	depth: number,
 	depenetration: 0 | Vec3,
 	safePoint?: 0 | Vec3,
+	balloon?: number,
 }
 
 export interface ConfirmedCollision {
 	depth: number,
 	depenetration: Vec3,
 	safePoint?: 0 | Vec3,
+	balloon?: number,
 }
 
 export function penetrateSphereGeneric(pos: Vec3, r: number, b: Collider) {
@@ -81,7 +84,8 @@ export function penetrateSphereCapsule(a: SphereCollider, b: CapsuleCollider) {
 	return {
 		projected: pos,
 		depth,
-		depenetration: depth && withLength(delta, depth)
+		depenetration: depth && withLength(delta, depth),
+		balloon: b.balloon
 	};
 }
 

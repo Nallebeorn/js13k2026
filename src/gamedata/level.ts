@@ -1,6 +1,6 @@
 	import { repeat } from "../core/util.ts";
 import { COLOR_CYAN, COLOR_GREEN, COLOR_RED, COLOR_YELLOW } from "./colors.ts";
-import { CLOOD, CLOUD, NPC, offset, SHARD, type LevelDescriptor } from "./levelSchema.ts";
+import { BALLOON, CLOOD, CLOUD, NPC, offset, SHARD, type LevelDescriptor } from "./levelSchema.ts";
 import { obj_pillar10, obj_pillar5, obj_unitSphere, obj_cube2x2x1, obj_npc1, obj_pillar16, obj_box3x3, obj_wall, obj_wallEdge, obj_balloon } from "./objects.gen.ts";
 
 export default [
@@ -105,6 +105,7 @@ export default [
 	[SHARD, COLOR_CYAN, [60, 100, 50]],
 
 	// * Test
-	[obj_balloon, [10, 40, 125]],
+	// [obj_balloon, [10, 40, 125]],
+	[BALLOON, [10, 20, 125]],
 
 ] satisfies LevelDescriptor;

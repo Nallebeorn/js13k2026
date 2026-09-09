@@ -55,6 +55,7 @@ export interface Transform {
 	translation?: Vec3 | 0 | undefined,
 	euler?: Vec3 | 0 | undefined,
 	scale?: number,
+	yscale?: number | undefined,
 }
 
 export function add<T extends AnyVec>(lhs: T, rhs: NoInfer<T>): T {
@@ -128,6 +129,7 @@ export function createMatrix(transform?: Transform): DOMMatrix {
 	if (transform?.translation) matrix = matrix.translate(...transform.translation);
 	if (transform?.euler) matrix = matrix.rotate(...transform.euler);
 	if (transform?.scale) matrix = matrix.scale(transform.scale, transform.scale, transform.scale);
+	if (transform?.yscale) matrix = matrix.scale(1, transform.yscale, 1);
 	return matrix;
 }
 

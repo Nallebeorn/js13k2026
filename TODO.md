@@ -8,7 +8,6 @@
 * Shards that run away
 * Speedrun timers
 * Bend rainbow sideways (for visibility)
-* Don't save when touching clouds when not standing on them
 * Grinding particle FX
 * Boost gallop VFX
 * Shard collection particle FX
@@ -24,6 +23,7 @@
 * New color for boxes and walls
 * Sun
 * 
+* ~Don't save when touching clouds when not standing on them~
 * ~Shard collection effect~
 * ~Remove colors from unicorn when using up grinds~
 * ~Don't freeze player during death wipe~

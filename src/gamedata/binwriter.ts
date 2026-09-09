@@ -19,7 +19,7 @@ import {
 	SHAPE_FLAGS_VISIBLE,
 	quantizeBigPosition,
 } from "./binformatHelpers.ts";
-import { CLOOD, CLOUD, NPC, SHARD } from "./levelSchema.ts";
+import { BALLOON, CLOOD, CLOUD, NPC, SHARD } from "./levelSchema.ts";
 import { COLOR_COUNT, palette } from "./colors.ts";
 
 export function serializeObjects(): {
@@ -206,6 +206,21 @@ export function serializeObjects(): {
 	}
 
 	sections.set("shards", pos);
+
+	// * Write balloons
+	for (const node of levelData) {
+		if (node[0] === BALLOON) {
+			const translation = node[1];
+			dv.setInt16(pos++, quantizeBigPosition(translation[0]));
+			pos++;
+			dv.setInt16(pos++, quantizeBigPosition(translation[1]));
+			pos++;
+			dv.setInt16(pos++, quantizeBigPosition(translation[2]));
+			pos++
+		}
+	}
+
+	sections.set("balloons", pos);
 
 	// * Write level objects
 	for (const node of levelData) {
