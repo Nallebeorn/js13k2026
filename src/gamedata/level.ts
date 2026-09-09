@@ -66,17 +66,17 @@ export default [
 	[obj_pillar16, [80, 0, 80], , COLOR_GREEN],
 
 	// * Shard 2
-	[CLOUD, 16, [5, 100], [45, 140], true],
-	[obj_pillar5, [35, 16, 102], , COLOR_GREEN], // R
-	[obj_pillar5, [43, 16, 110], , COLOR_GREEN], // L
-	[NPC, obj_npc1, [28, 16, 118], -45, "It's a work in progress! Try coming back later!"],
+	[CLOUD, 16, [5, 90], [45, 130], true],
+	[obj_pillar5, [35, 16, 92], , COLOR_GREEN], // R
+	[obj_pillar5, [43, 16, 100], , COLOR_GREEN], // L
+	// [NPC, obj_npc1, [28, 16, 118], -45, "It's a work in progress! Try coming back later!"],
 	[NPC, obj_npc1, [10, 16, 120], -45, "We used to kiss every day.\\nNow the rainbow is gone, we're all out of gay!"], // gays
 	[NPC, obj_npc1, [10.5, 16, 122], -45, "We used to kiss every day.\\nNow the rainbow is gone, we're all out of gay!"], // gays
-	...repeat(8).flatMap(y => [
-		[obj_wall, [20, 16 + y * 4, 140]],
-		[obj_wall, [26, 16 + y * 4, 140]],
-		[obj_wallEdge, [32, 16 + y * 4, 140],],
-		[obj_wallEdge, [14, 16 + y * 4, 140], [0, 180, 0]],
+	...repeat(7).flatMap(y => [
+		[obj_wall, [20, 20 + y * 4, 140]],
+		[obj_wall, [26, 20 + y * 4, 140]],
+		[obj_wallEdge, [32, 20 + y * 4, 140],],
+		[obj_wallEdge, [14, 20 + y * 4, 140], [0, 180, 0]],
 	] satisfies LevelDescriptor),
 	[BALLOON, [15, 51, 140]],
 	[BALLOON, [20, 51, 140]],
@@ -86,6 +86,8 @@ export default [
 	[CLOOD, 35, [23, 126], [9, 9], true],
 	[CLOOD, 35, [23, 100], [9, 15], true],
 	[CLOOD, 35, [23, 70], [9, 25], true],
+	[obj_box3x3, [24, 35, 60], , COLOR_YELLOW],
+	[NPC, obj_npc1, [24, 38, 60], 180, "With your new yellow flair you can\\npress JUMP even more times in the air!", 2],
 
 	[CLOOD, 55, [23, 100], [9, 9], true],
 	[SHARD, COLOR_YELLOW, [23, 55, 100]],
@@ -101,12 +103,19 @@ export default [
 		[obj_wallEdge, [28, 40 + y * 4, -50],],
 		[obj_wallEdge, [10, 40 + y * 4, -50], [0, 180, 0]],
 	] satisfies LevelDescriptor),
+	[CLOUD, 40, [10, -51], [28, -49]],
 
 	[CLOOD, 60, [60, -45], [10, 10], true],
 
 	[obj_pillar10, [60, 70, -10], , COLOR_YELLOW],
+	[BALLOON, [60, 84, -10]],
 	[obj_pillar16, [60, 80, 30], , COLOR_CYAN],
-	[CLOOD, 100, [60, 50], [7, 7], true],
-	[SHARD, COLOR_CYAN, [60, 100, 50]],
+	[BALLOON, [60, 100, 30]],
+	[BALLOON, [65, 100, 40]],
+	[BALLOON, [55, 90, 50]],
+	[BALLOON, [55, 95, 55]],
+	[CLOOD, 100, [60, 60], [7, 7]],
+	[CLOOD, 100, [60, 90], [7, 7], true],
+	[SHARD, COLOR_CYAN, [60, 100, 90]],
 
 ] satisfies LevelDescriptor;
