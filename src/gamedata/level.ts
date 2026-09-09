@@ -78,6 +78,11 @@ export default [
 		[obj_wallEdge, [32, 16 + y * 4, 140],],
 		[obj_wallEdge, [14, 16 + y * 4, 140], [0, 180, 0]],
 	] satisfies LevelDescriptor),
+	[BALLOON, [15, 51, 140]],
+	[BALLOON, [20, 51, 140]],
+	[BALLOON, [25, 51, 140]],
+	[BALLOON, [30, 51, 140]],
+
 	[CLOOD, 35, [23, 126], [9, 9], true],
 	[CLOOD, 35, [23, 100], [9, 15], true],
 	[CLOOD, 35, [23, 70], [9, 25], true],
@@ -103,9 +108,5 @@ export default [
 	[obj_pillar16, [60, 80, 30], , COLOR_CYAN],
 	[CLOOD, 100, [60, 50], [7, 7], true],
 	[SHARD, COLOR_CYAN, [60, 100, 50]],
-
-	// * Test
-	// [obj_balloon, [10, 40, 125]],
-	[BALLOON, [10, 20, 125]],
 
 ] satisfies LevelDescriptor;

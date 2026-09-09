@@ -17,6 +17,7 @@
 * Drop shadow or equivalent
 * Coyote jump
 * Gamepad input
+* Animate balloons (but only when in air?)
 * Arrow keys as alternative to WASD
 * Put shard positions in level data
 * NPC collision? (dynamic solid colliders)

@@ -45,7 +45,7 @@ export function createPill(
 	topRadius: number,
 	height: number
 ) {
-	const segments = 12;
+	const segments = 24;
 	const capSegments = 6;
 
 	const vertices: number[] = [];

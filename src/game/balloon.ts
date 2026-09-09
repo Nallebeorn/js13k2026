@@ -2,7 +2,6 @@ import { spring, type Vec3 } from "../core/math.ts";
 import { DEBUG } from "../debug.ts";
 import { objectsBank } from "../gamedata/gamedata.ts";
 import { obj_balloon, obj_balloon_balloonSlot } from "../gamedata/objects.gen.ts";
-import { transformCollider, translateCollider, type Collider } from "../physics/collision.ts";
 import { staticColliders } from "../physics/objectColliders.ts";
 import { drawObject } from "../rendering/renderer.ts";
 

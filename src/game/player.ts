@@ -242,7 +242,7 @@ function processMovingState() {
 	const t1 = performance.now();
 
 	// * Horizontal collisions
-	for (const {depenetration} of enumerateCollisions()) {
+	for (const {depenetration, balloon} of enumerateCollisions()) {
 		x += depenetration[0];
 		if (vx) {
 			vx += depenetration[0] / deltaTime;
@@ -257,7 +257,7 @@ function processMovingState() {
 				boostCharge = 0;
 				vx = 0;
 				vz = 0;
-			} else if (boostCharge > BOOST_DELAY) {
+			} else if (boostCharge > BOOST_DELAY && !balloon) {
 				// ? activate wall lodge
 				state = PlayerState.WALL_LODGE;
 				x -= dirx * .8;
@@ -283,15 +283,15 @@ function processMovingState() {
 			if (Math.abs(normalize(depenetration)[1]) > 0.5) {
 				vy += depenetration[1] / deltaTime;
 				if (depenetration[1] > 0) {
-					grounded = true;
-					grindUses = 0;
 					if (safePoint) {
 						respawnPoint = safePoint;
 					}
 					if (balloon) {
 						vy = JUMP_SPEED;
-						grounded = false;
 						bounce(balloon);
+					} else {
+						grounded = true;
+						grindUses = 0;
 					}
 				}
 			}

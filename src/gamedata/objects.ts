@@ -651,17 +651,17 @@ export default [
 			},
 			{
 				shape: "pill",
-			translate: [0, -2, -0.1],
+			translate: [-0.1, -2, 0],
 				bottomRadius: 0.05,
 			},
 			{
 				shape: "pill",
-				translate: [0, -2, 0.1],
+				translate: [0.1, -2, 0],
 				bottomRadius: 0.05,
 			},
 			{
 				shape: "pill",
-				translate: [0.1, -2.125, 0],
+				translate: [0, -2.125, -0.1],
 				bottomRadius: 0.05,
 				color: COLOR_PINK,
 			},
