@@ -148,6 +148,7 @@ export default [
 	[CLOUD, 40, [10, -51], [28, -49]],
 
 	[CLOOD, 60, [60, -45], [10, 10], true],
+	[NPC, obj_npc1, [63, 60, -49], 135, "I was seeking the treasure at the end of the rainbow.\\nNow the friends I made along the way are all I have to show."],
 
 	[obj_pillar10, [60, 70, -10], , COLOR_YELLOW],
 	[BALLOON, [60, 84, -10]],
