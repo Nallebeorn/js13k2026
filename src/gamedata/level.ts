@@ -66,35 +66,39 @@ export default [
 	[obj_pillar16, [80, 0, 80], , COLOR_GREEN],
 
 	// * Shard 2
-	[CLOUD, 16, [5, 90], [45, 130], true],
-	[obj_pillar5, [35, 16, 92], , COLOR_GREEN], // R
-	[obj_pillar5, [43, 16, 100], , COLOR_GREEN], // L
+	[CLOUD, 16, [5, 100], [45, 155], true],
+	[obj_pillar5, [35, 16, 102], , COLOR_GREEN], // R
+	[obj_pillar5, [43, 16, 110], , COLOR_GREEN], // L
 	// [NPC, obj_npc1, [28, 16, 118], -45, "It's a work in progress! Try coming back later!"],
 	[NPC, obj_npc1, [10, 16, 120], -45, "We used to kiss every day.\\nNow the rainbow is gone, we're all out of gay!"], // gays
 	[NPC, obj_npc1, [10.5, 16, 122], -45, "We used to kiss every day.\\nNow the rainbow is gone, we're all out of gay!"], // gays
+
+	[obj_box3x3, [42, 16, 130], , COLOR_GREEN],
+	[obj_box3x3, [40, 16, 133.5], , COLOR_YELLOW],
+	[obj_box3x3, [41, 19, 132], , COLOR_YELLOW],
+
 	...repeat(7).flatMap(y => [
-		[obj_wall, [20, 20 + y * 4, 140]],
-		[obj_wall, [26, 20 + y * 4, 140]],
-		[obj_wallEdge, [32, 20 + y * 4, 140],],
-		[obj_wallEdge, [14, 20 + y * 4, 140], [0, 180, 0]],
+		[obj_wall, [20, 20 + y * 4, 160]],
+		[obj_wall, [26, 20 + y * 4, 160]],
+		[obj_wallEdge, [32, 20 + y * 4, 160],],
+		[obj_wallEdge, [14, 20 + y * 4, 160], [0, 180, 0]],
 	] satisfies LevelDescriptor),
-	[BALLOON, [15, 51, 140]],
-	[BALLOON, [20, 51, 140]],
-	[BALLOON, [25, 51, 140]],
-	[BALLOON, [30, 51, 140]],
+	[BALLOON, [15, 51, 160]],
+	[BALLOON, [20, 51, 160]],
+	[BALLOON, [25, 51, 160]],
+	[BALLOON, [30, 51, 160]],
 
-	[CLOOD, 35, [23, 126], [9, 9], true],
-	[CLOOD, 35, [23, 100], [9, 15], true],
-	[CLOOD, 35, [23, 70], [9, 25], true],
-	[obj_box3x3, [24, 35, 60], , COLOR_YELLOW],
-	[NPC, obj_npc1, [24, 38, 60], 180, "With your new yellow flair you can\\npress JUMP even more times in the air!", 2],
+	[CLOOD, 35, [23, 146], [9, 9], true],
+	[CLOOD, 35, [23, 120], [9, 15], true],
+	[CLOOD, 35, [23, 90], [9, 25], true],
+	[NPC, obj_npc1, [24, 35, 80], 180, "With your new yellow flair you can\\npress JUMP even more times in the air!", 2],
 
-	[CLOOD, 55, [23, 100], [9, 9], true],
-	[SHARD, COLOR_YELLOW, [23, 55, 100]],
+	[CLOOD, 55, [23, 120], [9, 9], true],
+	[SHARD, COLOR_YELLOW, [23, 55, 120]],
 
 	// * Path to shard 3
-	[CLOOD, 35, [20, -15], [12, 6], true],
-	[obj_box3x3, [22, 35, -17], , COLOR_YELLOW],
+	[CLOOD, 35, [20, -8], [12, 12], true],
+	[obj_box3x3, [22, 35, -9], , COLOR_YELLOW],
 
 	// * Shard 3
 	...repeat(7).flatMap(y => [
@@ -111,11 +115,10 @@ export default [
 	[BALLOON, [60, 84, -10]],
 	[obj_pillar16, [60, 80, 30], , COLOR_CYAN],
 	[BALLOON, [60, 100, 30]],
-	[BALLOON, [65, 100, 40]],
-	[BALLOON, [55, 90, 50]],
-	[BALLOON, [55, 95, 55]],
-	[CLOOD, 100, [60, 60], [7, 7]],
-	[CLOOD, 100, [60, 90], [7, 7], true],
-	[SHARD, COLOR_CYAN, [60, 100, 90]],
+	[BALLOON, [60, 105, 40]],
+	[BALLOON, [60, 110, 50]],
+	[CLOOD, 110, [60, 60], [7, 7]],
+	[CLOOD, 115, [30, 60], [7, 7], true],
+	[SHARD, COLOR_CYAN, [30, 116, 60]],
 
 ] satisfies LevelDescriptor;
