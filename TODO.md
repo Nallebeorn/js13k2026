@@ -1,6 +1,5 @@
 # TODO
-* Coyote jump
-* Bend rainbow sideways (for visibility)
+* Coyote jump also from rainbow
 * Move shard 2 floor further away + give you more space to gallop-up
 * Add momentum preservation to first shard level (and balloon)
 * Amanda mouse issue
@@ -26,6 +25,8 @@
 * New color for boxes and walls
 * Sun
 * 
+* ~Bend rainbow sideways (for visibility)~
+* ~Coyote jump~
 * ~Don't save when touching clouds when not standing on them~
 * ~Shard collection effect~
 * ~Remove colors from unicorn when using up grinds~

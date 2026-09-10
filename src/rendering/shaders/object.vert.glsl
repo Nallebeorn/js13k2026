@@ -10,9 +10,9 @@ flat out vec4 D;
 void main() {
 	vec3 P = p.xyz;
 	P.z *= d.z;
-	// radius = 3.
 	if (d.w > 0. && P.z > d.w) {
 		P.y -= 3. * (1.0 - cos((P.z - d.w) / 3. * 1.57));
+		P.x += (P.z - d.w) * .05;
 		P.z = d.w + 3. * sin((P.z - d.w) / 3. * 1.57);
 	}
 	gl_Position = w * o * vec4(P, 1);
