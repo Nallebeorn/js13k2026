@@ -1,7 +1,7 @@
 	import { repeat } from "../core/util.ts";
 import { COLOR_CYAN, COLOR_GREEN, COLOR_RED, COLOR_YELLOW } from "./colors.ts";
 import { BALLOON, CLOOD, CLOUD, NPC, offset, SHARD, type LevelDescriptor } from "./levelSchema.ts";
-import { obj_pillar10, obj_pillar5, obj_unitSphere, obj_cube2x2x1, obj_npc1, obj_pillar16, obj_box3x3, obj_wall, obj_wallEdge, obj_balloon } from "./objects.gen.ts";
+import { obj_pillar10, obj_pillar5, obj_unitSphere, obj_cube2x2x1, obj_npc1, obj_pillar16, obj_box3x3, obj_wall, obj_wallEdge, obj_balloon, obj_roof } from "./objects.gen.ts";
 
 export default [
 	// * Starting area
@@ -30,28 +30,62 @@ export default [
 	[CLOOD, 0, [0, 32], [5, 8]],
 	[CLOOD, 4, [11, 32], [8, 5]],
 	[CLOOD, 8, [5, 42], [15, 5], true],
-	[obj_pillar16, [0, 8.5, 42], [0, 0, 90]],
-	[CLOUD, 8, [-35, 25], [-15, 45], true],
-	[obj_pillar16, [-19, 8.5, 28]],
-	[obj_pillar10, [-33, 8.5, 41], [-90, 0, 0]],
-	[obj_pillar5, [-33, 8.5, 28]],
-	[CLOOD, 16, [-45, 30], [10, 45], true],
-	[obj_box3x3, [-43, 16, 50]],
-	[obj_box3x3, [-46.5, 16, 49.5], , COLOR_GREEN],
-	[obj_box3x3, [-45, 19, 50], , COLOR_GREEN],
-	[NPC, obj_npc1, [-49, 16, 15], -135, "If you want to make this jump, you'll need a long gallop-up"],
-	[obj_pillar16, [-45, 8, -10]],
-	[CLOOD, 8, [-45, -10], [3, 3]],
-	[obj_pillar16, [-45, 20, -13]],
-	[CLOOD, 20, [-45, -13], [3, 3]],
-	[obj_pillar16, [-49, 12, -13]],
-	[CLOOD, 12, [-49, -13], [3, 3]],
-	[obj_pillar16, [-41, 12, -13]],
-	[CLOOD, 12, [-41, -13], [3, 3]],
 
+	[obj_pillar16, [0, 8.5, 42], [0, 0, 90]],
+
+	[CLOUD, 8, [-35, 25], [-15, 45], true],
+	[obj_pillar10, [-18.5, 8.5, 28], [0, 0, 90]],
+	[obj_pillar5, [-33, 8.5, 28]],
+	[BALLOON, [-33, 14, 36]],
+	[obj_pillar10, [-33, 8.5, 42]],
+	[BALLOON, [-33, 16, 50]],
+
+	[CLOOD, 16, [-30, 65], [45, 10], true],
+	[NPC, obj_npc1, [-47, 16, 68], -45, "If you want to make this jump, you'll need a long gallop-up"],
+	[obj_box3x3, [-8.75, 16, 64]],
+	[obj_box3x3, [-9, 16, 67.5], , COLOR_GREEN],
+	[obj_box3x3, [-8.5, 19, 66], , COLOR_GREEN],
+	...repeat(3).flatMap(
+		(y) =>
+			[
+				[obj_wallEdge, [-82, 15 + y * 4, 60], [0, 180, 0]],
+				[obj_wall, [-76, 15 + y * 4, 60]],
+				[obj_wallEdge, [-70, 15 + y * 4, 60],],
+
+				[obj_wallEdge, [-82, 15 + y * 4, 70], [0, 180, 0]],
+				[obj_wall, [-76, 15 + y * 4, 70]],
+				[obj_wallEdge, [-70, 15 + y * 4, 70],],
+
+				[obj_wallEdge, [-69, 15 + y * 4, 71], [0, -90, 0]],
+				[obj_wall, [-69, 15 + y * 4, 65], [0, 90, 0]],
+				[obj_wallEdge, [-69, 15 + y * 4, 59], [0, 90, 0]],
+
+				[obj_wallEdge, [-83, 15 + y * 4, 71], [0, -90, 0]],
+				[obj_wall, [-83, 15 + y * 4, 65], [0, 90, 0]],
+				[obj_wallEdge, [-83, 15 + y * 4, 59], [0, 90, 0]],
+			] satisfies LevelDescriptor,
+	),
+	[obj_roof, [-76, 27, 65]],
+
+
+	...offset([-30, 10, 0], [
+		[CLOUD, 16, [-50, 8], [-40, 25], true],
+		[CLOUD, 16, [-50, 35], [-40, 56]],
+
+		[obj_pillar16, [-45, 8, -10]],
+		[obj_pillar10, [-45, 8, -13]],
+		[obj_pillar16, [-45, 19, -13]],
+		[CLOOD, 8, [-45, -11.5], [4, 7]],
+		// [obj_pillar16, [-49, 12, -13]],
+		// [CLOOD, 12, [-49, -13], [3, 3]],
+		// [obj_pillar16, [-41, 12, -13]],
+		// [CLOOD, 12, [-41, -13], [3, 3]],
+
+		[CLOOD, 15, [-20, -16], [26, 8], true],
+		[SHARD, COLOR_GREEN, [-15, 18, -16]],
+		[NPC, obj_npc1, [-28, 15, -19], 135, "See that wasn't so hard, you found the first shard!"],
+	]),
 	[CLOOD, 20, [-30, -16], [8, 8], true],
-	[SHARD, COLOR_GREEN, [-30, 21, -16]],
-	[NPC, obj_npc1, [-28, 20, -19], 135, "See that wasn't so hard, you found the first shard!"],
 
 	// * Path to shard 2
 	[CLOUD, 0, [40, -10], [60, 0]],
@@ -91,13 +125,13 @@ export default [
 	[CLOOD, 35, [23, 146], [9, 9], true],
 	[CLOOD, 35, [23, 120], [9, 15], true],
 	[CLOOD, 35, [23, 90], [9, 25], true],
-	[NPC, obj_npc1, [24, 35, 80], 180, "With your new yellow flair you can\\npress JUMP even more times in the air!", 2],
+	[NPC, obj_npc1, [24, 35, 80], 180, "With your new yellow flair\\nyou can press JUMP even more times in the air!", 2],
 
 	[CLOOD, 55, [23, 120], [9, 9], true],
 	[SHARD, COLOR_YELLOW, [23, 55, 120]],
 
 	// * Path to shard 3
-	[CLOOD, 35, [20, -8], [12, 12], true],
+	[CLOOD, 35, [20, -8], [12, 18], true],
 	[obj_box3x3, [22, 35, -9], , COLOR_YELLOW],
 
 	// * Shard 3

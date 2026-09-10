@@ -26,10 +26,14 @@ export function offset(ofs: Vec3, nodes: LevelNode[]) {
 			node[2][1] += ofs[2];
 			node[3][0] += ofs[0];
 			node[3][1] += ofs[2];
-		} else if (node[0] == NPC) {
+		} else if (node[0] == NPC || node[0] == SHARD) {
 			node[2] = add(node[2], ofs);
-		} else if (node[0] == CLOOD || node[0] == SHARD) {
-			throw "Not implemented";
+		} else if (node[0] == CLOOD) {
+			node[2][0] += ofs[0];
+			node[1] += ofs[1];
+			node[2][1] += ofs[2];
+		} else if (node[0] == BALLOON) {
+			node[1] = add(node[1], ofs);
 		} else {
 			node[1] = add(node[1], ofs);
 		}

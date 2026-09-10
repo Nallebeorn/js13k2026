@@ -135,18 +135,23 @@ export function serializeObjects(): {
 	const writeClouds = (safe: boolean) => {
 		for (const node of levelData) {
 			if (node[0] === CLOUD) {
-				const [, y, min, max, isSafe] = node;
+				const [, y, a, b, isSafe] = node;
 				if ((isSafe ?? false) != safe) continue;
+
+				const xmin = Math.min(a[0], b[0]);
+				const xmax = Math.max(a[0], b[0]);
+				const ymin = Math.min(a[1], b[1]);
+				const ymax = Math.max(a[1], b[1]);
 
 				dv.setInt16(pos++, quantizeBigPosition(y));
 				pos++;
-				dv.setInt16(pos++, quantizeBigPosition(min[0]));
+				dv.setInt16(pos++, quantizeBigPosition(xmin));
 				pos++;
-				dv.setInt16(pos++, quantizeBigPosition(min[1]));
+				dv.setInt16(pos++, quantizeBigPosition(ymin));
 				pos++;
-				dv.setInt16(pos++, quantizeBigPosition(max[0]));
+				dv.setInt16(pos++, quantizeBigPosition(xmax));
 				pos++;
-				dv.setInt16(pos++, quantizeBigPosition(max[1]));
+				dv.setInt16(pos++, quantizeBigPosition(ymax));
 				pos++;
 			} else if (node[0] == CLOOD) {
 				const [, y, p, s, isSafe] = node;

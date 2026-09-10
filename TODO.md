@@ -1,15 +1,13 @@
 # TODO
 * Coyote jump also from rainbow
 * Move shard 2 floor further away + give you more space to gallop-up
-* Add momentum preservation to first shard level (and balloon)
-* Amanda mouse issue
+* Camera collision against level
 * Delayed rainbow grinder creation
 * Make boost state clear when grinding
 * Replace first drill jump pillars with wall
-* Spikes or similar to make top of walls unwalkable?
-	* Could perhaps be merged with the bounce balloons?
 * Shards that run away
 * Speedrun timers
+* SFX
 * Grinding particle FX
 * Boost gallop VFX
 * Shard collection particle FX
@@ -25,6 +23,10 @@
 * New color for boxes and walls
 * Sun
 * 
+* ~Add momentum preservation to first shard level (and balloon)~
+* ~Spikes or similar to make top of walls unwalkable?~
+	* ~Could perhaps be merged with the bounce balloons?~
+* ~Amanda mouse issue~
 * ~Bend rainbow sideways (for visibility)~
 * ~Coyote jump~
 * ~Don't save when touching clouds when not standing on them~

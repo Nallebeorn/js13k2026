@@ -523,6 +523,21 @@ export default [
 		]
 	},
 	{
+		name: "roof",
+		nodes: [
+			{
+				shape: "box",
+				height: 0.75,
+				a1: 16,
+				b1: 12,
+				a2: 15,
+				b2: 11,
+				color: COLOR_LIGHTGREY,
+				collision: true,
+			}
+		]
+	},
+	{
 		name: "npc1", // * NPC 1
 		nodes: [
 			{
