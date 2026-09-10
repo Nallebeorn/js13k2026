@@ -1,13 +1,16 @@
 # TODO
+* Coyote jump
+* Bend rainbow sideways (for visibility)
+* Move shard 2 floor further away + give you more space to gallop-up
+* Add momentum preservation to first shard level (and balloon)
+* Amanda mouse issue
 * Delayed rainbow grinder creation
 * Make boost state clear when grinding
-* Add momentum preservation to first shard level
 * Replace first drill jump pillars with wall
 * Spikes or similar to make top of walls unwalkable?
 	* Could perhaps be merged with the bounce balloons?
 * Shards that run away
 * Speedrun timers
-* Bend rainbow sideways (for visibility)
 * Grinding particle FX
 * Boost gallop VFX
 * Shard collection particle FX
@@ -15,7 +18,6 @@
   and surface outlines at a distance
 * More precise horn collision
 * Drop shadow or equivalent
-* Coyote jump
 * Gamepad input
 * Animate balloons (but only when in air?)
 * Arrow keys as alternative to WASD

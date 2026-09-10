@@ -25,7 +25,14 @@ document.onpointerlockchange = () => {
 
 document.body.onclick = () => {
 	if (document.pointerLockElement != document.body) {
-		document.body.requestPointerLock();
+		/*
+		`unadjustedMovement` seems to be needed on some systems to get consistent
+		movement values without weird spikes. But Chromium doesn't support it on
+		Linux and will throw and fail the locking :/
+	 */
+		document.body
+			.requestPointerLock({ unadjustedMovement: true })
+			.catch(() => document.body.requestPointerLock());
 	}
 };
 
