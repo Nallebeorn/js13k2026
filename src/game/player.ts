@@ -59,6 +59,7 @@ let vz = 0;
 let boostCharge = 0;
 let wallJumping = false;
 let grounded = false;
+let groundedTimestamp = 0;
 
 let springSpd = 0;
 let springRot = 0;
@@ -316,6 +317,7 @@ function processMovingState() {
 	if (grounded) {
 		vy = 0;
 		wallJumping = false;
+		groundedTimestamp = currentTime;
 
 		if (speed >= SPEED) {
 			boostCharge += deltaTime;
@@ -325,7 +327,7 @@ function processMovingState() {
 	}
 
 	if (wasKeyJustPressed("Space")) {
-		if (grounded || isGrinding) {
+		if ((currentTime - groundedTimestamp < .2) || isGrinding) {
 			vy = JUMP_SPEED;
 			isGrinding = false;
 		} else if (!grounded && grindUses < shardsCollected) {
