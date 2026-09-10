@@ -40,11 +40,11 @@ export default [
 	[obj_pillar10, [-33, 8.5, 42]],
 	[BALLOON, [-33, 16, 50]],
 
-	[CLOOD, 16, [-30, 65], [45, 10], true],
-	[NPC, obj_npc1, [-47, 16, 68], -45, "If you want to make this jump, you'll need a long gallop-up"],
-	[obj_box3x3, [-8.75, 16, 64]],
-	[obj_box3x3, [-9, 16, 67.5], , COLOR_GREEN],
-	[obj_box3x3, [-8.5, 19, 66], , COLOR_GREEN],
+	[CLOOD, 16, [-33, 65], [45, 10], true],
+	[NPC, obj_npc1, [-50, 16, 68], -45, "If you want to make this jump, you'll need a long gallop-up"],
+	[obj_box3x3, [-11.75, 16, 64]],
+	[obj_box3x3, [-12, 16, 67.5], , COLOR_GREEN],
+	[obj_box3x3, [-11.5, 19, 66], , COLOR_GREEN],
 	...repeat(3).flatMap(
 		(y) =>
 			[
@@ -88,47 +88,51 @@ export default [
 	[CLOOD, 20, [-30, -16], [8, 8], true],
 
 	// * Path to shard 2
-	[CLOUD, 0, [40, -10], [60, 0]],
-	[obj_box3x3, [55, 0, -8], , COLOR_GREEN],
-	[obj_box3x3, [55.2, 3, -7.5], , COLOR_GREEN],
-	[NPC, obj_npc1, [55, 6, -8], 90, "You know what's really exciting?\\nPressing JUMP while rainbow-riding!"],
+	[CLOUD, 2, [40, -10], [60, 0]],
+	[obj_box3x3, [55, 2, -8], , COLOR_GREEN],
+	[obj_box3x3, [55.2, 5, -7.5], , COLOR_GREEN],
+	[NPC, obj_npc1, [55, 8, -8], 90, "You know what's really exciting?\\nPressing JUMP while rainbow-riding!"],
 
-	[CLOOD, 6, [80, 30], [8, 8], true],
-	[obj_box3x3, [82, 6, 32], , COLOR_GREEN],
+	[CLOOD, 9, [80, 30], [8, 8], true],
+	[obj_box3x3, [82, 9, 32], , COLOR_GREEN],
 
-	[CLOOD, 0, [80, 80], [3, 3]],
-	[obj_pillar16, [80, 0, 80], , COLOR_GREEN],
+	[CLOOD, 5, [80, 80], [3, 3]],
+	[obj_pillar16, [80, 5, 80], , COLOR_GREEN],
 
 	// * Shard 2
-	[CLOUD, 16, [5, 100], [45, 155], true],
-	[obj_pillar5, [35, 16, 102], , COLOR_GREEN], // R
-	[obj_pillar5, [43, 16, 110], , COLOR_GREEN], // L
-	// [NPC, obj_npc1, [28, 16, 118], -45, "It's a work in progress! Try coming back later!"],
-	[NPC, obj_npc1, [10, 16, 120], -45, "We used to kiss every day.\\nNow the rainbow is gone, we're all out of gay!"], // gays
-	[NPC, obj_npc1, [10.5, 16, 122], -45, "We used to kiss every day.\\nNow the rainbow is gone, we're all out of gay!"], // gays
+	...offset([0, 10, 0], [
+		[CLOUD, 16, [25, 100], [45, 155], true],
+		[obj_pillar5, [35, 16, 102], , COLOR_GREEN], // R
+		[obj_pillar5, [43, 16, 110], , COLOR_GREEN], // L
+		// [NPC, obj_npc1, [28, 16, 118], -45, "It's a work in progress! Try coming back later!"],
+		[NPC, obj_npc1, [28, 16, 120], -45, "We used to kiss every day.\\nNow the rainbow is gone, we're all out of gay!"], // gays
+		[NPC, obj_npc1, [28.5, 16, 122], -45, "We used to kiss every day.\\nNow the rainbow is gone, we're all out of gay!"], // gays
 
-	[obj_box3x3, [42, 16, 130], , COLOR_GREEN],
-	[obj_box3x3, [40, 16, 133.5], , COLOR_YELLOW],
-	[obj_box3x3, [41, 19, 132], , COLOR_YELLOW],
+		[obj_box3x3, [42, 16, 130], , COLOR_GREEN],
+		[obj_box3x3, [40, 16, 133.5], , COLOR_YELLOW],
+		[obj_box3x3, [41, 19, 132], , COLOR_YELLOW],
 
-	...repeat(7).flatMap(y => [
-		[obj_wall, [20, 20 + y * 4, 160]],
-		[obj_wall, [26, 20 + y * 4, 160]],
-		[obj_wallEdge, [32, 20 + y * 4, 160],],
-		[obj_wallEdge, [14, 20 + y * 4, 160], [0, 180, 0]],
-	] satisfies LevelDescriptor),
-	[BALLOON, [15, 51, 160]],
-	[BALLOON, [20, 51, 160]],
-	[BALLOON, [25, 51, 160]],
-	[BALLOON, [30, 51, 160]],
+		...offset([10, 0, 0], [
+			...repeat(7).flatMap(y => [
+				[obj_wall, [20, 20 + y * 4, 160]],
+				[obj_wall, [26, 20 + y * 4, 160]],
+				[obj_wallEdge, [32, 20 + y * 4, 160],],
+				[obj_wallEdge, [14, 20 + y * 4, 160], [0, 180, 0]],
+			] satisfies LevelDescriptor),
+			[BALLOON, [15, 51, 160]],
+			[BALLOON, [20, 51, 160]],
+			[BALLOON, [25, 51, 160]],
+			[BALLOON, [30, 51, 160]],
 
-	[CLOOD, 35, [23, 146], [9, 9], true],
-	[CLOOD, 35, [23, 120], [9, 15], true],
-	[CLOOD, 35, [23, 90], [9, 25], true],
-	[NPC, obj_npc1, [24, 35, 80], 180, "With your new yellow flair\\nyou can press JUMP even more times in the air!", 2],
+			[CLOOD, 35, [23, 146], [9, 9], true],
+			[CLOOD, 35, [23, 120], [9, 15], true],
+			[CLOOD, 35, [23, 90], [9, 25], true],
+			[NPC, obj_npc1, [24, 35, 80], 180, "With your new yellow flair\\nyou can press JUMP even more times in the air!", 2],
 
-	[CLOOD, 55, [23, 120], [9, 9], true],
-	[SHARD, COLOR_YELLOW, [23, 55, 120]],
+			[CLOOD, 55, [23, 120], [9, 9], true],
+			[SHARD, COLOR_YELLOW, [23, 55, 120]],
+		]),
+	]),
 
 	// * Path to shard 3
 	[CLOOD, 35, [20, -8], [12, 18], true],
