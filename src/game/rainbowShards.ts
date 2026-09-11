@@ -1,6 +1,6 @@
 import { easeInBack, IDENTITY, length, lerpv, sub, type Vec3 } from "../core/math.ts";
 import { currentTime, deltaTime } from "../core/time.ts";
-import { DEBUG } from "../debug.ts";
+import { DEBUG, debugWatch } from "../debug.ts";
 import { COLOR_VIOLET, unlockColor, type Color } from "../gamedata/colors.ts";
 import { wasKeyJustPressed } from "../input/input.ts";
 import type { KeyCode } from "../input/keycode.ts";
@@ -29,6 +29,8 @@ onPlayerDeath.push(() => {
 });
 
 export function processRainbowShards() {
+	const t0 = performance.now();
+
 	for (let i = 0; i < shards.length; i++) {
 		const [color, positions, posIndex] = shards[i]!;
 
@@ -98,4 +100,5 @@ export function processRainbowShards() {
 		});
 	}
 
+	debugWatch("shards", performance.now() - t0);
 }

@@ -134,6 +134,10 @@ export function drawMesh(
 
 export type SlotTransforms = Record<number | "_", Transform>;
 
+function mul(a: DOMMatrix, b: DOMMatrix) {
+	return b == IDENTITY ? a : a.multiply(b);
+}
+
 export function drawObject(
 	object: RenderObjectHandle,
 	slotTransforms?: SlotTransforms,
@@ -142,7 +146,7 @@ export function drawObject(
 ) {
 	objectIndex++;
 
-	transformStack.push(transformStack.at(-1)!.multiply(createMatrix(slotTransforms?.[ROOT_SLOT])))
+	transformStack.push(mul(transformStack.at(-1)!, createMatrix(slotTransforms?.[ROOT_SLOT])));
 	let transformSlotIndex = 0;
 	objectsBank[object]!.map(command => {
 		color = command.colour ?? color;
@@ -150,13 +154,22 @@ export function drawObject(
 			objectIndex++;
 		}
 
-		if (command.pushTransform) {
+		/* if (command.pushTransform) {
 			transformStack.push(
 				transformStack.at(-1)!
 					.multiply(createMatrix(command.pushTransform))
 					.multiply(createMatrix(slotTransforms?.[transformSlotIndex++]))
 			);
+		} */
+		if (command.pushTransform) {
+			transformStack.push(
+				mul(
+					mul(transformStack.at(-1)!, createMatrix(command.pushTransform)),
+					createMatrix(slotTransforms?.[transformSlotIndex++])
+				)
+			);
 		}
+
 
 		if (command.drawShape) {
 			drawMesh(

@@ -1,5 +1,6 @@
 import { angleFromDirection, length, rotateTowards, sub, type Vec3 } from "../core/math.ts";
 import { currentTime, deltaTime } from "../core/time.ts";
+import { debugWatch } from "../debug.ts";
 import { obj_npc1_bodySlot, obj_npc1_headSlot, obj_npc1_lowerArmLSlot, obj_npc1_lowerArmRSlot, obj_npc1_lowerLegLSlot, obj_npc1_lowerLegRSlot, obj_npc1_upperArmLSlot, obj_npc1_upperArmRSlot, obj_npc1_upperLegLSlot, obj_npc1_upperLegRSlot, type RenderObjectHandle } from "../gamedata/objects.gen.ts";
 import { drawObject, type SlotTransforms } from "../rendering/renderer.ts";
 import { say } from "./dialogue.ts";
@@ -16,6 +17,7 @@ export interface Npc {
 export const npcs: Npc[] = [];
 
 export function processNpcs() {
+	const t0 = performance.now();
 	let dialogue = "";
 	for (const npc of npcs) {
 		if (shardsCollected >= npc.minShards && 7 + npc.minShards >= shardsCollected) {
@@ -72,4 +74,6 @@ export function processNpcs() {
 	}
 
 	say(dialogue);
+
+	debugWatch("npcs", performance.now() - t0);
 }

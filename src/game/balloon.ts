@@ -1,5 +1,5 @@
 import { spring, type Vec3 } from "../core/math.ts";
-import { DEBUG } from "../debug.ts";
+import { DEBUG, debugWatch } from "../debug.ts";
 import { objectsBank } from "../gamedata/gamedata.ts";
 import { obj_balloon, obj_balloon_balloonSlot } from "../gamedata/objects.gen.ts";
 import { staticColliders } from "../physics/objectColliders.ts";
@@ -28,9 +28,11 @@ export function bounce(balloon: number) {
 }
 
 export function processBalloons() {
+	const t0 = performance.now();
 	for (let i = 0; i < balloons.length; i++) {
 		balloons[i]![2] = spring(balloons[i]![1], balloons[i]![2]);
 		balloons[i]![1] += balloons[i]![2];
 		drawObject(obj_balloon, { _: { translation: balloons[i]![0] }, [obj_balloon_balloonSlot]: {yscale: 1 - balloons[i]![1]} });
 	}
+	debugWatch("balloons", performance.now() - t0);
 }
