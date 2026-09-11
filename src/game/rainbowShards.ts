@@ -1,7 +1,7 @@
-import { clamp, easeInBack, IDENTITY, length, lerp, lerpv, sub, type Vec3 } from "../core/math.ts";
+import { easeInBack, IDENTITY, length, lerpv, sub, type Vec3 } from "../core/math.ts";
 import { currentTime, deltaTime } from "../core/time.ts";
 import { DEBUG } from "../debug.ts";
-import { COLOR_GREEN, COLOR_VIOLET, COLOR_YELLOW, unlockColor, type Color } from "../gamedata/colors.ts";
+import { COLOR_VIOLET, unlockColor, type Color } from "../gamedata/colors.ts";
 import { wasKeyJustPressed } from "../input/input.ts";
 import type { KeyCode } from "../input/keycode.ts";
 import { drawMesh } from "../rendering/renderer.ts";
