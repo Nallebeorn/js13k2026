@@ -225,6 +225,17 @@ export default [
 				[obj_wallEdge, [-100 + 6, 140 + y * 4, -90],],
 			] satisfies LevelDescriptor,
 	),
+	[BALLOON, [-115, 143, -65]],
+	[BALLOON, [-115, 143, -60]],
+	[BALLOON, [-115, 143, -70]],
+
+	[BALLOON, [-85, 163, -75]],
+	[BALLOON, [-85, 163, -70]],
+	[BALLOON, [-85, 163, -80]],
+
+	[BALLOON, [-100, 183, -90]],
+	[BALLOON, [-105, 183, -90]],
+	[BALLOON, [-95, 183, -90]],
 
 	...repeat(4).flatMap(
 		(y) =>
@@ -249,8 +260,8 @@ export default [
 	[obj_roof, [-130, 186, -55]],
 	[CLOOD, 170, [-130, -55], [16, 12]],
 
-	[CLOOD, 185, [-130, -10], [6, 6], true],
-	[SHARD, COLOR_BLUE, [-130, 186, -10]],
+	[CLOOD, 185, [-100, -10], [6, 6], true],
+	[SHARD, COLOR_BLUE, [-100, 186, -10]],
 
 	// ...repeat(4).flatMap(
 	// 	(y) =>
