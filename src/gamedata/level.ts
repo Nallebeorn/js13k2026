@@ -1,5 +1,5 @@
 	import { repeat } from "../core/util.ts";
-import { COLOR_CYAN, COLOR_GREEN, COLOR_RED, COLOR_VIOLET, COLOR_YELLOW } from "./colors.ts";
+import { COLOR_CYAN, COLOR_GREEN, COLOR_ORANGE, COLOR_RED, COLOR_VIOLET, COLOR_YELLOW } from "./colors.ts";
 import { BALLOON, CLOOD, CLOUD, NPC, offset, SHARD, type LevelDescriptor } from "./levelSchema.ts";
 import { obj_pillar10, obj_pillar5, obj_unitSphere, obj_cube2x2x1, obj_npc1, obj_pillar16, obj_box3x3, obj_wall, obj_wallEdge, obj_balloon, obj_roof } from "./objects.gen.ts";
 
@@ -162,5 +162,18 @@ export default [
 	[CLOOD, 110, [60, 60], [7, 7]],
 	[CLOOD, 115, [30, 60], [7, 7], true],
 	[SHARD, COLOR_CYAN, [30, 116, 60]],
+
+	// * Shard 4 (ORANGE)
+	[obj_pillar10, [-43, 100, 143], , COLOR_CYAN],
+	[CLOOD, 100, [-43, 143], [3, 3]],
+
+	[CLOOD, 80, [-56, 156], [6, 6], true],
+	[obj_box3x3, [-58, 80, 158], , COLOR_ORANGE],
+
+	[obj_pillar10, [-130, 95, 100], , COLOR_ORANGE],
+	[BALLOON, [-134, 102, 96]],
+	[NPC, obj_npc1, [-134, 105.5, 96], -135, "Thank you Neighdall!\\nBut our shard is on another pillar!"],
+	[SHARD, COLOR_ORANGE, [[-130, 107, 100], [-130, 107, 150]]],
+
 
 ] satisfies LevelDescriptor;

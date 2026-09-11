@@ -4,14 +4,15 @@
 * Camera collision against level
 * Delayed rainbow grinder creation
 * Make boost state clear when grinding
-* Shards that run away
 * Speedrun timers
 * SFX
+* Faster deaths (higher max vy, raise death plane)
 * Grinding particle FX
 * Boost gallop VFX
 * Shard collection particle FX
 * Separate meta-object and intra-object indices. Use to discard depth outlines
-  and surface outlines at a distance
+  and surface outlines at a distance. Could just bake into same int (meta objects increment by 1000)
+	* Depth Fix would require separate index though, that always increments. Or maybe that could be baked in too in some clever way?
 * More precise horn collision
 * Drop shadow or equivalent
 * Gamepad input
@@ -22,6 +23,7 @@
 * New color for boxes and walls
 * Sun
 * 
+* ~Shards that run away~
 * ~Replace first drill jump pillars with wall~
 * ~Add momentum preservation to first shard level (and balloon)~
 * ~Spikes or similar to make top of walls unwalkable?~

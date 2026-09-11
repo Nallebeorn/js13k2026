@@ -30,6 +30,7 @@ import { cameraTransform, drawMesh, drawObject, ROOT_SLOT, updateCameraTransform
 import { doScreenWipe, transitionProgress } from "../rendering/screenTransition.ts";
 import { rainbowMesh } from "../rendering/vertexData.ts";
 import { bounce } from "./balloon.ts";
+import { onPlayerDeath } from "./bus.ts";
 import { shardCollectTimer, shardsCollected } from "./rainbowShards.ts";
 
 const SPEED = 20;
@@ -301,7 +302,7 @@ function processMovingState() {
 
 	debugWatch("playercoll", performance.now() - t1);
 
-	if (y < -50 && !transitionProgress) {
+	if (y < -25 && !transitionProgress) {
 		// * Die and respawn
 		doScreenWipe(COLOR_OUTLINE, () => {
 			[x, y, z] = respawnPoint;
@@ -309,6 +310,7 @@ function processMovingState() {
 			vy = 0;
 			vz = 0;
 			cameraPitch = 0;
+			onPlayerDeath.forEach(fn => fn());
 		});
 	}
 

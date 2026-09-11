@@ -7,6 +7,7 @@ import type { KeyCode } from "../input/keycode.ts";
 import { drawMesh } from "../rendering/renderer.ts";
 import { doScreenWipe, transitionProgress } from "../rendering/screenTransition.ts";
 import { rainbowMesh } from "../rendering/vertexData.ts";
+import { onPlayerDeath } from "./bus.ts";
 import { getPlayerPos } from "./player.ts";
 
 export const shards: [color: Color, pos: Vec3[], currentPosIndex: number][] = [];
@@ -18,6 +19,15 @@ export let shardCollectTimer = 0;
 
 let movingShard: number;
 let shardMovement = 0;
+
+onPlayerDeath.push(() => {
+	console.log("player diede lolz");
+	movingShard = -1;
+	shardMovement = 0;
+	for (let i = 0; i < shards.length; i++) {
+		shards[i]![2] = 0;
+	}
+});
 
 export function processRainbowShards() {
 	for (let i = 0; i < shards.length; i++) {
