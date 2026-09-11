@@ -170,9 +170,7 @@ export default [
 	// * Shard 4 (ORANGE)
 	[obj_pillar10, [-43, 100, 143], , COLOR_CYAN],
 	[CLOOD, 100, [-43, 143], [3, 3]],
-
-	[CLOOD, 80, [-56, 156], [6, 6], true],
-	[obj_box3x3, [-58, 80, 158], , COLOR_ORANGE],
+	[CLOOD, 111, [-43, 143], [3, 3], true],
 
 	[obj_pillar16, [-130, 89, 100], , COLOR_ORANGE],
 	[CLOOD, 89, [-130, 100], [3, 3]],

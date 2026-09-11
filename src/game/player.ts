@@ -295,7 +295,6 @@ function processMovingState() {
 				vy += depenetration[1] / deltaTime;
 				if (depenetration[1] > 0) {
 					if (safePoint) {
-						console.log("safe");
 						respawnPoint = [...safePoint, dirx, diry, cameraYaw, cameraPitch];
 					}
 					if (balloon) {

@@ -21,7 +21,6 @@ let movingShard: number;
 let shardMovement = 0;
 
 onPlayerDeath.push(() => {
-	console.log("player diede lolz");
 	movingShard = -1;
 	shardMovement = 0;
 	for (let i = 0; i < shards.length; i++) {
