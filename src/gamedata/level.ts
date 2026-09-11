@@ -83,7 +83,7 @@ export default [
 		// [CLOOD, 12, [-41, -13], [3, 3]],
 
 		[CLOOD, 15, [-20, -16], [26, 8], true],
-		[SHARD, COLOR_GREEN, [-15, 18, -16]],
+		[SHARD, COLOR_GREEN, [[-15, 18, -16], [-8, 16, -16]]],
 		[NPC, obj_npc1, [-28, 15, -19], 135, "See that wasn't so hard, you found the first shard!"],
 	]),
 	[CLOOD, 20, [-30, -16], [8, 8], true],

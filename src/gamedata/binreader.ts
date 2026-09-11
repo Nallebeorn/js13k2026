@@ -1,5 +1,6 @@
 import { createMatrix, add } from "../core/math.ts";
 import { srandf } from "../core/random.ts";
+import { repeat } from "../core/util.ts";
 import { createBalloon } from "../game/balloon.ts";
 import { npcs } from "../game/npcs.ts";
 import { shards } from "../game/rainbowShards.ts";
@@ -171,11 +172,11 @@ export function deserializeBinaryGameData(buffer: ArrayBuffer) {
 	while (pos < section_shardsEnd) {
 		shards.push([
 			dv.getUint8(pos++),
-			[
+			repeat(dv.getUint8(pos++)).map(() => [
 				dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1))),
 				dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1))),
 				dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1))),
-			],
+			]),
 		]);
 	}
 

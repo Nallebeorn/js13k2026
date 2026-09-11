@@ -4,7 +4,6 @@
 * Camera collision against level
 * Delayed rainbow grinder creation
 * Make boost state clear when grinding
-* Replace first drill jump pillars with wall
 * Shards that run away
 * Speedrun timers
 * SFX
@@ -23,6 +22,7 @@
 * New color for boxes and walls
 * Sun
 * 
+* ~Replace first drill jump pillars with wall~
 * ~Add momentum preservation to first shard level (and balloon)~
 * ~Spikes or similar to make top of walls unwalkable?~
 	* ~Could perhaps be merged with the bounce balloons?~

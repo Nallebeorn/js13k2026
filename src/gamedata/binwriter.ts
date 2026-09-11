@@ -21,6 +21,7 @@ import {
 } from "./binformatHelpers.ts";
 import { BALLOON, CLOOD, CLOUD, NPC, SHARD } from "./levelSchema.ts";
 import { COLOR_COUNT, palette } from "./colors.ts";
+import type { Vec3 } from "../core/math.ts";
 
 export function serializeObjects(): {
 	buffer: ArrayBuffer,
@@ -199,14 +200,18 @@ export function serializeObjects(): {
 	// * Write shards
 	for (const node of levelData) {
 		if (node[0] === SHARD) {
-			const [, color, translation] = node;
+			const [, color, locations] = node;
 			dv.setUint8(pos++, color);
-			dv.setInt16(pos++, quantizeBigPosition(translation[0]));
-			pos++;
-			dv.setInt16(pos++, quantizeBigPosition(translation[1]));
-			pos++;
-			dv.setInt16(pos++, quantizeBigPosition(translation[2]));
-			pos++
+			const translations = Array.isArray(locations[0]) ? (locations as Vec3[]) : ([locations as Vec3]);
+			dv.setUint8(pos++, translations.length);
+			for (const translation of translations) {
+				dv.setInt16(pos++, quantizeBigPosition(translation[0]));
+				pos++;
+				dv.setInt16(pos++, quantizeBigPosition(translation[1]));
+				pos++;
+				dv.setInt16(pos++, quantizeBigPosition(translation[2]));
+				pos++
+			}
 		}
 	}
 

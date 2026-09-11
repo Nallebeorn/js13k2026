@@ -9,7 +9,7 @@ import { doScreenWipe, transitionProgress } from "../rendering/screenTransition.
 import { rainbowMesh } from "../rendering/vertexData.ts";
 import { getPlayerPos } from "./player.ts";
 
-export const shards: [color: Color, pos: Vec3][] = [];
+export const shards: [color: Color, pos: Vec3[]][] = [];
 
 export let shardsCollected = 0;
 
@@ -18,11 +18,13 @@ export let shardCollectTimer = 0;
 
 export function processRainbowShards() {
 	for (let i = 0; i < shards.length; i++) {
+		const [color, positions] = shards[i]!;
+
 		const scale = 0.75 * (1 - (+(collectingShard == i) && easeInBack(Math.min(1, shardCollectTimer += deltaTime * .8))));
 		drawMesh(
 			rainbowMesh,
-			shards[i]![0] + 10,
-			IDENTITY.translate(...shards[i]![1])
+			color + 10,
+			IDENTITY.translate(...positions[0]!)
 				.scale(scale, scale, scale)
 				.rotate(-90, currentTime * (collectingShard == i ? 1200 : 360), 0)
 				.translate(
@@ -35,12 +37,16 @@ export function processRainbowShards() {
 			1,
 		);
 
-		if (length(sub(shards[i]![1], getPlayerPos())) < 3 && !shardCollectTimer) {
-			collectingShard = i;
+		if (length(sub(positions[0]!, getPlayerPos())) < 3 && !shardCollectTimer) {
+			if (positions.length < 2) {
+				collectingShard = i;
+			} else {
+				positions.shift();
+			}
 		}
 
 		if (DEBUG && wasKeyJustPressed(`Digit${i + 1}` as KeyCode)) {
-			unlockColor(shards[i]![0]);
+			unlockColor(color);
 			shardsCollected++;
 			setTimeout(() => shards.splice(i, 1), 0);
 			;
