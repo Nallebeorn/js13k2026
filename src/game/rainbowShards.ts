@@ -1,7 +1,7 @@
-import { clamp, easeInBack, IDENTITY, length, sub, type Vec3 } from "../core/math.ts";
+import { clamp, easeInBack, IDENTITY, length, lerp, lerpv, sub, type Vec3 } from "../core/math.ts";
 import { currentTime, deltaTime } from "../core/time.ts";
 import { DEBUG } from "../debug.ts";
-import { COLOR_GREEN, COLOR_YELLOW, unlockColor, type Color } from "../gamedata/colors.ts";
+import { COLOR_GREEN, COLOR_VIOLET, COLOR_YELLOW, unlockColor, type Color } from "../gamedata/colors.ts";
 import { wasKeyJustPressed } from "../input/input.ts";
 import type { KeyCode } from "../input/keycode.ts";
 import { drawMesh } from "../rendering/renderer.ts";
@@ -9,24 +9,37 @@ import { doScreenWipe, transitionProgress } from "../rendering/screenTransition.
 import { rainbowMesh } from "../rendering/vertexData.ts";
 import { getPlayerPos } from "./player.ts";
 
-export const shards: [color: Color, pos: Vec3[]][] = [];
+export const shards: [color: Color, pos: Vec3[], currentPosIndex: number][] = [];
 
 export let shardsCollected = 0;
 
 let collectingShard: number;
 export let shardCollectTimer = 0;
 
+let movingShard: number;
+let shardMovement = 0;
+
 export function processRainbowShards() {
 	for (let i = 0; i < shards.length; i++) {
-		const [color, positions] = shards[i]!;
+		const [color, positions, posIndex] = shards[i]!;
 
 		const scale = 0.75 * (1 - (+(collectingShard == i) && easeInBack(Math.min(1, shardCollectTimer += deltaTime * .8))));
 		drawMesh(
 			rainbowMesh,
 			color + 10,
-			IDENTITY.translate(...positions[0]!)
+			IDENTITY.translate(
+				...lerpv(
+					positions[posIndex]!,
+					positions[posIndex + 1],
+					movingShard == i ? shardMovement : 0,
+				),
+			)
 				.scale(scale, scale, scale)
-				.rotate(-90, currentTime * (collectingShard == i ? 1200 : 360), 0)
+				.rotate(
+					-90,
+					currentTime * (collectingShard == i || movingShard == i ? 1200 : 360),
+					0
+				)
 				.translate(
 					0,
 					3,
@@ -37,11 +50,25 @@ export function processRainbowShards() {
 			1,
 		);
 
-		if (length(sub(positions[0]!, getPlayerPos())) < 3 && !shardCollectTimer) {
-			if (positions.length < 2) {
-				collectingShard = i;
-			} else {
-				positions.shift();
+		if (movingShard == i) {
+			shardMovement += deltaTime;
+			if (shardMovement > 1) {
+				shardMovement = 0;
+				movingShard = -1;
+				shards[i]![2]++;
+			}
+		} else {
+			if (color === COLOR_VIOLET) {
+				console.log("collectable", posIndex, color, positions[posIndex]);
+			}
+			if (length(sub(positions[posIndex]!, getPlayerPos())) < 3 && !shardCollectTimer) {
+				console.log("intersecting");
+				if (posIndex >= positions.length - 1) {
+					collectingShard = i;
+				} else {
+					movingShard = i;
+					shardMovement += deltaTime;
+				}
 			}
 		}
 

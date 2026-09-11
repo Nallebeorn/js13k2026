@@ -177,6 +177,7 @@ export function deserializeBinaryGameData(buffer: ArrayBuffer) {
 				dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1))),
 				dequantizeBigPosition(dv.getInt16((pos++, pos++ - 1))),
 			]),
+			0,
 		]);
 	}
 

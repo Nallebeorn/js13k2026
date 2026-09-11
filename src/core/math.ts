@@ -27,6 +27,10 @@ export function lerp(a: number, b: number, t: number) {
 	return a + (b - a) * t;
 }
 
+export function lerpv(a: Vec3, b: Vec3 | undefined, t: number) {
+	return a.map((x, i) => lerp(x, b ? b[i]! : x, t));
+}
+
 export function spring(current: number, currentSpeed: number): number {
 	return lerp(currentSpeed, -current * 5, 0.2);
 }

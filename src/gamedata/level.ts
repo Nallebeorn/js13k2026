@@ -1,9 +1,11 @@
 	import { repeat } from "../core/util.ts";
-import { COLOR_CYAN, COLOR_GREEN, COLOR_RED, COLOR_YELLOW } from "./colors.ts";
+import { COLOR_CYAN, COLOR_GREEN, COLOR_RED, COLOR_VIOLET, COLOR_YELLOW } from "./colors.ts";
 import { BALLOON, CLOOD, CLOUD, NPC, offset, SHARD, type LevelDescriptor } from "./levelSchema.ts";
 import { obj_pillar10, obj_pillar5, obj_unitSphere, obj_cube2x2x1, obj_npc1, obj_pillar16, obj_box3x3, obj_wall, obj_wallEdge, obj_balloon, obj_roof } from "./objects.gen.ts";
 
 export default [
+	// [SHARD, COLOR_VIOLET, [[0, 3, -5], [0, 3, -15], [0, 10, -15], [0, 3, 0], [0, 3, 10]]],
+
 	// * Starting area
 	[CLOUD, 0, [-20, -20], [20, 20], true],
 	...repeat(7).flatMap(
@@ -83,7 +85,7 @@ export default [
 		// [CLOOD, 12, [-41, -13], [3, 3]],
 
 		[CLOOD, 15, [-20, -16], [26, 8], true],
-		[SHARD, COLOR_GREEN, [[-15, 18, -16], [-8, 16, -16]]],
+		[SHARD, COLOR_GREEN, [-15, 18, -16]],
 		[NPC, obj_npc1, [-28, 15, -19], 135, "See that wasn't so hard, you found the first shard!"],
 	]),
 	[CLOOD, 20, [-30, -16], [8, 8], true],
