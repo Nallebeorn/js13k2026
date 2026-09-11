@@ -154,9 +154,13 @@ export default [
 	[NPC, obj_npc1, [63, 60, -49], 135, "I was seeking the treasure at the end of the rainbow.\\nNow the friends I made along the way are all I have to show."],
 
 	[obj_pillar10, [60, 70, -10], , COLOR_YELLOW],
+	[CLOOD, 70, [60, -10], [3, 3]],
 	[BALLOON, [60, 84, -10]],
+
 	[obj_pillar16, [60, 80, 30], , COLOR_CYAN],
+	[CLOOD, 80, [60, 30], [3, 3]],
 	[BALLOON, [60, 100, 30]],
+
 	[BALLOON, [60, 105, 40]],
 	[BALLOON, [60, 110, 50]],
 	[CLOOD, 110, [60, 60], [7, 7]],
@@ -170,10 +174,36 @@ export default [
 	[CLOOD, 80, [-56, 156], [6, 6], true],
 	[obj_box3x3, [-58, 80, 158], , COLOR_ORANGE],
 
-	[obj_pillar10, [-130, 95, 100], , COLOR_ORANGE],
+	[obj_pillar16, [-130, 89, 100], , COLOR_ORANGE],
+	[CLOOD, 89, [-130, 100], [3, 3]],
 	[BALLOON, [-134, 102, 96]],
-	[NPC, obj_npc1, [-134, 105.5, 96], -135, "Thank you Neighdall!\\nBut our shard is on another pillar!"],
-	[SHARD, COLOR_ORANGE, [[-130, 107, 100], [-130, 107, 150]]],
+	[NPC, obj_npc1, [-134, 105.5, 96], -135, "Thank you Neighdall!\\nBut our shard is on another pillar!", -4],
+	[NPC, obj_npc1, [-134, 105.5, 96], -135, "Never mind, I guess it was on this pillar after all...", 4],
+
+	[SHARD, COLOR_ORANGE, [
+		[-130, 107, 100],
+		[-130, 107, 155],
+		[-90, 110, 160],
+		[-75, 85, 140],
+		[-90, 90, 110],
+		[-105, 95, 80],
+		[-130, 107, 100]
+	]],
+
+	[BALLOON, [-135, 102, 110]],
+
+	[BALLOON, [-130, 102, 155]], // shard 1
+	[obj_pillar5, [-130, 93, 155]],
+	[CLOOD, 93, [-130, 155], [3, 3]],
+
+	[BALLOON, [-123, 102, 145]],
+
+	[BALLOON, [-90, 105, 160]], // shard 2
+
+	[BALLOON, [-75, 80, 140]], // shard 3
+	[BALLOON, [-58, 95, 135]],
+	[BALLOON, [-90, 85, 110]], // shard 4
+	[BALLOON, [-105, 90, 80]], // shard 5
 
 
 ] satisfies LevelDescriptor;

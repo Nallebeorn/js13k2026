@@ -1,4 +1,4 @@
-import { rotateTowards, withLength, IDENTITY, add, type Vec3, normalize, length, sub, dot, clamp, spring, lerp, angleFromDirection } from "../core/math.ts";
+import { rotateTowards, withLength, IDENTITY, add, type Vec3, normalize, length, sub, dot, clamp, spring, lerp, angleFromDirection, type Vec2 } from "../core/math.ts";
 import { currentTime, deltaTime } from "../core/time.ts";
 import { DEBUG, debugWatch } from "../debug.ts";
 import { COLOR_CONSUMABLE_BLUE, COLOR_CONSUMABLE_CYAN, COLOR_CONSUMABLE_GREEN, COLOR_CONSUMABLE_ORANGE, COLOR_CONSUMABLE_RED, COLOR_CONSUMABLE_VIOLET, COLOR_CONSUMABLE_YELLOW, COLOR_OUTLINE, COLOR_RAINBOW, COLOR_RED, COLOR_VIOLET, colors, unlockedColors } from "../gamedata/colors.ts";
@@ -49,7 +49,6 @@ let x = 0;
 let y = 1.5;
 let z = 0;
 
-let respawnPoint: Vec3 = [x, y, z];
 
 let rotation = 0;
 let dirx = 1;
@@ -67,6 +66,16 @@ let springRot = 0;
 
 let cameraYaw = 60;
 let cameraPitch = 0;
+
+let respawnPoint: [...Vec3, ...Vec2, ...Vec2] = [
+	x,
+	y,
+	z,
+	dirx,
+	diry,
+	cameraYaw,
+	cameraPitch,
+];
 
 const enum PlayerState {
 	MOVING,
@@ -286,7 +295,8 @@ function processMovingState() {
 				vy += depenetration[1] / deltaTime;
 				if (depenetration[1] > 0) {
 					if (safePoint) {
-						respawnPoint = safePoint;
+						console.log("safe");
+						respawnPoint = [...safePoint, dirx, diry, cameraYaw, cameraPitch];
 					}
 					if (balloon) {
 						vy = JUMP_SPEED;
@@ -305,7 +315,7 @@ function processMovingState() {
 	if (y < -25 && !transitionProgress) {
 		// * Die and respawn
 		doScreenWipe(COLOR_OUTLINE, () => {
-			[x, y, z] = respawnPoint;
+			[x, y, z, dirx, diry, cameraYaw, cameraPitch] = respawnPoint;
 			vx = 0;
 			vy = 0;
 			vz = 0;

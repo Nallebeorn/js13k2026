@@ -2,6 +2,7 @@
 * Coyote jump also from rainbow
 * Move shard 2 floor further away + give you more space to gallop-up
 * Camera collision against level
+* Preserve facing direction on safe clouds
 * Delayed rainbow grinder creation
 * Make boost state clear when grinding
 * Speedrun timers

@@ -72,7 +72,6 @@ export function processRainbowShards() {
 				console.log("collectable", posIndex, color, positions[posIndex]);
 			}
 			if (length(sub(positions[posIndex]!, getPlayerPos())) < 3 && !shardCollectTimer) {
-				console.log("intersecting");
 				if (posIndex >= positions.length - 1) {
 					collectingShard = i;
 				} else {
