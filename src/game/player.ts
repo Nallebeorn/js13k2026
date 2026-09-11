@@ -318,7 +318,7 @@ function processMovingState() {
 			vx = 0;
 			vy = 0;
 			vz = 0;
-			cameraPitch = 0;
+			boostCharge = 0;
 			onPlayerDeath.forEach(fn => fn());
 		});
 	}
