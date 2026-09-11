@@ -1,5 +1,5 @@
 	import { repeat } from "../core/util.ts";
-import { COLOR_CYAN, COLOR_GREEN, COLOR_ORANGE, COLOR_RED, COLOR_VIOLET, COLOR_YELLOW } from "./colors.ts";
+import { COLOR_BLUE, COLOR_CYAN, COLOR_GREEN, COLOR_ORANGE, COLOR_RED, COLOR_VIOLET, COLOR_YELLOW } from "./colors.ts";
 import { BALLOON, CLOOD, CLOUD, NPC, offset, SHARD, type LevelDescriptor } from "./levelSchema.ts";
 import { obj_pillar10, obj_pillar5, obj_unitSphere, obj_cube2x2x1, obj_npc1, obj_pillar16, obj_box3x3, obj_wall, obj_wallEdge, obj_balloon, obj_roof } from "./objects.gen.ts";
 
@@ -202,6 +202,65 @@ export default [
 	[BALLOON, [-58, 95, 135]],
 	[BALLOON, [-90, 85, 110]], // shard 4
 	[BALLOON, [-105, 90, 80]], // shard 5
+
+	// * Shard 5 (BLUE)
+	[CLOOD, 100, [-100, -40], [10, 10], true],
+	[obj_box3x3, [-103, 100, -43], , COLOR_ORANGE],
+	[obj_box3x3, [-103.5, 103, -43.25], , COLOR_ORANGE],
+	[NPC, obj_npc1, [-103, 100, -40], -135, "I have always been color blind,\\nso this whole debacle isn't something I pay any mind."],
+
+	...repeat(10).flatMap(
+		(y) =>
+			[
+				[obj_wallEdge, [-115, 100 + y * 4, -65 - 6], [0, 90, 0]],
+				[obj_wall, [-115, 100 + y * 4, -65], [0, 90, 0]],
+				[obj_wallEdge, [-115, 100 + y * 4, -65 + 6], [0, -90, 0]],
+
+				[obj_wallEdge, [-85, 120 + y * 4, -75 - 6], [0, 90, 0]],
+				[obj_wall, [-85, 120 + y * 4, -75], [0, 90, 0]],
+				[obj_wallEdge, [-85, 120 + y * 4, -75 + 6], [0, -90, 0]],
+
+				[obj_wallEdge, [-100 - 6, 140 + y * 4, -90], [0, 180, 0]],
+				[obj_wall, [-100, 140 + y * 4, -90]],
+				[obj_wallEdge, [-100 + 6, 140 + y * 4, -90],],
+			] satisfies LevelDescriptor,
+	),
+
+	...repeat(4).flatMap(
+		(y) =>
+			[
+				[obj_wallEdge, [-130 - 6, 170 + y * 4, -60], [0, 180, 0]],
+				[obj_wall, [-130, 170 + y * 4, -60]],
+				[obj_wallEdge, [-130 + 6, 170 + y * 4, -60],],
+
+				[obj_wallEdge, [-130 - 6, 170 + y * 4, -50], [0, 180, 0]],
+				[obj_wall, [-130, 170 + y * 4, -50]],
+				[obj_wallEdge, [-130 + 6, 170 + y * 4, -50],],
+
+				[obj_wallEdge, [-137, 170 + y * 4, -55 - 6], [0, 90, 0]],
+				[obj_wall, [-137, 170 + y * 4, -55], [0, 90, 0]],
+				[obj_wallEdge, [-137, 170 + y * 4, -55 + 6], [0, -90, 0]],
+
+				[obj_wallEdge, [-123, 170 + y * 4, -55 - 6], [0, 90, 0]],
+				[obj_wall, [-123, 170 + y * 4, -55], [0, 90, 0]],
+				[obj_wallEdge, [-123, 170 + y * 4, -55 + 6], [0, -90, 0]],
+			] satisfies LevelDescriptor,
+	),
+	[obj_roof, [-130, 186, -55]],
+	[CLOOD, 170, [-130, -55], [16, 12]],
+
+	[CLOOD, 185, [-130, -10], [6, 6], true],
+	[SHARD, COLOR_BLUE, [-130, 186, -10]],
+
+	// ...repeat(4).flatMap(
+	// 	(y) =>
+	// 		[
+	// 			[obj_wallEdge, [-130 - 6, 170 + y * 4, -60], [0, 180, 0]],
+	// 			[obj_wall, [-130, 170 + y * 4, -60]],
+	// 			[obj_wallEdge, [-130 + 6, 170 + y * 4, -60],],
+	// 		] satisfies LevelDescriptor,
+	// ),
+
 
 
 ] satisfies LevelDescriptor;
