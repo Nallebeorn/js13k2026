@@ -66,6 +66,7 @@ export default [
 			] satisfies LevelDescriptor,
 	),
 	[obj_roof, [-76, 27, 65]],
+	[CLOOD, 15, [-76, 65], [16, 12]],
 
 
 	...offset([-30, 10, 0], [
