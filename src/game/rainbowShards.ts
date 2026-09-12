@@ -1,4 +1,5 @@
 import { easeInBack, IDENTITY, length, lerpv, sub, type Vec3 } from "../core/math.ts";
+import { saveBestTime } from "../core/speedrunTimer.ts";
 import { currentTime, deltaTime } from "../core/time.ts";
 import { DEBUG, debugWatch } from "../debug.ts";
 import { COLOR_VIOLET, unlockColor, type Color } from "../gamedata/colors.ts";
@@ -102,6 +103,10 @@ export function processRainbowShards() {
 			shards.splice(collectingShard, 1);
 			collectingShard = -1;
 			shardCollectTimer = 0;
+
+			if (shardsCollected >= 7) {
+				saveBestTime();
+			}
 		});
 	}
 

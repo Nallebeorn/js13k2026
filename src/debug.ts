@@ -8,6 +8,7 @@ if (DEBUG) {
 	const style = document.body.appendChild(document.createElement("style"));
 	style.innerText = /*css*/`
 		.debug {
+			grid-area: unset;
 			padding: 4px 0;
 			max-width: 640px;
 			color: yellow;

@@ -1,2 +1,5 @@
 declare const canvas: HTMLCanvasElement; // from HTML
-declare const txt: HTMLParagraphElement;
+declare const txt: HTMLQuoteElement;
+declare const timers: HTMLDivElement;
+declare const curTimer: HTMLParagraphElement;
+declare const bestTimer: HTMLParagraphElement;
