@@ -8,6 +8,7 @@ import type { KeyCode } from "../input/keycode.ts";
 import { drawMesh } from "../rendering/renderer.ts";
 import { doScreenWipe, transitionProgress } from "../rendering/screenTransition.ts";
 import { rainbowMesh } from "../rendering/vertexData.ts";
+import { playCollect, playCollect2, playFlee } from "../sound/sound.ts";
 import { onPlayerDeath } from "./bus.ts";
 import { getPlayerPos } from "./player.ts";
 
@@ -76,7 +77,9 @@ export function processRainbowShards() {
 			if (length(sub(positions[posIndex]!, getPlayerPos())) < 3 && !shardCollectTimer) {
 				if (posIndex >= positions.length - 1) {
 					collectingShard = i;
+					playCollect();
 				} else {
+					playFlee();
 					movingShard = i;
 					distanceToNextPos = length(
 						sub(positions[posIndex + 1]!, positions[posIndex]!),
@@ -103,6 +106,7 @@ export function processRainbowShards() {
 			shards.splice(collectingShard, 1);
 			collectingShard = -1;
 			shardCollectTimer = 0;
+			playCollect2();
 
 			if (shardsCollected >= 7) {
 				saveBestTime();

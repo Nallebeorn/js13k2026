@@ -30,6 +30,7 @@ import { staticColliders } from "../physics/objectColliders.ts";
 import { cameraTransform, drawMesh, drawObject, ROOT_SLOT, updateCameraTransform, type SlotTransforms } from "../rendering/renderer.ts";
 import { doScreenWipe, transitionProgress } from "../rendering/screenTransition.ts";
 import { rainbowMesh } from "../rendering/vertexData.ts";
+import { playBounce, playDie, playFling, playFlingCharge, playGrind, playJump, playLodge, playSpin, playStep } from "../sound/sound.ts";
 import { bounce } from "./balloon.ts";
 import { onPlayerDeath } from "./bus.ts";
 import { shardCollectTimer, shardsCollected } from "./rainbowShards.ts";
@@ -60,7 +61,7 @@ let vy = 0;
 let vz = 0;
 let boostCharge = 0;
 let wallJumping = false;
-let grounded = false;
+let grounded = true;
 let groundedTimestamp = 0;
 
 let springSpd = 0;
@@ -91,6 +92,8 @@ let grindStart: Vec3;
 let grindLength: number;
 let grindUses = 0;
 let completedGrindUses = 0;
+
+let stepTimer = 0;
 
 export function getPlayerPos(): Vec3 {
 	return [x, y, z];
@@ -238,7 +241,7 @@ function processMovingState() {
 
 	debugWatch("colliders", staticColliders.length);
 
-	function* enumerateCollisions() {
+function* enumerateCollisions() {
 		for (const levelCollider of staticColliders) {
 			const pos =
 				(levelCollider as CapsuleCollider).pos ??
@@ -295,11 +298,13 @@ function processMovingState() {
 				vx = 0;
 				vz = 0;
 				isGrinding = false;
+				playLodge();
 			}
 		}
 	}
 
 	// * Vertical movement
+	let prevGrounded = grounded;
 	grounded = false;
 	let yMovement = Math.abs(vy * deltaTime);
 	while (yMovement > 0) {
@@ -315,8 +320,11 @@ function processMovingState() {
 						respawnPoint = [...safePoint, dirx, diry, cameraYaw, cameraPitch];
 					}
 					if (balloon) {
-						vy = JUMP_SPEED;
-						bounce(balloon);
+						if (vy < 0) {
+							vy = JUMP_SPEED;
+							bounce(balloon);
+							playBounce();
+						}
 					} else {
 						grounded = true;
 						grindUses = 0;
@@ -330,6 +338,7 @@ function processMovingState() {
 
 	if (y < -25 && !transitionProgress) {
 		// * Die and respawn
+		playDie();
 		doScreenWipe(COLOR_OUTLINE, () => {
 			[x, y, z, dirx, diry, cameraYaw, cameraPitch] = respawnPoint;
 			vx = 0;
@@ -337,15 +346,24 @@ function processMovingState() {
 			vz = 0;
 			boostCharge = 0;
 			onPlayerDeath.forEach(fn => fn());
+			grounded = true;
 		});
 	}
 
 	debugWatch("grounded", grounded ? 1 : 0);
 
 	if (grounded) {
+		if (!prevGrounded) {
+			playStep();
+		}
 		vy = 0;
 		wallJumping = false;
 		groundedTimestamp = currentTime;
+		stepTimer += deltaTime;
+		if (stepTimer > 0.25) {
+			playStep();
+			stepTimer = 0;
+		}
 
 		if (speed >= SPEED) {
 			boostCharge += deltaTime;
@@ -358,11 +376,26 @@ function processMovingState() {
 		}
 	}
 
+	if (grounded && speed > 0) {
+		stepTimer += deltaTime;
+		if (stepTimer > 0.25) {
+			playStep();
+			stepTimer = 0;
+		}
+	} else {
+		stepTimer = 0;
+	}
+
 	if (wasKeyJustPressed("Space")) {
 		if ((currentTime - groundedTimestamp < .2) || isGrinding) {
 			vy = JUMP_SPEED;
 			isGrinding = false;
 			groundedTimestamp = 0;
+			if (boostCharge >= BOOST_DELAY) {
+				playSpin();
+			} else {
+				playJump();
+			}
 		} else if (!grounded && grindUses < shardsCollected) {
 			// ? activate grinding
 			isGrinding = true;
@@ -374,15 +407,20 @@ function processMovingState() {
 			grindLength = 0;
 			wallJumping = false;
 			grindUses++;
+			playGrind();
 		}
 	}
 
 	debugWatch("boost", boostCharge.toFixed(2));
 
 	saveDebugState();
+	prevGrounded = grounded;
 }
 
 function processWallLodgedState() {
+	if (wasKeyJustPressed("Space")) {
+		playFlingCharge();
+	}
 	if (isKeyHeld("Space")) {
 		springSpd = 0;
 		springRot = lerp(springRot, -60, 0.08);
@@ -393,6 +431,7 @@ function processWallLodgedState() {
 			wallJumping = true;
 			springRot = 0;
 			springSpd = 0;
+			playFling();
 		} else {
 			springSpd = spring(springRot, springSpd);
 			springRot += springSpd;

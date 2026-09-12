@@ -3,6 +3,7 @@ import { currentTime, deltaTime } from "../core/time.ts";
 import { debugWatch } from "../debug.ts";
 import { obj_npc1_bodySlot, obj_npc1_headSlot, obj_npc1_lowerArmLSlot, obj_npc1_lowerArmRSlot, obj_npc1_lowerLegLSlot, obj_npc1_lowerLegRSlot, obj_npc1_upperArmLSlot, obj_npc1_upperArmRSlot, obj_npc1_upperLegLSlot, obj_npc1_upperLegRSlot, type RenderObjectHandle } from "../gamedata/objects.gen.ts";
 import { drawObject, type SlotTransforms } from "../rendering/renderer.ts";
+import { playTalk } from "../sound/sound.ts";
 import { say } from "./dialogue.ts";
 import { getPlayerPos } from "./player.ts";
 import { shardsCollected } from "./rainbowShards.ts";
@@ -15,6 +16,8 @@ export interface Npc {
 	minShards: number
 }
 export const npcs: Npc[] = [];
+
+let prevDialogue = "";
 
 export function processNpcs() {
 	const t0 = performance.now();
@@ -112,6 +115,10 @@ export function processNpcs() {
 		}
 	}
 
+	if (dialogue && dialogue != prevDialogue) {
+		playTalk();
+	}
+	prevDialogue = dialogue;
 	say(dialogue);
 
 	debugWatch("npcs", performance.now() - t0);

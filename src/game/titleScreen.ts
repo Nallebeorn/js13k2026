@@ -3,6 +3,7 @@ import { currentTime, deltaTime } from "../core/time.ts";
 import { COLOR_OUTLINE } from "../gamedata/colors.ts";
 import { updateCameraTransform } from "../rendering/renderer.ts";
 import { doScreenWipe, transitionProgress } from "../rendering/screenTransition.ts";
+import { playStart } from "../sound/sound.ts";
 import { onClick } from "./bus.ts";
 
 export let inTitleScreen = true;
@@ -10,7 +11,8 @@ export let inTitleScreen = true;
 let cameraYaw = 0;
 
 onClick.push(() => {
-	if (!transitionProgress) {
+	if (!transitionProgress && inTitleScreen) {
+		playStart();
 		doScreenWipe(COLOR_OUTLINE, () => {
 			inTitleScreen = false;
 		});
