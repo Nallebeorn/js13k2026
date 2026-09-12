@@ -19,12 +19,18 @@ export let shardCollectTimer = 0;
 
 let movingShard: number;
 let shardMovement = 0;
+let distanceToNextPos = 1;
+
+let hasFoundVioletShard: boolean | undefined;
 
 onPlayerDeath.push(() => {
 	movingShard = -1;
 	shardMovement = 0;
 	for (let i = 0; i < shards.length; i++) {
 		shards[i]![2] = 0;
+	}
+	if (hasFoundVioletShard) {
+		shards[6]![2] = 1;
 	}
 });
 
@@ -62,22 +68,24 @@ export function processRainbowShards() {
 		);
 
 		if (movingShard == i) {
-			shardMovement += deltaTime;
+			shardMovement += deltaTime / (distanceToNextPos * 0.025);
 			if (shardMovement > 1) {
 				shardMovement = 0;
 				movingShard = -1;
 				shards[i]![2]++;
 			}
 		} else {
-			if (color === COLOR_VIOLET) {
-				console.log("collectable", posIndex, color, positions[posIndex]);
-			}
 			if (length(sub(positions[posIndex]!, getPlayerPos())) < 3 && !shardCollectTimer) {
 				if (posIndex >= positions.length - 1) {
 					collectingShard = i;
 				} else {
 					movingShard = i;
-					shardMovement += deltaTime;
+					distanceToNextPos = length(
+						sub(positions[posIndex + 1]!, positions[posIndex]!),
+					);
+					if (i == 6) {
+						hasFoundVioletShard = true;
+					}
 				}
 			}
 		}

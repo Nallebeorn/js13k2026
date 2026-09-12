@@ -1,4 +1,5 @@
 # TODO
+* Investigate: is acceleration slower depending on pitch?
 * Coyote jump also from rainbow
 * Move shard 2 floor further away + give you more space to gallop-up
 * Camera collision against level
@@ -8,6 +9,7 @@
 * Speedrun timers
 * SFX
 * Faster deaths (higher max vy, raise death plane)
+* Earlier kill plane for shard 6 to avoid Getting over it effect
 * Grinding particle FX
 * Boost gallop VFX
 * Shard collection particle FX

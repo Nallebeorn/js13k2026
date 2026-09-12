@@ -27,6 +27,7 @@ export default [
 	[NPC, obj_npc1, [10, 0, 10], 45, "Please great Neighdall! Find the lost rainbow shards all!", -7],
 	[obj_box3x3, [15, 0, -12]],
 	[NPC, obj_npc1, [15, 3, -12], 135, "Every shard collected increases your flair.\\nTry pressing JUMP in mid-air!", 1],
+	[NPC, obj_npc1, [-5, 0, 5], -45, "You did it great Neighdall! You saved us all!", 7],
 
 	// * Shard 1
 	[CLOOD, 0, [0, 32], [5, 8]],
@@ -286,6 +287,20 @@ export default [
 
 	[obj_pillar16, [0, 280, 100], , COLOR_RED],
 	[SHARD, COLOR_RED, [0, 300, 100]],
+	[CLOOD, 297, [0, 100], [3, 3]],
+
+	[CLOOD, 310, [-75, 25], [7, 7]],
+	[SHARD, COLOR_VIOLET, [
+		// [-75, 315, 25],
+		[10, 20, -13],
+		[-75, 48, -13],
+		[12, 56, -54],
+		[33.5, 70, 160],
+		[-75, 90, 140],
+		[-90, 23, 66],
+		[60, 90, 45],
+		[10, 20, -13],
+	]],
 
 	// ...repeat(4).flatMap(
 	// 	(y) =>
