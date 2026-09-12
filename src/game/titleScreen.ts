@@ -19,6 +19,7 @@ onClick.push(() => {
 
 export function processTitleScreen() {
 	playTxt.hidden = !inTitleScreen || (currentTime % 1 > 0.66);
+	logo.hidden = !inTitleScreen || (transitionProgress as unknown as boolean);
 	if (inTitleScreen) {
 		cameraYaw += deltaTime * 30;
 

@@ -6,3 +6,4 @@ declare const bestTimer: HTMLParagraphElement;
 declare const victoryTxt: HTMLParagraphElement;
 declare const playTxt: HTMLParagraphElement;
 declare const creditsTxt: HTMLParagraphElement;
+declare const logo: HTMLDivElement;
