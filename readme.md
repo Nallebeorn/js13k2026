@@ -1,6 +1,7 @@
 # Unifrost
 
 A tiny browser 3D platformer made for [js13kGames 2016](https://js13kgames.com/2026/).
+Play it on the js13kGames [website](https://js13kgames.com/games/unifrost)!
 
 ## Attribution
 This games makes use of Frank Force's fantastic
