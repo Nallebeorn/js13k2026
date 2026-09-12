@@ -262,51 +262,51 @@ export default [
 			},
 		],
 	},
-	{
-		name: "unitSphere",
-		nodes: [
-			{
-				shape: "pill",
-				color: COLOR_WHITE,
-				bottomRadius: 0.5,
-			},
-		],
-	},
-	{
-		name: "unitCube",
-		nodes: [
-			{
-				shape: "box",
-				color: COLOR_WHITE,
-				a1: 1,
-			},
-		],
-	},
-	{
-		name: "cube2x2x1",
-		nodes: [
-			{
-				shape: "box",
-				color: COLOR_WHITE,
-				a1: 2,
-				b1: 2,
-				height: 1,
-				collision: true,
-			},
-		],
-	},
-	{
-		name: "cube32x32x1",
-		nodes: [
-			{
-				shape: "box",
-				color: COLOR_WHITE,
-				a1: 32,
-				height: 1,
-				collision: true,
-			},
-		],
-	},
+	// {
+	// 	name: "unitSphere",
+	// 	nodes: [
+	// 		{
+	// 			shape: "pill",
+	// 			color: COLOR_WHITE,
+	// 			bottomRadius: 0.5,
+	// 		},
+	// 	],
+	// },
+	// {
+	// 	name: "unitCube",
+	// 	nodes: [
+	// 		{
+	// 			shape: "box",
+	// 			color: COLOR_WHITE,
+	// 			a1: 1,
+	// 		},
+	// 	],
+	// },
+	// {
+	// 	name: "cube2x2x1",
+	// 	nodes: [
+	// 		{
+	// 			shape: "box",
+	// 			color: COLOR_WHITE,
+	// 			a1: 2,
+	// 			b1: 2,
+	// 			height: 1,
+	// 			collision: true,
+	// 		},
+	// 	],
+	// },
+	// {
+	// 	name: "cube32x32x1",
+	// 	nodes: [
+	// 		{
+	// 			shape: "box",
+	// 			color: COLOR_WHITE,
+	// 			a1: 32,
+	// 			height: 1,
+	// 			collision: true,
+	// 		},
+	// 	],
+	// },
 	{
 		name: "pillar16", // ? pillar16
 		nodes: [
