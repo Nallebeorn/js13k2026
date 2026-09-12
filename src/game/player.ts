@@ -348,6 +348,7 @@ function processMovingState() {
 		if ((currentTime - groundedTimestamp < .2) || isGrinding) {
 			vy = JUMP_SPEED;
 			isGrinding = false;
+			groundedTimestamp = 0;
 		} else if (!grounded && grindUses < shardsCollected) {
 			// ? activate grinding
 			isGrinding = true;

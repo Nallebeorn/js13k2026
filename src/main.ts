@@ -1,10 +1,8 @@
 import { advanceTime } from "./core/time.ts";
 import { average, ringPush } from "./core/util.ts";
 import { DEBUG, debugWatch } from "./debug.ts";
-import { say } from "./game/dialogue.ts";
 import { processFrame } from "./game/game.ts";
 import { deserializeBinaryGameData } from "./gamedata/binreader.ts";
-import { COLOR_GREEN, colors, unlockColor } from "./gamedata/colors.ts";
 import { clearFrameInputs } from "./input/input.ts";
 import { finishFrame, initializeVertexArrayBuffer, setupFrame } from "./rendering/renderer.ts";
 
