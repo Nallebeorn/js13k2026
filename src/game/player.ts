@@ -342,6 +342,10 @@ function processMovingState() {
 		} else {
 			boostCharge = 0;
 		}
+	} else {
+		if (speed < SPEED) {
+			boostCharge = Math.max(boostCharge - deltaTime, 0);
+		}
 	}
 
 	if (wasKeyJustPressed("Space")) {
