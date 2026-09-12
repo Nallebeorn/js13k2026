@@ -27,7 +27,6 @@ export default [
 	[NPC, obj_npc1, [10, 0, 10], 45, "Please great Neighdall! Find the lost rainbow shards all!", -7],
 	[obj_box3x3, [15, 0, -12]],
 	[NPC, obj_npc1, [15, 3, -12], 135, "Every shard collected increases your flair.\\nTry pressing JUMP in mid-air!", 1],
-	[NPC, obj_npc1, [-5, 0, 5], -45, "You did it great Neighdall! You saved us all!", 7],
 
 	// * Shard 1
 	[CLOOD, 0, [0, 32], [5, 8]],
