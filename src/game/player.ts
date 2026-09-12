@@ -1,7 +1,7 @@
 import { rotateTowards, withLength, IDENTITY, add, type Vec3, normalize, length, sub, dot, clamp, spring, lerp, angleFromDirection, type Vec2 } from "../core/math.ts";
 import { currentTime, deltaTime } from "../core/time.ts";
 import { DEBUG, debugWatch } from "../debug.ts";
-import { COLOR_CONSUMABLE_BLUE, COLOR_CONSUMABLE_CYAN, COLOR_CONSUMABLE_GREEN, COLOR_CONSUMABLE_ORANGE, COLOR_CONSUMABLE_RED, COLOR_CONSUMABLE_VIOLET, COLOR_CONSUMABLE_YELLOW, COLOR_OUTLINE, COLOR_RAINBOW, COLOR_RED, COLOR_VIOLET, colors, unlockedColors } from "../gamedata/colors.ts";
+import { COLOR_BLACK, COLOR_CONSUMABLE_BLUE, COLOR_CONSUMABLE_CYAN, COLOR_CONSUMABLE_GREEN, COLOR_CONSUMABLE_ORANGE, COLOR_CONSUMABLE_RED, COLOR_CONSUMABLE_VIOLET, COLOR_CONSUMABLE_YELLOW, COLOR_OUTLINE, COLOR_RAINBOW, COLOR_RED, COLOR_VIOLET, colors, unlockedColors } from "../gamedata/colors.ts";
 import {
 	obj_unicorn,
 	obj_unicorn_neckSlot,
@@ -22,6 +22,7 @@ import {
 	obj_unicorn_tail3Slot,
 	obj_unicorn_hornPivotSlot,
 	obj_gizmo,
+	obj_unitSphere,
 } from "../gamedata/objects.gen.ts";
 import { isKeyHeld, mouseDeltaX, mouseDeltaY, wasKeyJustPressed } from "../input/input.ts";
 import type { KeyCode } from "../input/keycode.ts";
@@ -238,6 +239,7 @@ function processMovingState() {
 
 	debugWatch("colliders", staticColliders.length);
 
+	let groundY = 0;
 	function* enumerateCollisions() {
 		for (const levelCollider of staticColliders) {
 			const pos =
@@ -255,6 +257,9 @@ function processMovingState() {
 						0.5,
 						levelCollider,
 					);
+					if (collision.closestY <= y - 1.5) {
+						groundY = Math.max(groundY, collision.closestY);
+					}
 
 					if (collision.depenetration) {
 						yield collision as ConfirmedCollision;
@@ -327,6 +332,8 @@ function processMovingState() {
 	}
 
 	debugWatch("playercoll", performance.now() - t1);
+
+	drawObject(obj_unitSphere, { _: { translation: [x, groundY, z] } }, COLOR_BLACK);
 
 	if (y < -25 && !transitionProgress) {
 		// * Die and respawn

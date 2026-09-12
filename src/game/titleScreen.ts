@@ -6,16 +6,19 @@ import { doScreenWipe, transitionProgress } from "../rendering/screenTransition.
 import { onClick } from "./bus.ts";
 
 export let inTitleScreen = true;
+inTitleScreen = false;
 
 let cameraYaw = 0;
 
-onClick.push(() => {
-	if (!transitionProgress) {
-		doScreenWipe(COLOR_OUTLINE, () => {
-			inTitleScreen = false;
-		});
-	}
-});
+if (inTitleScreen) {
+	onClick.push(() => {
+		if (!transitionProgress) {
+			doScreenWipe(COLOR_OUTLINE, () => {
+				inTitleScreen = false;
+			});
+		}
+	});
+}
 
 export function processTitleScreen() {
 	playTxt.hidden = !inTitleScreen || (currentTime % 1 > 0.66);

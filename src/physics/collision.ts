@@ -53,6 +53,7 @@ export interface Collision {
 	depenetration: 0 | Vec3,
 	safePoint?: 0 | Vec3,
 	balloon?: number,
+	closestY: number;
 }
 
 export interface ConfirmedCollision {
@@ -60,6 +61,7 @@ export interface ConfirmedCollision {
 	depenetration: Vec3,
 	safePoint?: 0 | Vec3,
 	balloon?: number,
+	closestY: number;
 }
 
 export function penetrateSphereGeneric(pos: Vec3, r: number, b: Collider) {
@@ -82,6 +84,7 @@ export function penetrateSphereCapsule(a: SphereCollider, b: CapsuleCollider) {
 	const depth = Math.max(0, a.r - length(delta) + b.r)
 
 	return {
+		closestY: pos[1] + withLength(delta, b.r)[1],
 		projected: pos,
 		depth,
 		depenetration: depth && withLength(delta, depth),
@@ -95,6 +98,7 @@ export function penetrateSphereBox(a: SphereCollider, b: BoxCollider) {
 	const depth = Math.max(0, a.r - length(delta));
 	return {
 		// closest: clamped,
+		closestY: clamped[1],
 		depth: depth,
 		depenetration: depth && withLength(delta, depth),
 		safePoint: depth && b.safePoint,
