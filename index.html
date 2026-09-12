@@ -31,20 +31,27 @@
 		text-align:center;
 		width:570px;
 	}
+	p{
+		color:#731;
+		font-size:22px;
+		font-weight:bold;
+		-webkit-text-stroke: 1px #fff;
+		margin:0;
+	}
+	#victoryTxt{
+		font-size: 66px;
+		align-self:center;
+		justify-self:center;
+		text-align: center;
+	}
 	#timers{
 		align-self:end;
 		justify-self:end;
 		padding:10px;
 	}
-	p{
+	#timers p{
 		font-family:monospace;
-		font-size:22px;
-		color:#731;
-		font-weight:bold;
-		-webkit-text-stroke: 1px #fff;
-		align-self:end;
-		justify-self:end;
-		margin:0;
+		text-align: end;
 	}
 	i{
 		font-family:sans-serif;
@@ -52,6 +59,10 @@
 </style>
 <canvas id=canvas width=640 height=480></canvas>
 <q id="txt">Loading...</q>
+<div id="victoryTxt">
+	<p style=font-size:66px>Thanks for playing!
+	<p>Press R to start from the beginning</p>
+</div>
 <div id="timers">
 	<p id="curTimer">
 	<p><i>Best: </i><span id="bestTimer"></span>

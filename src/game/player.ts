@@ -24,6 +24,7 @@ import {
 	obj_gizmo,
 } from "../gamedata/objects.gen.ts";
 import { isKeyHeld, mouseDeltaX, mouseDeltaY, wasKeyJustPressed } from "../input/input.ts";
+import type { KeyCode } from "../input/keycode.ts";
 import { penetrateSphereGeneric, type BoxCollider, type CapsuleCollider, type Collision, type ConfirmedCollision } from "../physics/collision.ts";
 import { staticColliders } from "../physics/objectColliders.ts";
 import { cameraTransform, drawMesh, drawObject, ROOT_SLOT, updateCameraTransform, type SlotTransforms } from "../rendering/renderer.ts";
@@ -111,7 +112,7 @@ function saveDebugState() {
 			JSON.stringify({ x, y, z, respawnPoint, cameraYaw, cameraPitch }),
 		);
 
-		if (wasKeyJustPressed("KeyR")) {
+		if (wasKeyJustPressed("KeyT" as KeyCode)) {
 			localStorage.removeItem("UNIFROST_DEBUG_SAVE");
 			location.reload();
 		}

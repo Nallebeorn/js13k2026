@@ -1,14 +1,15 @@
 import { IDENTITY } from "../core/math.ts";
-import { COLOR_RAINBOW } from "../gamedata/colors.ts";
+import { COLOR_BLACK, COLOR_RAINBOW } from "../gamedata/colors.ts";
 import { processPlayer } from "./player.ts";
 import { processNpcs } from "./npcs.ts";
 import { processRainbowShards, shardsCollected } from "./rainbowShards.ts";
-import { processScreenTransition } from "../rendering/screenTransition.ts";
+import { doScreenWipe, processScreenTransition, transitionProgress } from "../rendering/screenTransition.ts";
 import { processBalloons } from "./balloon.ts";
 import { processSpeedrunTimer } from "../core/speedrunTimer.ts";
 import { drawMesh, drawObject } from "../rendering/renderer.ts";
 import { rainbowMesh } from "../rendering/vertexData.ts";
 import { currentTime } from "../core/time.ts";
+import { wasKeyJustPressed } from "../input/input.ts";
 
 export function processFrame() {
 	processScreenTransition();
@@ -29,5 +30,12 @@ export function processFrame() {
 			7,
 			1,
 		);
+
+		if (wasKeyJustPressed("KeyR") && !transitionProgress) {
+			doScreenWipe(COLOR_BLACK, () => {
+				location.reload();
+			});
+		}
 	}
+	victoryTxt.hidden = shardsCollected < 7;
 }
