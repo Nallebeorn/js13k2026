@@ -177,7 +177,7 @@ export function processPlayer() {
 	}
 
 	if (DEBUG) {
-		drawObject(obj_gizmo, { _: { translation: [x, y, z] } });
+		// drawObject(obj_gizmo, { _: { translation: [x, y, z] } });
 	}
 
 	// ? Camera controls

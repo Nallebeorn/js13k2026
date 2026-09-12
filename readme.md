@@ -2,8 +2,18 @@
 
 A tiny browser 3D platformer made for [js13kGames 2016](https://js13kgames.com/2026/).
 
+## Attribution
+This games makes use of Frank Force's fantastic
+[ZzFX](https://github.com/KilledByAPixel/ZzFX) sound engine to power the game's
+very hastily added sound effects. The license and copyright notice for this
+library are preserved in zzfx.js.
+
+### Playtesters
+Special thanks to Albin, Amanda, Hirad, Mirjam, and Sebastian for trying out
+the various early drafts of my game and giving feedback.
+
 ## AI disclosure
-No AI was involved with any of the game's design, art, or dialogue.
+No AI was involved with any of the game's design, art, audio or dialogue.
 I regularly used a chatbot to help answer questions about APIs, algorithms and
 language details. One function (`createPill`) was predominantly LLM-generated.
 I used no agentic AI.
@@ -39,4 +49,5 @@ development server.
 You can also run `pnpm run build` to build the final distribution in watch mode.
 It'll even print the current zip size on every change!
 
-See package.json for other scripts (tests etc.).
+See package.json for other scripts
+(tests (which I think don't pass anymore) etc.).
