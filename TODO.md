@@ -1,14 +1,12 @@
 # TODO
-* Investigate: is acceleration slower depending on pitch?
+* Drop shadow or equivalent
 * Coyote jump also from rainbow
-* Move shard 2 floor further away + give you more space to gallop-up
 * Camera collision against level
 * Preserve facing direction on safe clouds
 * Delayed rainbow grinder creation
 * Make boost state clear when grinding
-* Speedrun timers
 * SFX
-* Faster deaths (higher max vy, raise death plane)
+* Faster deaths (higher max vy, raise death plane) (kinda done)
 * Earlier kill plane for shard 6 to avoid Getting over it effect
 * Grinding particle FX
 * Boost gallop VFX
@@ -17,7 +15,6 @@
   and surface outlines at a distance. Could just bake into same int (meta objects increment by 1000)
 	* Depth Fix would require separate index though, that always increments. Or maybe that could be baked in too in some clever way?
 * More precise horn collision
-* Drop shadow or equivalent
 * Gamepad input
 * Animate balloons (but only when in air?)
 * Arrow keys as alternative to WASD
@@ -26,6 +23,9 @@
 * New color for boxes and walls
 * Sun
 * 
+* ~Speedrun timers~
+* ~Move shard 2 floor further away + give you more space to gallop-up~
+* ~Investigate: is acceleration slower depending on pitch?~
 * ~Fix purple shard not respawning on position 2~
 * ~Shards that run away~
 * ~Replace first drill jump pillars with wall~
@@ -43,7 +43,7 @@
 * ~Screen wipes (for respawn and shard collection)~
 * ~Handle high velocity collisions (especially vertical) by stepping~
 * ~I think we're out of object indices...~
-* ~NPC *max* shrds (in addition to min)~
+* ~NPC *max* shards (in addition to min)~
 
 # Stats
 * Pre-binary level format: 5KB 339B

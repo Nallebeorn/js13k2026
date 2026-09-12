@@ -271,22 +271,28 @@ export default [
 
 	[obj_pillar16, [40, 190, -5], , COLOR_GREEN],
 	[BALLOON, [40, 210, -5]],
+	[CLOOD, 190, [40, -5], [3, 3]],
 
 	[obj_pillar16, [60, 200, 30], , COLOR_YELLOW],
 	[BALLOON, [60, 220, 30]],
+	[CLOOD, 200, [60, 30], [3, 3]],
 
 	[obj_pillar16, [60, 220, 60], , COLOR_CYAN],
 	[BALLOON, [60, 240, 60]],
+	[CLOOD, 220, [60, 60], [3, 3]],
 
 	[obj_pillar16, [60, 240, 90], , COLOR_ORANGE],
 	[BALLOON, [60, 260, 90]],
+	[CLOOD, 240, [60, 90], [3, 3]],
 
 	[obj_pillar16, [30, 260, 100], , COLOR_BLUE],
 	[BALLOON, [30, 280, 100]],
+	[CLOOD, 260, [30, 100], [3, 3]],
 
 	[obj_pillar16, [0, 280, 100], , COLOR_RED],
 	[SHARD, COLOR_RED, [0, 300, 100]],
 	[CLOOD, 297, [0, 100], [3, 3]],
+	[CLOOD, 280, [0, 100], [3, 3]],
 
 	[CLOOD, 310, [-75, 25], [7, 7]],
 	[SHARD, COLOR_VIOLET, [
