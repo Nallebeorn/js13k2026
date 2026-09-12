@@ -14,7 +14,7 @@ export function processSpeedrunTimer() {
 }
 
 export function saveBestTime() {
-	bestTime = Math.min(bestTime, speedrunTimer);
+	bestTime = bestTime ? Math.min(bestTime, speedrunTimer) : speedrunTimer;
 	localStorage.setItem("unifrostBest", bestTime as unknown as string);
 }
 
