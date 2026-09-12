@@ -24,7 +24,7 @@ import {
 	obj_gizmo,
 } from "../gamedata/objects.gen.ts";
 import { isKeyHeld, mouseDeltaX, mouseDeltaY, wasKeyJustPressed } from "../input/input.ts";
-import { penetrateSphereGeneric, type Collision, type ConfirmedCollision } from "../physics/collision.ts";
+import { penetrateSphereGeneric, type BoxCollider, type CapsuleCollider, type Collision, type ConfirmedCollision } from "../physics/collision.ts";
 import { staticColliders } from "../physics/objectColliders.ts";
 import { cameraTransform, drawMesh, drawObject, ROOT_SLOT, updateCameraTransform, type SlotTransforms } from "../rendering/renderer.ts";
 import { doScreenWipe, transitionProgress } from "../rendering/screenTransition.ts";
@@ -226,22 +226,29 @@ function processMovingState() {
 		}
 	}
 
+	debugWatch("colliders", staticColliders.length);
+
 	function* enumerateCollisions() {
 		for (const levelCollider of staticColliders) {
-			for (const playerCollider of [
-				[dirx/2, 0, diry/2],
-				[dirx/2, -1, diry/2],
-				[-dirx/2, 0, -diry/2],
-				[-dirx/2, -1, -diry/2],
-			] satisfies Vec3[]) {
-				const collision = penetrateSphereGeneric(
-					add(playerCollider, [x, y, z]),
-					0.5,
-					levelCollider,
-				);
+			const pos =
+				(levelCollider as CapsuleCollider).pos ??
+				(levelCollider as BoxCollider).min;
+			if (length(sub(pos, [x, y, z])) < 100) {
+				for (const playerCollider of [
+					[dirx/2, 0, diry/2],
+					[dirx/2, -1, diry/2],
+					[-dirx/2, 0, -diry/2],
+					[-dirx/2, -1, -diry/2],
+				] satisfies Vec3[]) {
+					const collision = penetrateSphereGeneric(
+						add(playerCollider, [x, y, z]),
+						0.5,
+						levelCollider,
+					);
 
-				if (collision.depenetration) {
-					yield collision as ConfirmedCollision;
+					if (collision.depenetration) {
+						yield collision as ConfirmedCollision;
+					}
 				}
 			}
 		}

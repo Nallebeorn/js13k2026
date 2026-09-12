@@ -263,6 +263,8 @@ export default [
 	[CLOOD, 185, [-100, -10], [6, 6], true],
 	[SHARD, COLOR_BLUE, [-100, 186, -10]],
 
+	[BALLOON, [0, 186, -10]],
+
 	// ...repeat(4).flatMap(
 	// 	(y) =>
 	// 		[
