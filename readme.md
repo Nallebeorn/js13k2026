@@ -1,6 +1,13 @@
 # Unifrost
 
-A tiny browser game made for [js13kGames 2016](https://js13kgames.com/2026/).
+A tiny browser 3D platformer made for [js13kGames 2016](https://js13kgames.com/2026/).
+
+## AI disclosure
+No AI was involved with any of the game's design, art, or dialogue.
+I regularly used a chatbot to help answer questions about APIs, algorithms and
+language details. One function (`createPill`) was predominantly LLM-generated.
+I used no agentic AI.
+
 
 ## Building
 
