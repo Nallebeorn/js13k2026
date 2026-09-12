@@ -1,10 +1,10 @@
 export const IDENTITY = new DOMMatrix;
 
-/* export function degtorad(degrees: number) {
+export function degtorad(degrees: number) {
 	return degrees * Math.PI / 180;
 }
 
-export function radtodeg(radians: number) {
+/*export function radtodeg(radians: number) {
 	return radians * 180 / Math.PI;
 } */
 

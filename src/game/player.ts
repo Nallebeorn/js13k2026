@@ -33,6 +33,7 @@ import { rainbowMesh } from "../rendering/vertexData.ts";
 import { bounce } from "./balloon.ts";
 import { onPlayerDeath } from "./bus.ts";
 import { shardCollectTimer, shardsCollected } from "./rainbowShards.ts";
+import { inTitleScreen } from "./titleScreen.ts";
 
 const SPEED = 20;
 const BOOST_SPEED = 25;
@@ -123,8 +124,12 @@ export function processPlayer() {
 	debugWatch("pos", [x, y, z].map(n => n.toFixed(1)));
 
 	const t0 = performance.now();
-	if (state == PlayerState.MOVING && !shardCollectTimer) processMovingState();
-	if (state == PlayerState.WALL_LODGE && !shardCollectTimer) processWallLodgedState();
+	if (state == PlayerState.MOVING && !shardCollectTimer && !inTitleScreen) {
+		processMovingState();
+	}
+	if (state == PlayerState.WALL_LODGE && !shardCollectTimer && !inTitleScreen) {
+		processWallLodgedState();
+	}
 
 	if (!isGrinding) {
 		completedGrindUses = grindUses;
@@ -171,16 +176,18 @@ export function processPlayer() {
 	}
 
 	// ? Camera controls
-	const moveYaw = mouseDeltaX * .1;
-	const movePitch = mouseDeltaY * .1;
-	cameraYaw += -moveYaw * 100 * deltaTime;
-	cameraPitch = clamp(cameraPitch - movePitch * 100 * deltaTime, -80, 30)
-	updateCameraTransform(
-		IDENTITY
-			.translate(x, y, z)
-			.rotate(cameraPitch, cameraYaw, 0)
-			.translate(0, 3, 18)
-	);
+	if (!inTitleScreen) {
+		const moveYaw = mouseDeltaX * .1;
+		const movePitch = mouseDeltaY * .1;
+		cameraYaw += -moveYaw * 100 * deltaTime;
+		cameraPitch = clamp(cameraPitch - movePitch * 100 * deltaTime, -80, 30)
+		updateCameraTransform(
+			IDENTITY
+				.translate(x, y, z)
+				.rotate(cameraPitch, cameraYaw, 0)
+				.translate(0, 3, 18)
+		);
+	}
 
 	debugWatch("player", performance.now() - t0);
 }

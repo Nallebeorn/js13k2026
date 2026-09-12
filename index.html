@@ -33,20 +33,27 @@
 	}
 	p{
 		color:#731;
-		font-size:22px;
+		font-size:25px;
 		font-weight:bold;
 		-webkit-text-stroke: 1px #fff;
 		margin:0;
 	}
 	#victoryTxt{
 		font-size: 66px;
-		align-self:center;
-		justify-self:center;
+		place-self:center;
 		text-align: center;
 	}
+	#playTxt{
+		font-size: 32px;
+		margin-top: 200px;
+		place-self:center;
+	}
+	#creditsTxt{
+		align-self: end;
+		padding: 10px;
+	}
 	#timers{
-		align-self:end;
-		justify-self:end;
+		place-self: end;
 		padding:10px;
 	}
 	#timers p{
@@ -58,12 +65,14 @@
 	}
 </style>
 <canvas id=canvas width=640 height=480></canvas>
-<q id="txt">Loading...</q>
-<div id="victoryTxt" hidden>
+<q id=txt>Loading...</q>
+<div id=victoryTxt hidden>
 	<p style=font-size:66px>Thanks for playing!
-	<p>Press R to start from the beginning</p>
+	<p>Press R to start from the beginning
 </div>
-<div id="timers" hidden>
-	<p id="curTimer">
-	<p><i>Best: </i><span id="bestTimer"></span>
+<p id=playTxt hidden>CLICK TO PLAY
+<p id="creditsTxt">A game by Nallebeorn
+<div id=timers hidden>
+	<p id=curTimer>
+	<p><i>Best: </i><span id=bestTimer></span>
 </div>

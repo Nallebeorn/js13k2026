@@ -1,5 +1,6 @@
 import { currentTime } from "../core/time.ts";
 import { DEBUG } from "../debug.ts";
+import { onClick } from "../game/bus.ts";
 import type { KeyCode } from "./keycode.ts";
 
 let pressedTimestamp: Record<string, number> = {};
@@ -34,6 +35,7 @@ document.body.onclick = () => {
 			.requestPointerLock({ unadjustedMovement: true })
 			.catch(() => document.body.requestPointerLock());
 	}
+	onClick.forEach(fn => fn());
 };
 
 document.body.onmousemove = (event: MouseEvent) => {

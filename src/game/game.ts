@@ -10,6 +10,7 @@ import { drawMesh, drawObject } from "../rendering/renderer.ts";
 import { rainbowMesh } from "../rendering/vertexData.ts";
 import { currentTime } from "../core/time.ts";
 import { wasKeyJustPressed } from "../input/input.ts";
+import { inTitleScreen, processTitleScreen } from "./titleScreen.ts";
 
 export function processFrame() {
 	processScreenTransition();
@@ -18,6 +19,7 @@ export function processFrame() {
 	processBalloons();
 	processPlayer();
 	processSpeedrunTimer();
+	processTitleScreen();
 
 	if (shardsCollected >= 7) {
 		drawMesh(
@@ -37,5 +39,7 @@ export function processFrame() {
 			});
 		}
 	}
+
 	victoryTxt.hidden = shardsCollected < 7;
+	creditsTxt.hidden = !inTitleScreen && shardsCollected < 7;
 }

@@ -1,13 +1,14 @@
 import { shardsCollected } from "../game/rainbowShards.ts";
-import { currentTime } from "./time.ts";
+import { inTitleScreen } from "../game/titleScreen.ts";
+import { currentTime, deltaTime } from "./time.ts";
 
 let speedrunTimer = 0;
 let bestTime = +localStorage.getItem("unifrostBest")!;
 
 export function processSpeedrunTimer() {
 	timers.hidden = !bestTime;
-	if (shardsCollected < 7) {
-		speedrunTimer = currentTime;
+	if (shardsCollected < 7 && !inTitleScreen) {
+		speedrunTimer += deltaTime;
 	}
 	curTimer.innerText = formatTime(speedrunTimer);
 	bestTimer.innerText = formatTime(bestTime);
