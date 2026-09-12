@@ -263,7 +263,29 @@ export default [
 	[CLOOD, 185, [-100, -10], [6, 6], true],
 	[SHARD, COLOR_BLUE, [-100, 186, -10]],
 
-	[BALLOON, [0, 186, -10]],
+	[CLOUD, 186, [-60, -30], [-30, -20]],
+	[BALLOON, [-15, 186, -25]],
+	[BALLOON, [0, 189, -25]],
+	[BALLOON, [15, 192, -20]],
+	[BALLOON, [25, 195, -10]],
+
+	[obj_pillar16, [40, 190, -5], , COLOR_GREEN],
+	[BALLOON, [40, 210, -5]],
+
+	[obj_pillar16, [60, 200, 30], , COLOR_YELLOW],
+	[BALLOON, [60, 220, 30]],
+
+	[obj_pillar16, [60, 220, 60], , COLOR_CYAN],
+	[BALLOON, [60, 240, 60]],
+
+	[obj_pillar16, [60, 240, 90], , COLOR_ORANGE],
+	[BALLOON, [60, 260, 90]],
+
+	[obj_pillar16, [30, 260, 100], , COLOR_BLUE],
+	[BALLOON, [30, 280, 100]],
+
+	[obj_pillar16, [0, 280, 100], , COLOR_RED],
+	[SHARD, COLOR_RED, [0, 300, 100]],
 
 	// ...repeat(4).flatMap(
 	// 	(y) =>

@@ -41,7 +41,7 @@ const DECELERATION = 90;
 const JUMP_SPEED = 35;
 const WALL_JUMP_SPEED = 60;
 const GRAVITY = 100;
-const FALL_SPEED = 40;
+const FALL_SPEED = 60;
 const GRIND_LENGTH = 20;
 const MAX_STEP = 0.25;
 
@@ -139,6 +139,7 @@ export function processPlayer() {
 
 	// debugWatch("vx", vx.toFixed(3));
 	// debugWatch("vz", vz.toFixed(3));
+	debugWatch("vy", vy);
 
 	// ? Draw unicorn
 	drawObject(obj_unicorn, {
