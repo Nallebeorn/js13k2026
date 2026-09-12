@@ -2,10 +2,13 @@ import { IDENTITY } from "../core/math.ts";
 import { COLOR_RAINBOW } from "../gamedata/colors.ts";
 import { processPlayer } from "./player.ts";
 import { processNpcs } from "./npcs.ts";
-import { processRainbowShards } from "./rainbowShards.ts";
+import { processRainbowShards, shardsCollected } from "./rainbowShards.ts";
 import { processScreenTransition } from "../rendering/screenTransition.ts";
 import { processBalloons } from "./balloon.ts";
 import { processSpeedrunTimer } from "../core/speedrunTimer.ts";
+import { drawMesh, drawObject } from "../rendering/renderer.ts";
+import { rainbowMesh } from "../rendering/vertexData.ts";
+import { currentTime } from "../core/time.ts";
 
 export function processFrame() {
 	processScreenTransition();
@@ -14,4 +17,17 @@ export function processFrame() {
 	processBalloons();
 	processPlayer();
 	processSpeedrunTimer();
+
+	if (shardsCollected >= 7) {
+		drawMesh(
+			rainbowMesh,
+			COLOR_RAINBOW,
+			IDENTITY
+				.scale(5, 5, 5)
+				.rotate(-90,currentTime * 180, 0)
+				.translate(0, 3, Math.sin(currentTime * 2)),
+			7,
+			1,
+		);
+	}
 }
