@@ -26,6 +26,7 @@
 * New color for boxes and walls
 * Sun
 * 
+* ~Fix purple shard not respawning on position 2~
 * ~Shards that run away~
 * ~Replace first drill jump pillars with wall~
 * ~Add momentum preservation to first shard level (and balloon)~

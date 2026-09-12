@@ -194,12 +194,13 @@ function processMovingState() {
 			[isKeyHeld("KeyD") - isKeyHeld("KeyA"), isKeyHeld("KeyS") - isKeyHeld("KeyW")],
 			ACCELERATION * deltaTime
 		)
-		const move = cameraTransform.transformPoint(new DOMPoint(movex, 0, movey, 0));
-		vx += move.x;
-		vz += move.z;
+		const move = (cameraTransform.transformPoint(new DOMPoint(movex, 0, movey, 0)));
+		const movedir = normalize([move.x, move.z] as Vec2);
+		vx += movedir[0] || 0;
+		vz += movedir[1] || 0;
 
 		if (movex || movey) {
-			[dirx, , diry] = normalize([move.x, , move.z] as unknown as Vec3);
+			[dirx, diry] = movedir;
 			const turnBoost = -dot([dirx, 0, diry], normalize([vx, 0, vz])) * .5 + .5;
 			[vx,, vz] = add([vx, 0, vz], withLength([dirx, 0, diry], DECELERATION * turnBoost * deltaTime));
 		} else {

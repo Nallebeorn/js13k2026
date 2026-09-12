@@ -27,10 +27,7 @@ onPlayerDeath.push(() => {
 	movingShard = -1;
 	shardMovement = 0;
 	for (let i = 0; i < shards.length; i++) {
-		shards[i]![2] = 0;
-	}
-	if (hasFoundVioletShard) {
-		shards[6]![2] = 1;
+		shards[i]![2] = (hasFoundVioletShard && shards[i]![0] == COLOR_VIOLET) ? 1 : 0;
 	}
 });
 
@@ -83,7 +80,7 @@ export function processRainbowShards() {
 					distanceToNextPos = length(
 						sub(positions[posIndex + 1]!, positions[posIndex]!),
 					);
-					if (i == 6) {
+					if (color == COLOR_VIOLET) {
 						hasFoundVioletShard = true;
 					}
 				}
