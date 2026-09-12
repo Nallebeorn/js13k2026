@@ -94,6 +94,8 @@ let grindUses = 0;
 let completedGrindUses = 0;
 
 let stepTimer = 0;
+const stepTimings = [.25, .1, .1];
+let stepIndex = 0;
 
 export function getPlayerPos(): Vec3 {
 	return [x, y, z];
@@ -359,11 +361,6 @@ function* enumerateCollisions() {
 		vy = 0;
 		wallJumping = false;
 		groundedTimestamp = currentTime;
-		stepTimer += deltaTime;
-		if (stepTimer > 0.25) {
-			playStep();
-			stepTimer = 0;
-		}
 
 		if (speed >= SPEED) {
 			boostCharge += deltaTime;
@@ -377,13 +374,15 @@ function* enumerateCollisions() {
 	}
 
 	if (grounded && speed > 0) {
-		stepTimer += deltaTime;
-		if (stepTimer > 0.25) {
+		stepTimer += boostCharge >= BOOST_DELAY ? deltaTime * 1.25 : deltaTime;
+		if (stepTimer > stepTimings[stepIndex]!) {
 			playStep();
 			stepTimer = 0;
+			stepIndex = (stepIndex + 1) % stepTimings.length;
 		}
 	} else {
 		stepTimer = 0;
+		stepIndex = 0;
 	}
 
 	if (wasKeyJustPressed("Space")) {
