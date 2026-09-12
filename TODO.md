@@ -2,27 +2,29 @@
 * Drop shadow or equivalent
 * Coyote jump also from rainbow
 * Camera collision against level
-* Preserve facing direction on safe clouds
 * Delayed rainbow grinder creation
 * Make boost state clear when grinding
-* SFX
 * Faster deaths (higher max vy, raise death plane) (kinda done)
 * Earlier kill plane for shard 6 to avoid Getting over it effect
 * Grinding particle FX
 * Boost gallop VFX
 * Shard collection particle FX
 * Separate meta-object and intra-object indices. Use to discard depth outlines
-  and surface outlines at a distance. Could just bake into same int (meta objects increment by 1000)
-	* Depth Fix would require separate index though, that always increments. Or maybe that could be baked in too in some clever way?
+  and surface outlines at a distance. Could just bake into same int (meta
+  objects increment by 1000)
+	* Depth fix for steep viewing angles would require separate index though, that
+	  always increments. Or maybe that could be baked in too in some clever way?
 * More precise horn collision
 * Gamepad input
 * Animate balloons (but only when in air?)
 * Arrow keys as alternative to WASD
-* Put shard positions in level data
 * NPC collision? (dynamic solid colliders)
 * New color for boxes and walls
 * Sun
 * 
+* ~Put shard positions in level data~
+* ~SFX~
+* ~Preserve facing direction on safe clouds~
 * ~Speedrun timers~
 * ~Move shard 2 floor further away + give you more space to gallop-up~
 * ~Investigate: is acceleration slower depending on pitch?~
@@ -59,3 +61,5 @@
 
 * Pre-shards in level data: 7KB 28B
 * Post-shards in level data: 7KB 28B :D
+
+* Logo is 1520 bytes compressed lol
