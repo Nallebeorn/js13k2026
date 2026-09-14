@@ -1,8 +1,9 @@
 import { shardsCollected } from "../game/rainbowShards.ts";
 import { inTitleScreen } from "../game/titleScreen.ts";
-import { currentTime, deltaTime } from "./time.ts";
+import { submitTime, unlockAchievement } from "../platforms/wavedash.ts";
+import { deltaTime } from "./time.ts";
 
-let speedrunTimer = 0;
+export let speedrunTimer = 0;
 let bestTime = +localStorage.getItem("unifrostBest")!;
 
 export function processSpeedrunTimer() {
@@ -17,6 +18,13 @@ export function processSpeedrunTimer() {
 export function saveBestTime() {
 	bestTime = bestTime ? Math.min(bestTime, speedrunTimer) : speedrunTimer;
 	localStorage.setItem("unifrostBest", bestTime as unknown as string);
+	submitTime(bestTime);
+	if (speedrunTimer < 13 * 60) {
+		unlockAchievement("speed");
+	}
+	if (speedrunTimer < 3 * 60 + 47.583) {
+		unlockAchievement("par");
+	}
 }
 
 function formatTime(seconds: number) {
@@ -25,3 +33,6 @@ function formatTime(seconds: number) {
 
   return `${(""+mins).padStart(2, '0')}:${secs.toFixed(3).padStart(6, '0')}`;
 }
+
+
+//

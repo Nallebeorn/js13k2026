@@ -1,9 +1,11 @@
 # TODO
 * Drop shadow or equivalent
+* Increase balloon hitboxes?
 * Coyote jump also from rainbow
 * Camera collision against level
 * Delayed rainbow grinder creation
 * Make boost state clear when grinding
+* Don't play talk sound when spawning
 * Faster deaths (higher max vy, raise death plane) (kinda done)
 * Earlier kill plane for shard 6 to avoid Getting over it effect
 * Grinding particle FX
@@ -63,3 +65,5 @@
 * Post-shards in level data: 7KB 28B :D
 
 * Logo is 1520 bytes compressed lol
+
+* Par: 03:47.583

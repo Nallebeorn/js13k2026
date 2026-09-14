@@ -19,7 +19,15 @@ export default defineConfig({
 			ecma: 2020,
 			mangle: {
 				properties: {
-					reserved: ["Space", "KeyW", "KeyA", "KeyS", "KeyD"],
+					reserved: [
+						"Space",
+						"KeyW",
+						"KeyA",
+						"KeyS",
+						"KeyD",
+						"success", // Wavedash (leaderboard response)
+						"data", // Wavedash (leaderboard response)
+					],
 				},
 				module: true,
 				toplevel: true,

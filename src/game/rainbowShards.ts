@@ -1,10 +1,11 @@
 import { easeInBack, IDENTITY, length, lerpv, sub, type Vec3 } from "../core/math.ts";
-import { saveBestTime } from "../core/speedrunTimer.ts";
+import { saveBestTime, speedrunTimer } from "../core/speedrunTimer.ts";
 import { currentTime, deltaTime } from "../core/time.ts";
 import { DEBUG, debugWatch } from "../debug.ts";
-import { COLOR_VIOLET, unlockColor, type Color } from "../gamedata/colors.ts";
+import { COLOR_GREEN, COLOR_VIOLET, unlockColor, type Color } from "../gamedata/colors.ts";
 import { wasKeyJustPressed } from "../input/input.ts";
 import type { KeyCode } from "../input/keycode.ts";
+import { unlockAchievement } from "../platforms/wavedash.ts";
 import { drawMesh } from "../rendering/renderer.ts";
 import { doScreenWipe, transitionProgress } from "../rendering/screenTransition.ts";
 import { rainbowMesh } from "../rendering/vertexData.ts";
@@ -95,13 +96,16 @@ export function processRainbowShards() {
 			unlockColor(color);
 			shardsCollected++;
 			setTimeout(() => shards.splice(i, 1), 0);
-			;
 		}
 	}
 
 	if (shardCollectTimer > 1 && !transitionProgress) {
 		doScreenWipe(shards[collectingShard]![0] + 10, () => {
 			unlockColor(shards[collectingShard]![0]);
+			unlockAchievement("shard" + shardsCollected);
+			if (shardsCollected == 0 && speedrunTimer < 10) {
+				unlockAchievement("gallop");
+			}
 			shardsCollected++;
 			shards.splice(collectingShard, 1);
 			collectingShard = -1;

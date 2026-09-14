@@ -4,6 +4,7 @@ import { DEBUG, debugWatch } from "./debug.ts";
 import { processFrame } from "./game/game.ts";
 import { deserializeBinaryGameData } from "./gamedata/binreader.ts";
 import { clearFrameInputs } from "./input/input.ts";
+import { initWavedash, WAVEDASH } from "./platforms/wavedash.ts";
 import { finishFrame, initializeVertexArrayBuffer, setupFrame } from "./rendering/renderer.ts";
 
 if (DEBUG) {
@@ -23,6 +24,8 @@ deserializeBinaryGameData(await (await fetch("b?" + +new Date)).arrayBuffer());
 initializeVertexArrayBuffer();
 
 requestAnimationFrame(onAnimationFrame);
+
+initWavedash();
 
 function onAnimationFrame(timestamp: number) {
 	requestAnimationFrame(onAnimationFrame);

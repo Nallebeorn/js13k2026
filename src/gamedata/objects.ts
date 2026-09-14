@@ -666,7 +666,7 @@ export default [
 			},
 			{
 				shape: "pill",
-			translate: [-0.1, -2, 0],
+				translate: [-0.1, -2, 0],
 				bottomRadius: 0.05,
 			},
 			{
