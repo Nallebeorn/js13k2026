@@ -12,7 +12,7 @@ Gallop, leap, and fling yourself across the clouds in search of the seven lost s
 The game *should* be playable-ish with a touchpad, as you don't really need to control the camera and move at the same time (though it can help).
 
 ## System requirements
-The game run fine on on latest stable Chromium and Firefox (text box looks slightly different on Firefox due to not supporting  `corner-shape`  yet).  It's most well-tested in Chromium on Linux. Not mobile-friendly, unfortunately.
+The game runs fine on latest stable Chromium and Firefox (text box looks slightly different on Firefox due to not supporting  `corner-shape`  yet).  It's most well-tested in Chromium on Linux. Not mobile-friendly, unfortunately.
 
 The game's renderer and physics aren't particularly optimized (other than for size). It's possible that older or weaker machines may struggle running the game at full speed, in which case... sorry about that! The game tries to run at a fixed 60FPS regardless of screen refresh rate.
 
@@ -30,3 +30,8 @@ No AI was involved with any of the game's design, art, audio or dialogue.
 I regularly used a chatbot to help answer questions about APIs, algorithms and
 language details. One function was predominantly LLM-generated.
 I used no agentic AI.
+
+## Wavedash
+[https://wavedash.com/games/unifrost](https://wavedash.com/games/unifrost)
+
+Includes a few achievements and a speedrun leaderboard.
