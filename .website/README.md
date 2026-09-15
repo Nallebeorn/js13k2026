@@ -30,3 +30,8 @@ No AI was involved with any of the game's design, art, audio or dialogue.
 I regularly used a chatbot to help answer questions about APIs, algorithms and
 language details. One function was predominantly LLM-generated.
 I used no agentic AI.
+
+## Wavedash
+[https://wavedash.com/games/unifrost](https://wavedash.com/games/unifrost)
+
+Includes a few achievements and a speedrun leaderboard.
