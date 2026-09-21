@@ -27,7 +27,6 @@ void main() {
 				abs(D(vec2(2./640., 0)) - D(vec2(0, 0))),
 				abs(D(vec2(0, 2./480.)) - D(vec2(0, 0)))
 			) > .0005 // depth outlines
-			// ? vec3(0.902, 0.251, 0.792)
 			?vec3(.467, .2, .067)
 			:mix(
 				mix(vec3(1), vec3(.698, 1, 1), v.y*0.5+0.3), // sky gradient

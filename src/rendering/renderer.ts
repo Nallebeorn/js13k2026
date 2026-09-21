@@ -278,11 +278,13 @@ export function finishFrame() {
 	debugWatch("render instances", performance.now() - t0);
 
 	// * Draw post processing (and blit to canvas)
+	const t1 = performance.now();
 	gl.bindFramebuffer(GL_FRAMEBUFFER, null);
 	gl.useProgram(postProcessShader);
 	gl.uniform2f(transitionUniform, transitionProgress, transitionColor);
 	gl.uniform4fv(postProcessPaletteUniform, colorsData);
 	gl.drawArrays(GL_TRIANGLES, 0, 3);
+	debugWatch("post", performance.now() - t1);
 }
 
 // * Frame state

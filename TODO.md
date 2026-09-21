@@ -6,6 +6,7 @@
 * Delayed rainbow grinder creation
 * Make boost state clear when grinding
 * Don't play talk sound when spawning
+* Allow rendering at lower frame rate than process tick
 * Faster deaths (higher max vy, raise death plane) (kinda done)
 * Earlier kill plane for shard 6 to avoid Getting over it effect
 * Grinding particle FX

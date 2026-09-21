@@ -7,7 +7,8 @@ import { viteSingleFile } from "vite-plugin-singlefile";
 export default defineConfig({
 	base: "",
 	server: {
-		host: true,
+    host: true,
+		allowedHosts: ["nalle.local"]
 	},
 	build: {
 		modulePreload: {
