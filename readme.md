@@ -3,6 +3,8 @@
 A tiny browser 3D platformer made for [js13kGames 2016](https://js13kgames.com/2026/).
 Play it on the js13kGames [website](https://js13kgames.com/games/unifrost)!
 
+You can read more about the development of the game in my [blog post](https://nallebeorn.se/blog/js13k2026-post-mortem/).
+
 ## Attribution
 This games makes use of Frank Force's fantastic
 [ZzFX](https://github.com/KilledByAPixel/ZzFX) sound engine to power the game's
