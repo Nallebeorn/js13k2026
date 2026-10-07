@@ -1,6 +1,4 @@
-import type { ObjectNode } from "./objectsSchema.ts";
-import objectsData from "./objects.ts";
-import levelData from "./level.ts";
+import type { ObjectDescriptor, ObjectNode } from "./objectsSchema.ts";
 import {
 	quantizePosition,
 	quantizeAngle,
@@ -19,39 +17,47 @@ import {
 	SHAPE_FLAGS_VISIBLE,
 	quantizeBigPosition,
 } from "./binformatHelpers.ts";
-import { BALLOON, CLOOD, CLOUD, NPC, SHARD } from "./levelSchema.ts";
+import { BALLOON, CLOOD, CLOUD, NPC, SHARD, type LevelDescriptor } from "./levelSchema.ts";
 import { COLOR_COUNT, palette } from "./colors.ts";
 import type { Vec3 } from "../core/math.ts";
 
-export function serializeObjects(): {
-	buffer: ArrayBuffer,
-	names: string[],
-	slotNames: Record<string, Record<string, number>>,
-	sections: Map<string, number>,
-	dialogue: string[],
+export function serializeObjects(
+  objects: ObjectDescriptor[],
+): {
+  objectNames: string[],
+  };
+
+export function serializeObjects(
+  objects: ObjectDescriptor[],
+  dv: DataView,
+  startPos: number,
+): {
+  objectNames: string[];
+  slotNames: Record<string, Record<string, number>>;
+  pos: number;
+}
+
+export function serializeObjects(
+  objects: ObjectDescriptor[],
+  dv?: DataView,
+  startPos?: number,
+): {
+ 	objectNames: string[],
+  slotNames?: Record<string, Record<string, number>>,
+	pos?: number,
 } {
-	const objects = objectsData;
-
-	const buffer = new ArrayBuffer(13 * 1024);
-	const dv = new DataView(buffer);
-	let pos = 0;
-	const sections: Map<string, number> = new Map();
-
-	// * Write palette
-	for (let i = 0; i < COLOR_COUNT; i++) {
-		const hex = palette[i]!;
-		[hex >> 16, (hex & 0x00ff00) >> 8, hex & 0xff].forEach(
-			colorComponent => dv.setUint8(pos++, colorComponent)
-		);
-	}
-
-	sections.set("palette", pos);
-
-	// * Write objects
-	const objectNames: string[] = [];
+ 	const objectNames: string[] = [];
 	const slotNames: Record<string, Record<string, number>> = {}
 
+  let pos = startPos ?? 0;
+
 	for (const obj of objects) {
+    objectNames.push(obj.name);
+
+    if (!dv) {
+      continue
+    }
+
 		let transformSlotIndex = 0;
 		const serializeNode = (node: ObjectNode) => {
 			const hasTransform = node.translate || node.euler || node.slotName;
@@ -126,9 +132,42 @@ export function serializeObjects(): {
 		};
 
 		dv.setUint8(pos++, NODE_TYPE_NEW_OBJECT);
-		objectNames.push(obj.name);
 		obj.nodes.forEach(serializeNode);
+  }
+
+  return {
+    objectNames,
+    slotNames,
+    pos,
+  }
+}
+
+export function serializeData(objectsData: ObjectDescriptor[], levelData: LevelDescriptor): {
+	buffer: ArrayBuffer,
+	names: string[],
+	slotNames: Record<string, Record<string, number>>,
+	sections: Map<string, number>,
+	dialogue: string[],
+} {
+	const buffer = new ArrayBuffer(13 * 1024);
+	const dv = new DataView(buffer);
+	let pos = 0;
+  const sections: Map<string, number> = new Map();
+
+	// * Write palette
+	for (let i = 0; i < COLOR_COUNT; i++) {
+		const hex = palette[i]!;
+		[hex >> 16, (hex & 0x00ff00) >> 8, hex & 0xff].forEach(
+			colorComponent => dv.setUint8(pos++, colorComponent)
+		);
 	}
+
+	sections.set("palette", pos);
+
+	// * Write objects
+  const serializedObjects = serializeObjects(objectsData, dv, pos);
+  const { objectNames, slotNames} = serializedObjects;
+  pos = serializedObjects.pos;
 
 	sections.set("objectBank", pos);
 
@@ -251,8 +290,6 @@ export function serializeObjects(): {
 	}
 
 	sections.set("levelObjects", pos);
-
-
 
 	return {
 		buffer: buffer.slice(0, pos),

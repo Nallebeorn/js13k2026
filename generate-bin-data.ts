@@ -1,16 +1,24 @@
 import { mkdir, readFile, writeFile } from "fs/promises";
-import { serializeObjects } from "./src/gamedata/binwriter.ts";
+import { serializeData, serializeObjects } from "./src/gamedata/binwriter.ts";
 import { existsSync } from "fs";
+import objectsData from "./src/gamedata/objects.ts";
 
 const t0 = performance.now();
 
 mkdir("public", { recursive: true });
-const { buffer, names, slotNames, sections, dialogue } = serializeObjects();
 
-writeFile("public/b", Buffer.from(buffer));
-writeFileIfChanged("src/gamedata/objects.gen.ts", getNameConstants(names, slotNames));
-writeFileIfChanged("src/gamedata/sections.gen.ts", getSetionConstants(sections));
-writeFileIfChanged("src/gamedata/dialogue.gen.ts", getDialogueConstants(dialogue));
+const { objectNames } = serializeObjects(objectsData);
+await writeFileIfChanged("src/gamedata/objects.gen.ts", getNameConstants(objectNames, {}));
+
+const levelData = (await import("./src/gamedata/level.ts")).default;
+const { buffer, names, slotNames, sections, dialogue } = serializeData(objectsData, levelData);
+
+await Promise.all([
+  writeFile("public/b", Buffer.from(buffer)),
+  writeFileIfChanged("src/gamedata/objects.gen.ts", getNameConstants(names, slotNames)),
+  writeFileIfChanged("src/gamedata/sections.gen.ts", getSetionConstants(sections)),
+  writeFileIfChanged("src/gamedata/dialogue.gen.ts", getDialogueConstants(dialogue)),
+]);
 const t1 = performance.now();
 console.log(`[${getTimestamp()}] Regenerated binary data file: ${buffer.byteLength}B (${names.length} objects)`);
 console.log(`Time: ${(t1 - t0).toFixed(2)}ms`);

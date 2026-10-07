@@ -45,7 +45,7 @@ bothered :)
 
 ### Development with watch mode
 
-You nead to run at least `pnpm run dev` and `pnpm run bindata` to build
+You need to run at least `pnpm run dev` and `pnpm run bindata` to build
 everything. The game will rebuild automatically on changes, and run a Vite
 development server.
 
@@ -54,3 +54,6 @@ It'll even print the current zip size on every change!
 
 See package.json for other scripts
 (tests (which I think don't pass anymore) etc.).
+
+Note that some of the gamedata source files are dependent on generated source files for full type checking.
+That means some files may have type errors until you've run `bindata` for the first time.
