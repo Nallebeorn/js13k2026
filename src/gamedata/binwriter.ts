@@ -23,28 +23,12 @@ import type { Vec3 } from "../core/math.ts";
 
 export function serializeObjects(
   objects: ObjectDescriptor[],
-): {
-  objectNames: string[],
-  };
-
-export function serializeObjects(
-  objects: ObjectDescriptor[],
-  dv: DataView,
-  startPos: number,
-): {
-  objectNames: string[];
-  slotNames: Record<string, Record<string, number>>;
-  pos: number;
-}
-
-export function serializeObjects(
-  objects: ObjectDescriptor[],
   dv?: DataView,
   startPos?: number,
 ): {
  	objectNames: string[],
-  slotNames?: Record<string, Record<string, number>>,
-	pos?: number,
+  slotNames: Record<string, Record<string, number>>,
+	pos: number,
 } {
  	const objectNames: string[] = [];
 	const slotNames: Record<string, Record<string, number>> = {}
@@ -54,35 +38,31 @@ export function serializeObjects(
 	for (const obj of objects) {
     objectNames.push(obj.name);
 
-    if (!dv) {
-      continue
-    }
-
 		let transformSlotIndex = 0;
 		const serializeNode = (node: ObjectNode) => {
 			const hasTransform = node.translate || node.euler || node.slotName;
 			if (node.color != undefined) {
-				dv.setUint8(pos++, NODE_TYPE_COLOR | node.color);
+				dv?.setUint8(pos++, NODE_TYPE_COLOR | node.color);
 			}
 
 			if (hasTransform) {
 				let byte = NODE_TYPE_TRANSFORM;
 				node.translate && (byte |= TRANSFORM_FLAGS_TRANSLATE);
 				node.euler && (byte |= TRANSFORM_FLAGS_ROTATE);
-				dv.setUint8(pos++, byte);
+				dv?.setUint8(pos++, byte);
 
 				if (node.translate) {
 					const [x, y, z] = node.translate;
-					dv.setInt8(pos++, quantizePosition(x));
-					dv.setInt8(pos++, quantizePosition(y));
-					dv.setInt8(pos++, quantizePosition(z));
+					dv?.setInt8(pos++, quantizePosition(x));
+					dv?.setInt8(pos++, quantizePosition(y));
+					dv?.setInt8(pos++, quantizePosition(z));
 				}
 
 				if (node.euler) {
 					const [x, y, z] = node.euler;
-					dv.setUint8(pos++, quantizeAngle(x));
-					dv.setUint8(pos++, quantizeAngle(y));
-					dv.setUint8(pos++, quantizeAngle(z));
+					dv?.setUint8(pos++, quantizeAngle(x));
+					dv?.setUint8(pos++, quantizeAngle(y));
+					dv?.setUint8(pos++, quantizeAngle(z));
 				}
 
 				if (node.slotName) {
@@ -98,7 +78,7 @@ export function serializeObjects(
 				if (node.newObjectIndex) byte |= SHAPE_FLAGS_NEW_INDEX;
 				if (node.collision) byte |= SHAPE_FLAGS_COLLISION;
 				if (node.visible ?? true) byte |= SHAPE_FLAGS_VISIBLE;
-				dv.setUint8(pos++, byte);
+				dv?.setUint8(pos++, byte);
 
 				if (node.shape == "box") {
 					const a1 = node.a1;
@@ -107,11 +87,11 @@ export function serializeObjects(
 					const b1 = node.b1 ?? node.a1;
 					const b2 = node.b2 ?? node.a2 ?? node.a1;
 
-					dv.setUint8(pos++, quantizeSize(a1 / 2));
-					dv.setUint8(pos++, quantizeSize(b1 / 2));
-					dv.setUint8(pos++, quantizeSize(h));
-					dv.setUint8(pos++, quantizeSize(a2 / 2));
-					dv.setUint8(pos++, quantizeSize(b2 / 2));
+					dv?.setUint8(pos++, quantizeSize(a1 / 2));
+					dv?.setUint8(pos++, quantizeSize(b1 / 2));
+					dv?.setUint8(pos++, quantizeSize(h));
+					dv?.setUint8(pos++, quantizeSize(a2 / 2));
+					dv?.setUint8(pos++, quantizeSize(b2 / 2));
 				}
 
 				if (node.shape == "pill") {
@@ -119,19 +99,19 @@ export function serializeObjects(
 					const r2 = node.topRadius ?? node.bottomRadius;
 					const h = node.height ?? 0;
 
-					dv.setUint8(pos++, quantizeSize(r1));
-					dv.setUint8(pos++, quantizeSize(r2));
-					dv.setUint8(pos++, quantizeSize(h));
+					dv?.setUint8(pos++, quantizeSize(r1));
+					dv?.setUint8(pos++, quantizeSize(r2));
+					dv?.setUint8(pos++, quantizeSize(h));
 				}
 			}
 
 			node.children?.forEach(serializeNode);
 			if (hasTransform) {
-				dv.setUint8(pos++, NODE_TYPE_TRANSFORM | TRANSFORM_FLAGS_POP);
+				dv?.setUint8(pos++, NODE_TYPE_TRANSFORM | TRANSFORM_FLAGS_POP);
 			}
 		};
 
-		dv.setUint8(pos++, NODE_TYPE_NEW_OBJECT);
+		dv?.setUint8(pos++, NODE_TYPE_NEW_OBJECT);
 		obj.nodes.forEach(serializeNode);
   }
 
